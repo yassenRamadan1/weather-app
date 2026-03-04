@@ -1,6 +1,6 @@
 package com.example.weather_app.designsystem.colors
 
-val DarkColors = YSColors(
+val darkThemeColors = WTColors(
     primary = primaryDark,
     gradientBackground = BackgroundColors(
         gradientBackgroundStart = GradientBackgroundDarkStart,
