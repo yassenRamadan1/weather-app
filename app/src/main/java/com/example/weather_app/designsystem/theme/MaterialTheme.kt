@@ -1,4 +1,4 @@
-package com.example.weather_app.designsystem.ui.theme
+package com.example.weather_app.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -57,7 +57,6 @@ fun WeatherappTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }

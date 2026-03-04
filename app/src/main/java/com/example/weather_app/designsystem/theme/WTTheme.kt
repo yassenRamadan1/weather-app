@@ -6,6 +6,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.example.weather_app.designsystem.colors.LocalWTColors
 import com.example.weather_app.designsystem.colors.darkThemeColors
 import com.example.weather_app.designsystem.colors.lightThemeColors
+import com.example.weather_app.designsystem.dimensions.LocalWTShapes
+import com.example.weather_app.designsystem.dimensions.LocalWTSpacing
+import com.example.weather_app.designsystem.dimensions.WTShapes
+import com.example.weather_app.designsystem.dimensions.WTSpacing
 import com.example.weather_app.designsystem.textstyle.LocalWTTypography
 import com.example.weather_app.designsystem.textstyle.getWTTypography
 
@@ -16,12 +20,16 @@ fun WTTheme(
     content: @Composable () -> Unit
 ) {
     val colors = if (isDarkTheme) darkThemeColors else lightThemeColors
-
     val typography = getWTTypography(isArabic = isArabic)
+
+    val spacing = WTSpacing()
+    val shapes = WTShapes()
 
     CompositionLocalProvider(
         LocalWTColors provides colors,
-        LocalWTTypography provides typography
+        LocalWTTypography provides typography,
+        LocalWTSpacing provides spacing,
+        LocalWTShapes provides shapes
     ) {
         content()
     }
