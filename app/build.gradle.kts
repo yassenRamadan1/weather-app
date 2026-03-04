@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -16,6 +17,10 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        val apiKey = project.findProperty("WEATHER_API_KEY") as String? ?: ""
+        buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "BASE_URL", "\"https://api.openweathermap.org/data/2.5/\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -58,4 +64,36 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+
+    // Retrofit + OkHttp
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp.logging)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
+    // Coroutines
+    implementation(libs.coroutines.android)
+
+    // Location
+    implementation(libs.play.services.location)
+
+    // Accompanist (permissions)
+    implementation(libs.accompanist.permissions)
+
+    // Navigation
+    implementation(libs.navigation.compose)
+
+    // coil
+    implementation(libs.coil.compose)
 }
