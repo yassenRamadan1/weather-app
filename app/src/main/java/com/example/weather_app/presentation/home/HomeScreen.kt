@@ -11,14 +11,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    lat: Double,
-    lon: Double,
     viewModel: HomeViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(lat, lon) {
-        viewModel.loadWeather(lat, lon)
+    LaunchedEffect(30.0444, 31.2357) {
+        viewModel.loadWeather(30.0444, 31.2357)
     }
 
     Box(
@@ -32,7 +29,7 @@ fun HomeScreen(
 
             is HomeUiState.Error -> ErrorContent(
                 message = state.message,
-                onRetry = { viewModel.loadWeather(lat, lon) }
+                onRetry = { viewModel.loadWeather(30.0444, 31.2357) }
             )
 
             is HomeUiState.LocationPermissionRequired -> LocationPermissionPrompt()
