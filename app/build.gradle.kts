@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,7 +21,13 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        val apiKey = project.findProperty("WEATHER_API_KEY") as String? ?: ""
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(FileInputStream(localPropertiesFile))
+        }
+        val apiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
         buildConfigField("String", "WEATHER_API_KEY", "\"$apiKey\"")
         buildConfigField("String", "BASE_URL", "\"https://api.openweathermap.org/data/2.5/\"")
 
