@@ -1,6 +1,6 @@
 package com.example.weather_app.data.weather.remote.interceptor
 
-import com.example.weather_app.data.user.UserPreferencesDataSource
+import com.example.weather_app.domain.datasource.UserPreferencesDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
