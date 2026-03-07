@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق الطقس</string>
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_favorites">المفضلات</string>
+    <string name="nav_settings">الاعدادات</string>
+    <string name="nav_alert">التنبيهات</string>
+</resources>
