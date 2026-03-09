@@ -8,7 +8,8 @@ data class WTTextStyle(
     val title: TextStyle,
     val bodyLarge: TextStyle,
     val bodyMedium: TextStyle,
-    val hint: TextStyle
+    val hint: TextStyle,
+    val hintMedium: TextStyle,
 )
 val LocalWTTypography = staticCompositionLocalOf {
     getWTTypography(isArabic = false)
