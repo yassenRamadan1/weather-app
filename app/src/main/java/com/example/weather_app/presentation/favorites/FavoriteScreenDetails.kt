@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,7 +39,10 @@ fun FavoriteDetailsScreenContent(
     onNavigateBack: () -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize().background(
+        modifier = Modifier.fillMaxSize().padding(
+            WindowInsets.systemBars.asPaddingValues()
+        )
+            .background(
                 androidx.compose.ui.graphics.Brush.verticalGradient(
                     colors = listOf(
                         Theme.colors.gradientBackground.gradientBackgroundStart,

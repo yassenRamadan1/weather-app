@@ -1,5 +1,6 @@
 package com.example.weather_app.presentation.components.weather
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.designsystem.theme.Theme
@@ -25,13 +27,15 @@ fun DailyForecastItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .clip(Theme.shapes.medium)
+            .background(Theme.colors.textColors.titleColor.copy(alpha = 0.07f))
             .padding(horizontal = Theme.spacing.medium, vertical = Theme.spacing.extraSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = dayName,
-            style = Theme.typography.bodyMedium,
+            style = Theme.typography.bodyLarge,
             color = Theme.colors.textColors.bodyColor,
             modifier = Modifier.weight(1f),
         )
@@ -46,12 +50,12 @@ fun DailyForecastItem(
         ) {
             Text(
                 text = maxTemp,
-                style = Theme.typography.bodyMedium,
+                style = Theme.typography.bodyLarge,
                 color = Theme.colors.textColors.titleColor,
             )
             Text(
                 text = " / ",
-                style = Theme.typography.hint,
+                style = Theme.typography.bodyLarge,
                 color = Theme.colors.textColors.hintColor,
             )
             Text(
@@ -62,15 +66,18 @@ fun DailyForecastItem(
         }
     }
 }
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun DailyForecastItemPreview() {
     WTTheme {
-        DailyForecastItem(
-            dayName = "Monday",
-            iconCode = "01d",
-            minTemp = "15°",
-            maxTemp = "25°",
-        )
+        PreviewComponentsBox(){
+            DailyForecastItem(
+                dayName = "Monday",
+                iconCode = "",
+                minTemp = "15°",
+                maxTemp = "25°",
+            )
+        }
+
     }
 }

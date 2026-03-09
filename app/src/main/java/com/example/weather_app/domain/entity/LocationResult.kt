@@ -11,6 +11,7 @@ sealed class LocationResult {
     ) : LocationResult()
     data object NeedPermission : LocationResult()
     data object GpsDisabled : LocationResult()
+    data object GpsNoFix : LocationResult()
     data object NoSavedLocation : LocationResult()
     data class Error(val cause: Throwable) : LocationResult()
 }

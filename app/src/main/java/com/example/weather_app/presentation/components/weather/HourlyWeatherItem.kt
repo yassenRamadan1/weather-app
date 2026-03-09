@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.designsystem.theme.Theme
 
@@ -44,3 +45,18 @@ fun HourlyWeatherItem(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun HourlyWeatherItemPreview() {
+    PreviewComponentsBox() {
+        HourlyWeatherItem(
+            time = "2 PM",
+            iconCode = "",
+            temperature = "25°C",
+            modifier = Modifier.padding(8.dp),
+        )
+    }
+
+}
+
