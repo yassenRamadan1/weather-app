@@ -1,6 +1,6 @@
 package com.example.weather_app.di
 
-import com.example.weather_app.data.user.UserPreferencesDataSourceImpl
+import com.example.weather_app.data.user.local.UserPreferencesDataSourceImpl
 import com.example.weather_app.data.weather.local.datasource.WeatherLocalDataSource
 import com.example.weather_app.data.weather.local.datasource.WeatherLocalDataSourceImpl
 import com.example.weather_app.data.weather.remote.datasource.WeatherRemoteDataSource
