@@ -1,5 +1,9 @@
 package com.example.weather_app.domain.entity
 
+import android.content.Context
+import android.content.res.Configuration
+import java.util.Locale
+
 
 data class UserPreferences(
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
@@ -24,7 +28,15 @@ enum class WindSpeedUnit(val symbol: String) {
 
 enum class AppLanguage(val code: String) {
     ENGLISH("en"),
-    ARABIC("ar")
+    ARABIC("ar");
+
+    val locale: Locale get() = Locale(code)
+
+    companion object {
+        fun fromCode(code: String?): AppLanguage {
+            return entries.find { it.code == code } ?: ENGLISH
+        }
+    }
 }
 
 enum class AppTheme {
@@ -33,4 +45,19 @@ enum class AppTheme {
 
 enum class LocationMode {
     GPS, MAP
+}
+
+fun Context.updateLocale(locale: Locale): Context {
+    val config = Configuration(resources.configuration)
+    config.setLocale(locale)
+    config.setLayoutDirection(locale)
+    val localizedContext = createConfigurationContext(config)
+    return object : android.content.ContextWrapper(this) {
+        override fun getResources(): android.content.res.Resources = localizedContext.resources
+        override fun getAssets(): android.content.res.AssetManager = localizedContext.assets
+        override fun getSystemService(name: String): Any? = localizedContext.getSystemService(name)
+        override fun createConfigurationContext(overrideConfiguration: Configuration): Context {
+            return localizedContext.createConfigurationContext(overrideConfiguration)
+        }
+    }
 }
