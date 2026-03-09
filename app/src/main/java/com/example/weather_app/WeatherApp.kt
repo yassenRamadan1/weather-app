@@ -17,6 +17,7 @@ class WeatherApp : Application() {
                 repositoryModule,
                 useCaseModule,
                 viewModelModule,
+                locationModule
             )
         }
     }

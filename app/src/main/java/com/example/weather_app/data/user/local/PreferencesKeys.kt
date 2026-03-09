@@ -1,4 +1,4 @@
-package com.example.weather_app.data.user
+package com.example.weather_app.data.user.local
 
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
