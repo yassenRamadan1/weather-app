@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -46,6 +47,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.designsystem.theme.WTTheme
 import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.AppTheme
 import com.example.weather_app.domain.entity.LocationMode
@@ -107,7 +109,7 @@ private fun SettingsContent(
     onManualLocationSaved: (Double, Double) -> Unit,
     onRefreshGps: () -> Unit,
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var showMapPicker by remember { mutableStateOf(false) }
 
@@ -131,7 +133,6 @@ private fun SettingsContent(
             Theme.colors.gradientBackground.gradientBackgroundEnd,
         )
     )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -140,105 +141,118 @@ private fun SettingsContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(WindowInsets.systemBars.asPaddingValues())
-                .verticalScroll(rememberScrollState())
+                .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
                 .padding(
-                    horizontal = Theme.spacing.large,
-                    vertical = Theme.spacing.medium,
+                    start = Theme.spacing.large,
+                    end = Theme.spacing.large,
+                    top = Theme.spacing.large,
                 ),
-            verticalArrangement = Arrangement.spacedBy(Theme.spacing.large),
         ) {
-
             Text(
                 text = stringResource(R.string.settings),
                 style = Theme.typography.headline,
                 color = Theme.colors.textColors.titleColor,
             )
 
-            SettingsSection(title = stringResource(R.string.appearance)) {
-                PreferenceGroup(
-                    label = stringResource(R.string.theme),
-                    options = AppTheme.entries,
-                    selected = prefs.theme,
-                    labelOf = { stringResource(it.toResource()) },
-                    onSelect = onThemeChange,
-                )
-            }
+            Spacer(Modifier.height(Theme.spacing.medium))
 
-            SettingsSection(title = stringResource(R.string.language)) {
-                PreferenceGroup(
-                    label = stringResource(R.string.app_language),
-                    options = AppLanguage.entries,
-                    selected = prefs.language,
-                    labelOf = { stringResource(it.toResource()) },
-                    onSelect = onLanguageChange,
-                )
-            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(Theme.spacing.large),
+            ) {
+                SettingsSection(title = stringResource(R.string.appearance)) {
+                    PreferenceGroup(
+                        label = stringResource(R.string.theme),
+                        options = AppTheme.entries,
+                        selected = prefs.theme,
+                        labelOf = { stringResource(it.toResource()) },
+                        onSelect = onThemeChange,
+                    )
+                }
 
-            SettingsSection(title = stringResource(R.string.units)) {
-                PreferenceGroup(
-                    label = stringResource(R.string.temperature),
-                    options = TemperatureUnit.entries,
-                    selected = prefs.temperatureUnit,
-                    labelOf = { stringResource(it.toResource()) },
-                    onSelect = onTemperatureUnitChange,
-                )
-                Spacer(Modifier.height(Theme.spacing.medium))
-                PreferenceGroup(
-                    label = stringResource(R.string.wind_speed),
-                    options = WindSpeedUnit.entries,
-                    selected = prefs.windSpeedUnit,
-                    labelOf = { stringResource(it.toResource()) },
-                    onSelect = onWindSpeedUnitChange,
-                )
-            }
+                SettingsSection(title = stringResource(R.string.language)) {
+                    PreferenceGroup(
+                        label = stringResource(R.string.app_language),
+                        options = AppLanguage.entries,
+                        selected = prefs.language,
+                        labelOf = { stringResource(it.toResource()) },
+                        onSelect = onLanguageChange,
+                    )
+                }
 
-            SettingsSection(title = stringResource(R.string.location)) {
-                val gpsWarning = prefs.locationMode == LocationMode.GPS && !isGpsEnabled
+                SettingsSection(title = stringResource(R.string.units)) {
+                    PreferenceGroup(
+                        label = stringResource(R.string.temperature),
+                        options = TemperatureUnit.entries,
+                        selected = prefs.temperatureUnit,
+                        labelOf = { stringResource(it.toResource()) },
+                        onSelect = onTemperatureUnitChange,
+                    )
+                    Spacer(Modifier.height(Theme.spacing.medium))
+                    PreferenceGroup(
+                        label = stringResource(R.string.wind_speed),
+                        options = WindSpeedUnit.entries,
+                        selected = prefs.windSpeedUnit,
+                        labelOf = { stringResource(it.toResource()) },
+                        onSelect = onWindSpeedUnitChange,
+                    )
+                }
 
-                LocationRow(
-                    title = stringResource(R.string.use_my_location_gps),
-                    subtitle = when {
-                        gpsWarning ->
-                            stringResource(R.string.gps_is_off_showing_last_known_tap_to_enable_in_settings)
-                        prefs.locationMode == LocationMode.GPS ->
-                            stringResource(R.string.updates_automatically_when_you_open_the_app)
-                        else ->
-                            stringResource(R.string.use_device_gps_for_automatic_location_detection)
-                    },
-                    selected = prefs.locationMode == LocationMode.GPS,
-                    isWarning = gpsWarning,
-                    onClick = {
-                        when {
-                            !locationPermissions.allPermissionsGranted ->
-                                locationPermissions.launchMultiplePermissionRequest()
-                            !isGpsEnabled -> {
-                                onLocationModeChange(LocationMode.GPS)
-                                context.startActivity(
-                                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                                )
+                SettingsSection(title = stringResource(R.string.location)) {
+                    val gpsWarning = prefs.locationMode == LocationMode.GPS && !isGpsEnabled
+
+                    LocationRow(
+                        title = stringResource(R.string.use_my_location_gps),
+                        subtitle = when {
+                            gpsWarning ->
+                                stringResource(R.string.gps_is_off_showing_last_known_tap_to_enable_in_settings)
+
+                            prefs.locationMode == LocationMode.GPS ->
+                                stringResource(R.string.updates_automatically_when_you_open_the_app)
+
+                            else ->
+                                stringResource(R.string.use_device_gps_for_automatic_location_detection)
+                        },
+                        selected = prefs.locationMode == LocationMode.GPS,
+                        isWarning = gpsWarning,
+                        onClick = {
+                            when {
+                                !locationPermissions.allPermissionsGranted ->
+                                    locationPermissions.launchMultiplePermissionRequest()
+
+                                !isGpsEnabled -> {
+                                    onLocationModeChange(LocationMode.GPS)
+                                    context.startActivity(
+                                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                                    )
+                                }
+
+                                else -> onLocationModeChange(LocationMode.GPS)
                             }
-                            else -> onLocationModeChange(LocationMode.GPS)
-                        }
-                    },
-                )
+                        },
+                    )
 
-                Spacer(Modifier.height(Theme.spacing.small))
+                    Spacer(Modifier.height(Theme.spacing.small))
 
-                LocationRow(
-                    title = stringResource(R.string.fixed_location_map),
-                    subtitle = if (prefs.savedLat != null && prefs.savedLon != null)
-                        stringResource(R.string.saved_location_format, prefs.savedLat, prefs.savedLon)
-                    else
-                        stringResource(R.string.tap_to_pick_location),
-                    selected = prefs.locationMode == LocationMode.MAP,
-                    isWarning = false,
-                    onClick = { showMapPicker = true },
-                )
+                    LocationRow(
+                        title = stringResource(R.string.fixed_location_map),
+                        subtitle = if (prefs.savedLat != null && prefs.savedLon != null)
+                            stringResource(
+                                R.string.saved_location_format,
+                                prefs.savedLat,
+                                prefs.savedLon
+                            )
+                        else
+                            stringResource(R.string.tap_to_pick_location),
+                        selected = prefs.locationMode == LocationMode.MAP,
+                        isWarning = false,
+                        onClick = { showMapPicker = true },
+                    )
+                }
+                Spacer(Modifier.height(Theme.spacing.large))
             }
-
-            // Bottom breathing room above the nav bar
-            Spacer(Modifier.height(Theme.spacing.large))
         }
 
         SnackbarHost(
@@ -362,8 +376,8 @@ private fun LocationRow(
 ) {
     val borderColor = when {
         isWarning -> Theme.colors.warningColor
-        selected  -> Theme.colors.primary.copy(alpha = 0.55f)
-        else      -> Theme.colors.primary.copy(alpha = 0f)
+        selected -> Theme.colors.primary.copy(alpha = 0.55f)
+        else -> Theme.colors.primary.copy(alpha = 0f)
     }
 
     Row(
@@ -385,8 +399,8 @@ private fun LocationRow(
                 style = Theme.typography.bodyLarge,
                 color = when {
                     isWarning -> Theme.colors.warningColor
-                    selected  -> Theme.colors.primary
-                    else      -> Theme.colors.textColors.bodyColor
+                    selected -> Theme.colors.primary
+                    else -> Theme.colors.textColors.bodyColor
                 },
             )
             Text(
@@ -410,23 +424,24 @@ private fun LocationRow(
 
 
 private fun AppTheme.toResource() = when (this) {
-    AppTheme.LIGHT  -> R.string.light
-    AppTheme.DARK   -> R.string.dark
+    AppTheme.LIGHT -> R.string.light
+    AppTheme.DARK -> R.string.dark
     AppTheme.SYSTEM -> R.string.system_default
 }
 
 private fun AppLanguage.toResource() = when (this) {
     AppLanguage.ENGLISH -> R.string.english
-    AppLanguage.ARABIC  -> R.string.arabic
+    AppLanguage.ARABIC -> R.string.arabic
 }
 
 private fun TemperatureUnit.toResource() = when (this) {
-    TemperatureUnit.CELSIUS    -> R.string.celsius
+    TemperatureUnit.CELSIUS -> R.string.celsius
     TemperatureUnit.FAHRENHEIT -> R.string.fahrenheit
-    TemperatureUnit.KELVIN     -> R.string.kelvin
+    TemperatureUnit.KELVIN -> R.string.kelvin
 }
 
 private fun WindSpeedUnit.toResource() = when (this) {
-    WindSpeedUnit.METER_PER_SEC  -> R.string.meters_per_sec
+    WindSpeedUnit.METER_PER_SEC -> R.string.meters_per_sec
     WindSpeedUnit.MILES_PER_HOUR -> R.string.miles_per_hour
+
 }

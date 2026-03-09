@@ -5,14 +5,37 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -26,25 +49,26 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.weather_app.R
+import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.domain.entity.LocationSource
-import com.example.weather_app.domain.entity.Weather
+import com.example.weather_app.presentation.components.LocationPickerScreen
+import com.example.weather_app.presentation.components.weather.WeatherDisplayContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
 import org.koin.androidx.compose.koinViewModel
-import com.example.weather_app.R
-import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.presentation.components.LocationPickerScreen
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var showMapPicker by remember { mutableStateOf(false) }
-    val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsState()
+    val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.userMessage.collect { message ->
@@ -59,24 +83,25 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         )
     )
 
-    LaunchedEffect(permissionState.allPermissionsGranted, permissionState.shouldShowRationale) {
+    LaunchedEffect(permissionState.allPermissionsGranted) {
         val granted = permissionState.allPermissionsGranted
-        val isPermanentlyDenied = hasLaunchedRequest &&
-                !granted &&
-                permissionState.permissions.all { perm ->
-                    !perm.status.isGranted && !perm.status.shouldShowRationale
-                }
-
-        viewModel.onPermissionResult(
-            granted = granted,
-            isPermanentlyDenied = isPermanentlyDenied
-        )
+        if (granted || hasLaunchedRequest) {
+            val isPermanentlyDenied = !granted &&
+                    permissionState.permissions.all { perm ->
+                        !perm.status.isGranted && !perm.status.shouldShowRationale
+                    }
+            viewModel.onPermissionResult(
+                granted = granted,
+                isPermanentlyDenied = isPermanentlyDenied
+            )
+        }
     }
 
     val isPermanentlyDenied = hasLaunchedRequest &&
             permissionState.permissions.all { perm ->
                 !perm.status.isGranted && !perm.status.shouldShowRationale
             }
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -86,33 +111,52 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+
     val brushBackGround = Brush.verticalGradient(
         colors = listOf(
             Theme.colors.gradientBackground.gradientBackgroundStart,
             Theme.colors.gradientBackground.gradientBackgroundEnd
         )
     )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(brush = brushBackGround)
-            .padding(WindowInsets.systemBars.asPaddingValues()),
+            .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()),
         contentAlignment = Alignment.Center
     ) {
         when (val state = uiState) {
             is HomeUiState.Loading -> CircularProgressIndicator(
                 modifier = Modifier.size(48.dp),
-                color = Theme.colors.primary
+                color = Theme.colors.primaryIconColor
             )
 
-            is HomeUiState.Success -> WeatherContent(
-                weather = state.weather,
-                isStale = state.isStaleLocation,
-                locationSource = state.locationSource,
-                onEnableGps = {
-                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            is HomeUiState.Success -> {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    AnimatedVisibility(visible = state.isStaleLocation) {
+                        StaleLocationBanner(
+                            source = state.locationSource,
+                            onEnableGps = {
+                                context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                            }
+                        )
+                    }
+                    WeatherDisplayContent(
+                        currentWeather = state.currentWeather,
+                        hourlyForecast = state.hourlyForecast,
+                        dailyForecast = state.dailyForecast,
+                        currentDateFormatted = state.currentDateFormatted,
+                        currentTimeFormatted = state.currentTimeFormatted,
+                        temperatureUnit = state.temperatureUnit,
+                        windSpeedUnit = state.windSpeedUnit,
+                        isStaleLocation = state.isStaleLocation,
+                        onEnableGps = {
+                            context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                        },
+                    )
                 }
-            )
+            }
 
             is HomeUiState.Error -> ErrorContent(
                 message = state.message,
@@ -158,42 +202,10 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
 }
 
 @Composable
-private fun WeatherContent(
-    weather: Weather,
-    isStale: Boolean,
-    locationSource: LocationSource,
-    onEnableGps: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AnimatedVisibility(visible = isStale) {
-            StaleLocationBanner(
-                source = locationSource,
-                onEnableGps = onEnableGps
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(weather.cityName, style = MaterialTheme.typography.headlineMedium)
-            Text("${weather.temperature}°C", style = MaterialTheme.typography.displayMedium)
-            Text(weather.description, style = MaterialTheme.typography.bodyMedium)
-        }
-    }
-}
-
-@Composable
 private fun StaleLocationBanner(source: LocationSource, onEnableGps: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = Theme.colors.primary.copy(alpha = 0.5f),
+        color = Theme.colors.warningColor.copy(alpha = 0.15f),
         tonalElevation = 2.dp
     ) {
         Row(
@@ -206,7 +218,7 @@ private fun StaleLocationBanner(source: LocationSource, onEnableGps: () -> Unit)
             Icon(
                 imageVector = Icons.Default.Warning,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                tint = Theme.colors.warningColor,
                 modifier = Modifier.size(18.dp)
             )
             Text(
@@ -226,7 +238,7 @@ private fun StaleLocationBanner(source: LocationSource, onEnableGps: () -> Unit)
                 Text(
                     stringResource(R.string.enable_gps),
                     style = Theme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = Theme.colors.warningColor
                 )
             }
         }
@@ -276,14 +288,12 @@ private fun PermissionPrompt(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                if (isPermanentlyDenied) stringResource(R.string.open_app_settings) else stringResource(
-                    R.string.allow_location
-                )
+                if (isPermanentlyDenied) stringResource(R.string.open_app_settings)
+                else stringResource(R.string.allow_location)
             )
         }
     }
 }
-
 
 @Composable
 private fun GpsDisabledPrompt(onEnableGps: () -> Unit) {
@@ -292,7 +302,6 @@ private fun GpsDisabledPrompt(onEnableGps: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
         Icon(
             painter = painterResource(R.drawable.gps_disable),
             contentDescription = null,
@@ -353,9 +362,9 @@ private fun ErrorContent(message: String, onRetry: () -> Unit) {
         Text(message, textAlign = TextAlign.Center, color = Theme.colors.errorColor)
         Button(
             onClick = onRetry,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Black)
-        ) { Text(stringResource(R.string.retry)) }
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.retry))
+        }
     }
 }
