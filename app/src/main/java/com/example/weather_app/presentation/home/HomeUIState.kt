@@ -25,5 +25,6 @@ sealed class HomeUiState {
     data class Error(val message: String) : HomeUiState()
     data object NeedLocationPermission : HomeUiState()
     data object GpsDisabled : HomeUiState()
+    data object GpsNoFix : HomeUiState()
     data object NeedManualLocation : HomeUiState()
 }

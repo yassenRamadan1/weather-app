@@ -71,8 +71,8 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.userMessage.collect { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        viewModel.userMessage.collect { messageResId ->
+            Toast.makeText(context, context.getString(messageResId), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -182,6 +182,10 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
                 onEnableGps = {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
+            )
+
+            is HomeUiState.GpsNoFix -> GpsNoFixPrompt(
+                onRetry = { viewModel.resolveLocationAndLoadWeather() }
             )
 
             is HomeUiState.NeedManualLocation -> NeedManualLocationPrompt(
@@ -324,6 +328,39 @@ private fun GpsDisabledPrompt(onEnableGps: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.enable_location_services))
+        }
+    }
+}
+
+@Composable
+private fun GpsNoFixPrompt(onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier.padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.gps_disable),
+            contentDescription = null,
+            modifier = Modifier.size(72.dp),
+            tint = Theme.colors.warningColor
+        )
+        Text(
+            stringResource(R.string.gps_no_fix_title),
+            style = Theme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            stringResource(R.string.gps_no_fix_body),
+            textAlign = TextAlign.Center,
+            style = Theme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.retry))
         }
     }
 }

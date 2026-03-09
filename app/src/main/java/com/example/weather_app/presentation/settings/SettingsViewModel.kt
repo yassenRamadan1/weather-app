@@ -70,8 +70,12 @@ class SettingsViewModel(
 
     fun setLocationMode(mode: LocationMode) = viewModelScope.launch {
         updateLocationModeUseCase(mode)
-        if (mode == LocationMode.GPS && !_isGpsEnabled.value) {
-            _events.send(SettingsEvent.ShowMessage(R.string.msg_gps_off))
+        if (mode == LocationMode.GPS) {
+            if (!_isGpsEnabled.value) {
+                _events.send(SettingsEvent.ShowMessage(R.string.msg_gps_off))
+            } else {
+                _events.send(SettingsEvent.ShowMessage(R.string.msg_using_gps_location))
+            }
         }
     }
 
