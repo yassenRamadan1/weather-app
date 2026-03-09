@@ -1,6 +1,7 @@
 package com.example.weather_app
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -16,18 +17,25 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weather_app.designsystem.components.bottomnav.BlurBottomNavigationBar
+import com.example.weather_app.designsystem.theme.WTTheme
+import com.example.weather_app.domain.entity.AppLanguage
+import com.example.weather_app.domain.entity.AppTheme
 import com.example.weather_app.navigation.Screen
 import com.example.weather_app.navigation.WeatherNavGraph
+import org.koin.androidx.compose.koinViewModel
 
 private val bottomBarRoutes = setOf(
     Screen.Home.route,
@@ -35,21 +43,34 @@ private val bottomBarRoutes = setOf(
     Screen.Alerts.route,
     Screen.Settings.route,
 )
+@Composable
+fun MainScreen(
+    viewModel: MainViewModel = koinViewModel(),
+) {
+    val uiPreferences by viewModel.uiPreferences.collectAsStateWithLifecycle()
+    val systemInDark = isSystemInDarkTheme()
+
+    val isDarkTheme = when (uiPreferences.theme) {
+        AppTheme.DARK   -> true
+        AppTheme.LIGHT  -> false
+        AppTheme.SYSTEM -> systemInDark
+    }
+    val isArabic = uiPreferences.language == AppLanguage.ARABIC
+    LaunchedEffect(uiPreferences.language) {
+        applyLocale(uiPreferences.language.code)
+    }
+
+    WTTheme(isDarkTheme = isDarkTheme, isArabic = isArabic) {
+        MainScaffold()
+    }
+}
 
 @Composable
-fun MainScreen() {
-
+private fun MainScaffold() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
     val showBottomBar = currentRoute in bottomBarRoutes
-
-    val isDarkTheme = !isSystemInDarkTheme()
-
-    StatusBarIconColor(
-        darkIcons = isDarkTheme,
-    )
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -58,13 +79,12 @@ fun MainScreen() {
             AnimatedVisibility(
                 visible = showBottomBar,
                 enter = slideInVertically(initialOffsetY = { it }),
-                exit = slideOutVertically(targetOffsetY = { it }),
+                exit  = slideOutVertically(targetOffsetY = { it }),
             ) {
                 BlurBottomNavigationBar(navController = navController)
             }
         },
     ) { innerPadding ->
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,7 +96,6 @@ fun MainScreen() {
     }
 }
 
-
 @Composable
 fun StatusBarIconColor(darkIcons: Boolean) {
     val view = LocalView.current
@@ -84,8 +103,7 @@ fun StatusBarIconColor(darkIcons: Boolean) {
         SideEffect {
             val window = (view.context as Activity).window
             WindowCompat.setDecorFitsSystemWindows(window, false)
-            WindowInsetsControllerCompat(window, view)
-                .isAppearanceLightStatusBars = darkIcons
+            WindowInsetsControllerCompat(window, view).isAppearanceLightStatusBars = darkIcons
         }
     }
 }
@@ -107,4 +125,8 @@ fun StatusBar(
 ) {
     StatusBarIconColor(darkIcons = darkIcons)
     StatusBarBackground(color = backgroundColor)
+}
+fun applyLocale(languageCode: String) {
+    val localeList = LocaleListCompat.forLanguageTags(languageCode)
+    AppCompatDelegate.setApplicationLocales(localeList)
 }

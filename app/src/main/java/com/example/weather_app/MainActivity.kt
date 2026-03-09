@@ -30,21 +30,13 @@ class MainActivity : ComponentActivity() {
         )
 
         setContent {
-            WTTheme {
-                val gradientBrush= Brush.verticalGradient(
-                    colors = listOf(
-                        Theme.colors.gradientBackground.gradientBackgroundStart,
-                        Theme.colors.gradientBackground.gradientBackgroundEnd
-                    )
-                )
+
                 Surface(
-                    modifier = Modifier.fillMaxSize().background(
-                        brush = gradientBrush
-                    ),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     MainScreen()
                 }
-            }
+
         }
     }
 }
