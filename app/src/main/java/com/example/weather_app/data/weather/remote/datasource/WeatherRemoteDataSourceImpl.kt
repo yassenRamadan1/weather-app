@@ -1,6 +1,7 @@
 package com.example.weather_app.data.weather.remote.datasource
 
 import com.example.weather_app.data.weather.remote.dto.CurrentWeatherDto
+import com.example.weather_app.data.weather.remote.dto.ForecastResponseDto
 import com.example.weather_app.data.weather.remote.service.WeatherApiService
 import com.example.weather_app.domain.error.AppError
 import retrofit2.HttpException
@@ -16,12 +17,19 @@ class WeatherRemoteDataSourceImpl(
         unit: String,
         lang: String
     ): Result<CurrentWeatherDto> = runCatching {
-        weatherApiService.getCurrentWeather(lat, lon,unit)
+        weatherApiService.getCurrentWeather(lat, lon, unit)
     }.mapError()
 
+    override suspend fun getForecast(
+        lat: Double,
+        lon: Double,
+        unit: String,
+        lang: String
+    ): Result<ForecastResponseDto> = runCatching {
+        weatherApiService.getForecast(lat, lon, unit)
+    }.mapError()
 
-
-    private fun Result<CurrentWeatherDto>.mapError(): Result<CurrentWeatherDto> = this.fold(
+    private fun <T> Result<T>.mapError(): Result<T> = this.fold(
         onSuccess = { Result.success(it) },
         onFailure = { throwable ->
             val appError = when (throwable) {

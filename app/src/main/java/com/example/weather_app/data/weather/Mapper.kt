@@ -64,7 +64,7 @@ fun Weather.toEntity(): WeatherEntity = WeatherEntity(
 
 fun WeatherEntity.toDomain(): Weather = Weather(
     cityName = cityName,
-    countryCode = countryCode,
+    countryCode = countryCode ?: "",
     temperature = temperature,
     feelsLike = feelsLike,
     description = description,
@@ -87,5 +87,5 @@ fun WeatherEntity.toDto(): CurrentWeatherDto = CurrentWeatherDto(
     clouds = CloudsDto(cloudiness),
     visibility = visibility,
     dt = timestamp,
-    sys = SysDto(countryCode)
+    sys = SysDto(countryCode?:"")
 )
