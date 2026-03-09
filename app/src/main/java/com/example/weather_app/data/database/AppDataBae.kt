@@ -7,7 +7,7 @@ import com.example.weather_app.data.weather.local.entity.WeatherEntity
 
 @Database(
     entities = [WeatherEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
