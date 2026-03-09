@@ -106,8 +106,7 @@ class UserPreferencesRepositoryImpl(
                 isStale = true
             )
         }
-        return if (!gpsEnabled) LocationResult.GpsDisabled
-        else LocationResult.NeedPermission
+        return if (!gpsEnabled) LocationResult.GpsDisabled else LocationResult.GpsNoFix
     }
 
     override suspend fun updateSavedLocation(lat: Double, lon: Double) {
