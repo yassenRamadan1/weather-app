@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">weather app</string>
+    <string name="app_name">Weather App</string>
     <string name="nav_home">Home</string>
     <string name="nav_favorites">Favorites</string>
     <string name="nav_settings">Settings</string>
@@ -33,4 +33,32 @@
     <string name="gps_is_off_showing_last_known_tap_to_enable_in_settings">⚠ GPS is off — showing last known. Tap to enable in settings.</string>
     <string name="updates_automatically_when_you_open_the_app">Updates automatically when you open the app.</string>
     <string name="use_device_gps_for_automatic_location_detection">Use device GPS for automatic location detection.</string>
+    <string name="theme">Theme</string>
+    <string name="app_language">App Language</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic (العربية)</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="system_default">System Default</string>
+    <string name="celsius">Celsius (°C)</string>
+    <string name="fahrenheit">Fahrenheit (°F)</string>
+    <string name="kelvin">Kelvin (K)</string>
+    <string name="meters_per_sec">Meters per second (m/s)</string>
+    <string name="miles_per_hour">Miles per hour (mph)</string>
+    <string name="fixed_location_map">Fixed Location (Map)</string>
+    <string name="saved_location_format">Saved: %.4f°, %.4f°</string>
+    <string name="tap_to_pick_location">Tap to pick a location on the map.</string>
+    <string name="msg_gps_off">GPS is off — showing last known location. Enable GPS for live updates.</string>
+    <string name="msg_permission_granted_gps_off">Permission granted. Please also enable GPS in device settings.</string>
+    <string name="msg_permission_denied">Location permission denied — staying on current mode.</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="clouds">Clouds</string>
+    <string name="feels_like">Feels like %s</string>
+    <string name="todays_hourly_forecast">Today\'s Hourly Forecast</string>
+    <string name="five_day_forecast">5-Day Forecast</string>
+    <string name="no_internet_showing_cached">No internet — showing cached data</string>
+    <string name="forecast_unavailable">Forecast data unavailable</string>
+    <string name="precipitation">Precip: %s%%</string>
 </resources>
