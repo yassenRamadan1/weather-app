@@ -1,0 +1,114 @@
+package com.example.weather_app.presentation.components.weather
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.weather_app.R
+import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.designsystem.theme.WTTheme
+
+@Composable
+fun CurrentWeatherHeader(
+    cityName: String,
+    dateFormatted: String,
+    timeFormatted: String,
+    iconCode: String,
+    temperature: String,
+    feelsLike: String,
+    description: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Theme.spacing.large),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = Theme.spacing.small),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                Text(
+                    text = cityName,
+                    style = Theme.typography.title,
+                    color = Theme.colors.textColors.titleColor,
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
+                Text(
+                    text = dateFormatted,
+                    style = Theme.typography.hintMedium,
+                    color = Theme.colors.textColors.hintColor,
+                )
+                Text(
+                    text = timeFormatted,
+                    style = Theme.typography.bodyMedium,
+                    color = Theme.colors.textColors.bodyColor,
+                )
+            }
+        }
+
+        WeatherIconImage(
+            iconCode = iconCode,
+            modifier = Modifier.size(120.dp),
+            contentDescription = description,
+        )
+
+        Text(
+            text = temperature,
+            style = Theme.typography.headline.copy(fontSize = 56.sp),
+            color = Theme.colors.textColors.titleColor,
+            textAlign = TextAlign.Center,
+        )
+
+        Text(
+            text = description.replaceFirstChar { it.uppercase() },
+            style = Theme.typography.bodyLarge,
+            color = Theme.colors.textColors.bodyColor,
+        )
+
+        Text(
+            text = stringResource(R.string.feels_like, feelsLike),
+            style = Theme.typography.hint,
+            color = Theme.colors.textColors.hintColor,
+            modifier = Modifier.padding(top = Theme.spacing.extraSmall),
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CurrentWeatherHeaderPreview() {
+    WTTheme {
+        CurrentWeatherHeader(
+            cityName = "New York",
+            dateFormatted = "June 10, 2024",
+            timeFormatted = "2:00 PM",
+            iconCode = "01d",
+            temperature = "25°",
+            feelsLike = "27°",
+            description = "Clear sky",
+        )
+    }
+}
