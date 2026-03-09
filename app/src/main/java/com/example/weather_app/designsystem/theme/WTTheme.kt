@@ -17,8 +17,8 @@ import com.example.weather_app.designsystem.dimensions.WTShapes
 import com.example.weather_app.designsystem.dimensions.WTSpacing
 import com.example.weather_app.designsystem.textstyle.LocalWTTypography
 import com.example.weather_app.designsystem.textstyle.getWTTypography
+import com.example.weather_app.designsystem.utils.updateLocale
 import com.example.weather_app.domain.entity.AppLanguage
-import com.example.weather_app.domain.entity.updateLocale
 
 @Composable
 fun WTTheme(

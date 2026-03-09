@@ -9,16 +9,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.domain.entity.DailyForecast
 import com.example.weather_app.domain.entity.HourlyWeather
 import com.example.weather_app.domain.entity.TemperatureUnit
 import com.example.weather_app.domain.entity.Weather
 import com.example.weather_app.domain.entity.WindSpeedUnit
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.example.weather_app.presentation.util.getLocalizedDayName
+import com.example.weather_app.presentation.util.getLocalizedTime
 import kotlin.math.roundToInt
 
 @Composable
@@ -34,6 +33,8 @@ fun WeatherDisplayContent(
     onEnableGps: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val locale = LocalConfiguration.current.locales[0]
+
     val tempSymbol = temperatureUnit.symbol
     val windSymbol = windSpeedUnit.symbol
 
@@ -62,11 +63,8 @@ fun WeatherDisplayContent(
 
         if (hourlyForecast.isNotEmpty()) {
             val hourlyDisplayItems = hourlyForecast.map { hourly ->
-                val time = Instant.ofEpochSecond(hourly.timestamp)
-                    .atZone(ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()))
                 HourlyForecastDisplayItem(
-                    time = time,
+                    time = getLocalizedTime(hourly.timestamp, locale = locale),
                     iconCode = hourly.iconCode,
                     temperature = "${hourly.temperature.roundToInt()}$tempSymbol",
                 )
@@ -76,11 +74,8 @@ fun WeatherDisplayContent(
 
         if (dailyForecast.isNotEmpty()) {
             val dailyDisplayItems = dailyForecast.map { daily ->
-                val dayName = Instant.ofEpochSecond(daily.timestamp)
-                    .atZone(ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("EEE", Locale.getDefault()))
                 DailyForecastDisplayItem(
-                    dayName = dayName,
+                    dayName = getLocalizedDayName(daily.timestamp, locale = locale),
                     iconCode = daily.iconCode,
                     minTemp = "${daily.minTemp.roundToInt()}$tempSymbol",
                     maxTemp = "${daily.maxTemp.roundToInt()}$tempSymbol",

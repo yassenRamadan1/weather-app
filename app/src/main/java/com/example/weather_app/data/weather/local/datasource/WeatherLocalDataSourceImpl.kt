@@ -17,6 +17,4 @@ private val weatherDao: WeatherDao
     ): Flow<WeatherEntity?> =
     weatherDao.getWeatherByCoordinates(lat, lon )
 
-
-
 }
