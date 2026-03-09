@@ -1,7 +1,9 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.0.21"
-ksp = "2.0.21-1.0.28"
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29" # Changed from 2.2.0-1.0.30
+androidSdk = "13.0.0"
+
 
 # Core Android
 coreKtx = "1.13.1"
@@ -15,6 +17,7 @@ espressoCore = "3.6.1"
 
 # Compose
 composeBom = "2024.10.00"
+maplibreCompose = "0.11.1"
 uiGraphics = "1.10.4"
 navigationCompose = "2.8.4"
 coilCompose = "2.7.0"
@@ -30,9 +33,11 @@ datastore = "1.1.1"
 coroutines = "1.9.0"
 playServicesLocation = "21.3.0"
 accompanist = "0.36.0"
+spatialk = "0.3.0"
 
 
 [libraries]
+android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -52,6 +57,7 @@ androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", ve
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 # Retrofit + OkHttp
+rallista-maplibre-compose = { module = "io.github.rallista:maplibre-compose", version.ref = "maplibreCompose" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
@@ -71,7 +77,12 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
-
+# MapLibre
+maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
+# Material 3 specific components (ScaleBar, Compass, etc.)
+maplibre-compose-m3 = { module = "org.maplibre.compose:maplibre-compose-material3", version.ref = "maplibreCompose" }
+# SpatialK for GeoJSON handling (Position, Point, etc.)
+spatialk-geojson = { module = "io.github.dellisd.spatialk:geojson", version.ref = "spatialk" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

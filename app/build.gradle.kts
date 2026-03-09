@@ -105,4 +105,8 @@ dependencies {
 
     // coil
     implementation(libs.coil.compose)
+    // maplibre
+    implementation(libs.maplibre.compose)
+    implementation(libs.maplibre.compose.m3)
+    implementation(libs.spatialk.geojson)
 }
