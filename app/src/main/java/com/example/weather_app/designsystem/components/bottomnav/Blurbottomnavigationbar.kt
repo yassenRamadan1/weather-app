@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -31,14 +32,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.designsystem.theme.WTTheme
 import com.example.weather_app.navigation.navigateToBottomNavDestination
 
 @Composable
@@ -55,10 +60,12 @@ fun BlurBottomNavigationBar(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .blur(radiusX = 16.dp,
-                    radiusY = 16.dp)
+                .blur(
+                    radiusX = 16.dp,
+                    radiusY = 16.dp
+                )
                 .background(
-                     Theme.colors.gradientBackground.gradientBackgroundEnd.copy(alpha = 0.8f),
+                    Theme.colors.gradientBackground.gradientBackgroundEnd.copy(alpha = 0.8f),
                 ),
         )
         Row(
@@ -146,5 +153,16 @@ private fun RowScope.NavItem(
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(top = 2.dp),
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BlurBottomNavigationBarPreview() {
+    WTTheme() {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Red), contentAlignment = Alignment.BottomCenter) {
+        BlurBottomNavigationBar(
+            navController = rememberNavController(),
+        )}
     }
 }
