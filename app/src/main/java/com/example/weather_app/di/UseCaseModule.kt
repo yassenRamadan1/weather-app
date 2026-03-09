@@ -1,5 +1,7 @@
 package com.example.weather_app.di
 
+import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
+import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetPreferredLocationUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
@@ -13,6 +15,8 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
     factory { GetWeatherUseCase(get()) }
+    factory { GetHourlyForecastUseCase(get()) }
+    factory { GetDailyForecastUseCase(get()) }
     factory {
         GetPreferredLocationUseCase(
             locationRepository = get(),
