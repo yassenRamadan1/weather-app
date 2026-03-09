@@ -51,6 +51,11 @@
     <string name="msg_gps_off">GPS is off — showing last known location. Enable GPS for live updates.</string>
     <string name="msg_permission_granted_gps_off">Permission granted. Please also enable GPS in device settings.</string>
     <string name="msg_permission_denied">Location permission denied — staying on current mode.</string>
+    <string name="msg_permission_required">Location permission is required to show your local weather.</string>
+    <string name="msg_location_permanently_denied">Location is permanently blocked. Please enable it in App Settings.</string>
+    <string name="msg_using_gps_location">Using GPS location.</string>
+    <string name="gps_no_fix_title">Waiting for GPS Signal</string>
+    <string name="gps_no_fix_body">GPS is enabled but your location could not be determined. Move to an open area with clear sky and tap Retry.</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
     <string name="pressure">Pressure</string>
