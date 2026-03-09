@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -56,22 +57,22 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import org.koin.androidx.compose.koinViewModel
 
-// ─── Public entry point ───────────────────────────────────────────────────────
 
-/**
- * Stateful shell — only collects state and routes events.
- * Contains zero layout or business logic.
- */
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val prefs by viewModel.userPreferences.collectAsStateWithLifecycle()
     val isGpsEnabled by viewModel.isGpsEnabled.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val context = LocalContext.current
+    val appContext = context.applicationContext
+
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is SettingsEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                is SettingsEvent.ShowMessage -> {
+                    snackbarHostState.showSnackbar(appContext.getString(event.messageResId))
+                }
             }
         }
     }
@@ -91,12 +92,6 @@ fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     )
 }
 
-// ─── Stateless content ────────────────────────────────────────────────────────
-
-/**
- * Fully stateless — receives all state as parameters and all actions as lambdas.
- * Can be previewed and tested with zero ViewModel involvement.
- */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun SettingsContent(
@@ -116,15 +111,12 @@ private fun SettingsContent(
     val lifecycleOwner = LocalLifecycleOwner.current
     var showMapPicker by remember { mutableStateOf(false) }
 
-    // Permission launcher — result forwarded to ViewModel via callback
     val locationPermissions = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
         )
     ) { results -> onPermissionResult(results.values.any { it }) }
-
-    // Refresh GPS availability every time the user returns from system settings
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) onRefreshGps()
@@ -157,42 +149,38 @@ private fun SettingsContent(
             verticalArrangement = Arrangement.spacedBy(Theme.spacing.large),
         ) {
 
-            // Page title
             Text(
                 text = stringResource(R.string.settings),
                 style = Theme.typography.headline,
                 color = Theme.colors.textColors.titleColor,
             )
 
-            // ── Appearance ───────────────────────────────────────────────────
             SettingsSection(title = stringResource(R.string.appearance)) {
                 PreferenceGroup(
-                    label = "Theme",
+                    label = stringResource(R.string.theme),
                     options = AppTheme.entries,
                     selected = prefs.theme,
-                    labelOf = AppTheme::label,
+                    labelOf = { stringResource(it.toResource()) },
                     onSelect = onThemeChange,
                 )
             }
 
-            // ── Language ─────────────────────────────────────────────────────
             SettingsSection(title = stringResource(R.string.language)) {
                 PreferenceGroup(
-                    label = "App Language",
+                    label = stringResource(R.string.app_language),
                     options = AppLanguage.entries,
                     selected = prefs.language,
-                    labelOf = AppLanguage::label,
+                    labelOf = { stringResource(it.toResource()) },
                     onSelect = onLanguageChange,
                 )
             }
 
-            // ── Units ────────────────────────────────────────────────────────
             SettingsSection(title = stringResource(R.string.units)) {
                 PreferenceGroup(
                     label = stringResource(R.string.temperature),
                     options = TemperatureUnit.entries,
                     selected = prefs.temperatureUnit,
-                    labelOf = TemperatureUnit::label,
+                    labelOf = { stringResource(it.toResource()) },
                     onSelect = onTemperatureUnitChange,
                 )
                 Spacer(Modifier.height(Theme.spacing.medium))
@@ -200,12 +188,11 @@ private fun SettingsContent(
                     label = stringResource(R.string.wind_speed),
                     options = WindSpeedUnit.entries,
                     selected = prefs.windSpeedUnit,
-                    labelOf = WindSpeedUnit::label,
+                    labelOf = { stringResource(it.toResource()) },
                     onSelect = onWindSpeedUnitChange,
                 )
             }
 
-            // ── Location ─────────────────────────────────────────────────────
             SettingsSection(title = stringResource(R.string.location)) {
                 val gpsWarning = prefs.locationMode == LocationMode.GPS && !isGpsEnabled
 
@@ -239,11 +226,11 @@ private fun SettingsContent(
                 Spacer(Modifier.height(Theme.spacing.small))
 
                 LocationRow(
-                    title = "Fixed Location (Map)",
+                    title = stringResource(R.string.fixed_location_map),
                     subtitle = if (prefs.savedLat != null && prefs.savedLon != null)
-                        "Saved: %.4f°, %.4f°".format(prefs.savedLat, prefs.savedLon)
+                        stringResource(R.string.saved_location_format, prefs.savedLat, prefs.savedLon)
                     else
-                        "Tap to pick a location on the map.",
+                        stringResource(R.string.tap_to_pick_location),
                     selected = prefs.locationMode == LocationMode.MAP,
                     isWarning = false,
                     onClick = { showMapPicker = true },
@@ -261,8 +248,6 @@ private fun SettingsContent(
                 .padding(Theme.spacing.medium),
         )
     }
-
-    // Full-screen overlay — rendered at Box root so it covers everything
     if (showMapPicker) {
         LocationPickerScreen(
             initialLat = prefs.savedLat ?: 30.0444,
@@ -276,11 +261,7 @@ private fun SettingsContent(
     }
 }
 
-// ─── Reusable design-system components ───────────────────────────────────────
 
-/**
- * Titled card wrapping a group of related preference rows.
- */
 @Composable
 private fun SettingsSection(
     title: String,
@@ -291,36 +272,27 @@ private fun SettingsSection(
             text = title.uppercase(),
             style = Theme.typography.hint,
             color = Theme.colors.textColors.hintColor,
+            modifier = Modifier.padding(horizontal = Theme.spacing.small)
         )
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(Theme.colors.textColors.titleColor.copy(alpha = 0.07f))
                 .padding(Theme.spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(Theme.spacing.small)
         ) {
             content()
         }
     }
 }
 
-/**
- * Generic single-choice group rendered as radio rows.
- * Works for any enum-like list — Theme, Language, TemperatureUnit, WindSpeedUnit.
- *
- * @param T        Any type with meaningful equality.
- * @param label    Group heading shown above the options.
- * @param options  Full list of choices.
- * @param selected Currently active value.
- * @param labelOf  Maps a [T] to its display string.
- * @param onSelect Callback with the newly selected value.
- */
 @Composable
 private fun <T> PreferenceGroup(
     label: String,
     options: List<T>,
     selected: T,
-    labelOf: (T) -> String,
+    labelOf: @Composable (T) -> String,
     onSelect: (T) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -328,7 +300,7 @@ private fun <T> PreferenceGroup(
             text = label,
             style = Theme.typography.bodyMedium,
             color = Theme.colors.textColors.bodyColor,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(horizontal = Theme.spacing.small, vertical = 4.dp),
         )
         options.forEach { option ->
             PreferenceRow(
@@ -340,9 +312,6 @@ private fun <T> PreferenceGroup(
     }
 }
 
-/**
- * Single preference row with a radio button and highlight border when selected.
- */
 @Composable
 private fun PreferenceRow(
     label: String,
@@ -361,7 +330,7 @@ private fun PreferenceRow(
                 ) else Modifier
             )
             .clickable(onClick = onClick)
-            .padding(horizontal = Theme.spacing.small, vertical = 10.dp),
+            .padding(horizontal = Theme.spacing.small, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -383,9 +352,6 @@ private fun PreferenceRow(
     }
 }
 
-/**
- * Location-mode row with two-line content and an optional warning tint.
- */
 @Composable
 private fun LocationRow(
     title: String,
@@ -397,7 +363,7 @@ private fun LocationRow(
     val borderColor = when {
         isWarning -> Theme.colors.warningColor
         selected  -> Theme.colors.primary.copy(alpha = 0.55f)
-        else      -> Theme.colors.primary.copy(alpha = 0f) // transparent, keeps layout stable
+        else      -> Theme.colors.primary.copy(alpha = 0f)
     }
 
     Row(
@@ -442,28 +408,25 @@ private fun LocationRow(
     }
 }
 
-// ─── Presentation-layer display labels ───────────────────────────────────────
-// These live here, NOT on the domain entity, to keep the domain layer free
-// of any Android/UI concerns.
 
-private fun AppTheme.label() = when (this) {
-    AppTheme.LIGHT  -> "Light"
-    AppTheme.DARK   -> "Dark"
-    AppTheme.SYSTEM -> "System default"
+private fun AppTheme.toResource() = when (this) {
+    AppTheme.LIGHT  -> R.string.light
+    AppTheme.DARK   -> R.string.dark
+    AppTheme.SYSTEM -> R.string.system_default
 }
 
-private fun AppLanguage.label() = when (this) {
-    AppLanguage.ENGLISH -> "English"
-    AppLanguage.ARABIC  -> "العربية"
+private fun AppLanguage.toResource() = when (this) {
+    AppLanguage.ENGLISH -> R.string.english
+    AppLanguage.ARABIC  -> R.string.arabic
 }
 
-private fun TemperatureUnit.label() = when (this) {
-    TemperatureUnit.CELSIUS    -> "Celsius (°C)"
-    TemperatureUnit.FAHRENHEIT -> "Fahrenheit (°F)"
-    TemperatureUnit.KELVIN     -> "Kelvin (K)"
+private fun TemperatureUnit.toResource() = when (this) {
+    TemperatureUnit.CELSIUS    -> R.string.celsius
+    TemperatureUnit.FAHRENHEIT -> R.string.fahrenheit
+    TemperatureUnit.KELVIN     -> R.string.kelvin
 }
 
-private fun WindSpeedUnit.label() = when (this) {
-    WindSpeedUnit.METER_PER_SEC  -> "Meters per second (m/s)"
-    WindSpeedUnit.MILES_PER_HOUR -> "Miles per hour (mph)"
+private fun WindSpeedUnit.toResource() = when (this) {
+    WindSpeedUnit.METER_PER_SEC  -> R.string.meters_per_sec
+    WindSpeedUnit.MILES_PER_HOUR -> R.string.miles_per_hour
 }

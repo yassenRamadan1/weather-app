@@ -56,11 +56,12 @@ fun MainScreen(
         AppTheme.SYSTEM -> systemInDark
     }
     val isArabic = uiPreferences.language == AppLanguage.ARABIC
-    LaunchedEffect(uiPreferences.language) {
-        applyLocale(uiPreferences.language.code)
-    }
 
-    WTTheme(isDarkTheme = isDarkTheme, isArabic = isArabic) {
+    WTTheme(
+        isDarkTheme = isDarkTheme,
+        isArabic = isArabic,
+        language = uiPreferences.language
+    ) {
         MainScaffold()
     }
 }
@@ -120,7 +121,7 @@ fun StatusBarBackground(color: Color) {
 
 @Composable
 fun StatusBar(
-    backgroundColor: Color = Color.Transparent,
+backgroundColor: Color = Color.Transparent,
     darkIcons: Boolean = !isSystemInDarkTheme(),
 ) {
     StatusBarIconColor(darkIcons = darkIcons)

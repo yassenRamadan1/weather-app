@@ -1,7 +1,9 @@
 package com.example.weather_app
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.UserPreferences
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +20,12 @@ class MainViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = UserPreferences().toUiPreferences(),
+            initialValue = run {
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                val currentLangCode = currentLocales.get(0)?.language
+                UserPreferences(
+                    language = AppLanguage.fromCode(currentLangCode)
+                ).toUiPreferences()
+            },
         )
 }
