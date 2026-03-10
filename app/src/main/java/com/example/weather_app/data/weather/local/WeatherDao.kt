@@ -13,7 +13,7 @@ interface WeatherDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertWeather(weatherEntity: WeatherEntity)
 
-    @Query("SELECT * FROM weather_cache WHERE lat = :lat AND lon = :lon LIMIT 1")
+    @Query("SELECT * FROM weather_cache WHERE ABS(lat - :lat) < 0.1 AND ABS(lon - :lon) < 0.1 LIMIT 1")
     fun getWeatherByCoordinates(lat: Double, lon: Double): Flow<WeatherEntity?>
 
     @Query("DELETE FROM weather_cache WHERE lat = :lat AND lon = :lon")
