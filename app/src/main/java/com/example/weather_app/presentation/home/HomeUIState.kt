@@ -1,5 +1,6 @@
 package com.example.weather_app.presentation.home
 
+import androidx.compose.runtime.Immutable
 import com.example.weather_app.domain.entity.DailyForecast
 import com.example.weather_app.domain.entity.HourlyWeather
 import com.example.weather_app.domain.entity.LocationSource
@@ -20,6 +21,7 @@ sealed class HomeUiState {
         val currentTimeFormatted: String,
         val temperatureUnit: TemperatureUnit,
         val windSpeedUnit: WindSpeedUnit,
+        val isFromCache: Boolean = false,
     ) : HomeUiState()
 
     data class Error(val message: String) : HomeUiState()

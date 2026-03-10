@@ -21,42 +21,44 @@ class WeatherRepositoryImpl(
     private val remote: WeatherRemoteDataSource,
     private val local: WeatherLocalDataSource,
     private val userPrefs: UserPreferencesDataSource
-): WeatherRepository {
+) : WeatherRepository {
 
     override fun getCurrentWeather(lat: Double, lon: Double): Flow<Result<Weather>> = flow {
         val cached = local.getWeatherData(lat = lat, lon = lon).first()
         if (cached != null) emit(Result.success(cached.toDomain()))
         val prefs = userPrefs.userPreferences.first()
-        val units = prefs.temperatureUnit.apiValue
-        val lang = prefs.language.code
-        val result = remote.getCurrentWeather(lat, lon, units, lang)
+        val result = remote.getCurrentWeather(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
         result.onSuccess { weather ->
-            local.saveWeatherData(weather.toEntity())
+            local.saveWeatherData(weather.toEntity().copy(lat = lat, lon = lon))
             emit(Result.success(weather.toDomain()))
         }.onFailure { error ->
-            if (cached == null) emit(Result.failure(error))
+            emit(Result.failure(error))
         }
     }.flowOn(Dispatchers.IO)
 
     override fun getHourlyForecast(lat: Double, lon: Double): Flow<Result<List<HourlyWeather>>> = flow {
+        val cached = local.getHourlyForecast(lat, lon).first()
+        if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
         val prefs = userPrefs.userPreferences.first()
-        val units = prefs.temperatureUnit.apiValue
-        val lang = prefs.language.code
-        val result = remote.getForecast(lat, lon, units, lang)
+        val result = remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
         result.onSuccess { response ->
-            emit(Result.success(response.filterHourlyForToday()))
+            val hourlyList = response.filterHourlyForToday()
+            local.replaceHourlyForecast(lat, lon, hourlyList.map { it.toEntity(lat, lon) })
+            emit(Result.success(hourlyList))
         }.onFailure { error ->
             emit(Result.failure(error))
         }
     }.flowOn(Dispatchers.IO)
 
     override fun getDailyForecast(lat: Double, lon: Double): Flow<Result<List<DailyForecast>>> = flow {
+        val cached = local.getDailyForecast(lat, lon).first()
+        if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
         val prefs = userPrefs.userPreferences.first()
-        val units = prefs.temperatureUnit.apiValue
-        val lang = prefs.language.code
-        val result = remote.getForecast(lat, lon, units, lang)
+        val result = remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
         result.onSuccess { response ->
-            emit(Result.success(response.toDailyForecasts()))
+            val dailyList = response.toDailyForecasts()
+            local.replaceDailyForecast(lat, lon, dailyList.map { it.toEntity(lat, lon) })
+            emit(Result.success(dailyList))
         }.onFailure { error ->
             emit(Result.failure(error))
         }

@@ -24,11 +24,13 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -61,10 +63,11 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var showMapPicker by remember { mutableStateOf(false) }
@@ -133,28 +136,37 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
             )
 
             is HomeUiState.Success -> {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    AnimatedVisibility(visible = state.isStaleLocation) {
-                        StaleLocationBanner(
-                            source = state.locationSource,
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = viewModel::onRefresh,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        AnimatedVisibility(visible = state.isFromCache) {
+                            CacheBanner()
+                        }
+                        AnimatedVisibility(visible = state.isStaleLocation && !state.isFromCache) {
+                            StaleLocationBanner(
+                                source = state.locationSource,
+                                onEnableGps = {
+                                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                }
+                            )
+                        }
+                        WeatherDisplayContent(
+                            currentWeather = state.currentWeather,
+                            hourlyForecast = state.hourlyForecast,
+                            dailyForecast = state.dailyForecast,
+                            currentDateFormatted = state.currentDateFormatted,
+                            currentTimeFormatted = state.currentTimeFormatted,
+                            temperatureUnit = state.temperatureUnit,
+                            windSpeedUnit = state.windSpeedUnit,
+                            isStaleLocation = state.isStaleLocation,
                             onEnableGps = {
                                 context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                            }
+                            },
                         )
                     }
-                    WeatherDisplayContent(
-                        currentWeather = state.currentWeather,
-                        hourlyForecast = state.hourlyForecast,
-                        dailyForecast = state.dailyForecast,
-                        currentDateFormatted = state.currentDateFormatted,
-                        currentTimeFormatted = state.currentTimeFormatted,
-                        temperatureUnit = state.temperatureUnit,
-                        windSpeedUnit = state.windSpeedUnit,
-                        isStaleLocation = state.isStaleLocation,
-                        onEnableGps = {
-                            context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                        },
-                    )
                 }
             }
 
@@ -202,6 +214,42 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
             },
             onDismiss = { showMapPicker = false }
         )
+    }
+}
+
+@Composable
+private fun CacheBanner() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f),
+        tonalElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.size(18.dp)
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.no_internet_showing_cached),
+                    style = Theme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+                Text(
+                    text = stringResource(R.string.swipe_down_to_refresh),
+                    style = Theme.typography.hint,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
+                )
+            }
+        }
     }
 }
 

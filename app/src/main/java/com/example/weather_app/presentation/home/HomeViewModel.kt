@@ -3,8 +3,11 @@ package com.example.weather_app.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.R
+import com.example.weather_app.domain.entity.DailyForecast
+import com.example.weather_app.domain.entity.HourlyWeather
 import com.example.weather_app.domain.entity.LocationResult
 import com.example.weather_app.domain.entity.LocationSource
+import com.example.weather_app.domain.entity.Weather
 import com.example.weather_app.domain.error.AppError
 import com.example.weather_app.domain.error.toUiMessage
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
@@ -14,7 +17,6 @@ import com.example.weather_app.domain.usecases.GetWeatherUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.domain.usecases.UpdateSavedLocationUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +45,9 @@ class HomeViewModel(
     private val _userMessage = MutableSharedFlow<Int>()
     val userMessage = _userMessage.asSharedFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     private val _hasLaunchedPermissionRequest = MutableStateFlow(false)
     val hasLaunchedPermissionRequest: StateFlow<Boolean> =
         _hasLaunchedPermissionRequest.asStateFlow()
@@ -59,26 +64,39 @@ class HomeViewModel(
             if (_uiState.value !is HomeUiState.Success) {
                 _uiState.value = HomeUiState.Loading
             }
-            when (val result = getPreferredLocationUseCase()) {
-                is LocationResult.Success -> loadWeatherData(
-                    lat = result.lat,
-                    lon = result.lon,
-                    isStale = result.isStale,
-                    source = result.source
+            resolveAndLoad()
+        }
+    }
+
+    fun onRefresh() {
+        locationResolutionJob?.cancel()
+        locationResolutionJob = viewModelScope.launch {
+            _isRefreshing.value = true
+            resolveAndLoad()
+            _isRefreshing.value = false
+        }
+    }
+
+    private suspend fun resolveAndLoad() {
+        when (val result = getPreferredLocationUseCase()) {
+            is LocationResult.Success -> loadWeatherData(
+                lat = result.lat,
+                lon = result.lon,
+                isStale = result.isStale,
+                source = result.source
+            )
+            is LocationResult.NeedPermission ->
+                _uiState.value = HomeUiState.NeedLocationPermission
+            is LocationResult.GpsDisabled ->
+                _uiState.value = HomeUiState.GpsDisabled
+            is LocationResult.GpsNoFix ->
+                _uiState.value = HomeUiState.GpsNoFix
+            is LocationResult.NoSavedLocation ->
+                _uiState.value = HomeUiState.NeedManualLocation
+            is LocationResult.Error ->
+                _uiState.value = HomeUiState.Error(
+                    result.cause.message ?: "Location error"
                 )
-                is LocationResult.NeedPermission ->
-                    _uiState.value = HomeUiState.NeedLocationPermission
-                is LocationResult.GpsDisabled ->
-                    _uiState.value = HomeUiState.GpsDisabled
-                is LocationResult.GpsNoFix ->
-                    _uiState.value = HomeUiState.GpsNoFix
-                is LocationResult.NoSavedLocation ->
-                    _uiState.value = HomeUiState.NeedManualLocation
-                is LocationResult.Error ->
-                    _uiState.value = HomeUiState.Error(
-                        result.cause.message ?: "Location error"
-                    )
-            }
         }
     }
 
@@ -113,44 +131,70 @@ class HomeViewModel(
         source: LocationSource = LocationSource.GPS
     ) {
         val prefs = observeUserPreferencesUseCase().first()
-
-        val (weatherResult, hourlyResult, dailyResult) = coroutineScope {
-            val weatherDeferred = async { getWeatherUseCase(lat, lon).first() }
-            val hourlyDeferred = async { getHourlyForecastUseCase(lat, lon).first() }
-            val dailyDeferred = async { getDailyForecastUseCase(lat, lon).first() }
-            Triple(weatherDeferred.await(), hourlyDeferred.await(), dailyDeferred.await())
-        }
-
         val now = Instant.now().atZone(ZoneId.systemDefault())
         val locale = Locale(prefs.language.code)
-        val dateFormatted = now.format(
-            DateTimeFormatter.ofPattern("EEEE, d MMMM", locale)
-        )
-        val timeFormatted = now.format(
-            DateTimeFormatter.ofPattern("HH:mm", locale)
-        )
+        val dateFormatted = now.format(DateTimeFormatter.ofPattern("EEEE, d MMMM", locale))
+        val timeFormatted = now.format(DateTimeFormatter.ofPattern("HH:mm", locale))
 
-        weatherResult.fold(
-            onSuccess = { weather ->
-                _uiState.value = HomeUiState.Success(
-                    currentWeather = weather,
-                    hourlyForecast = hourlyResult.getOrDefault(emptyList()),
-                    dailyForecast = dailyResult.getOrDefault(emptyList()),
-                    isStaleLocation = isStale,
-                    locationSource = source,
-                    currentDateFormatted = dateFormatted,
-                    currentTimeFormatted = timeFormatted,
-                    temperatureUnit = prefs.temperatureUnit,
-                    windSpeedUnit = prefs.windSpeedUnit,
-                )
-                if (hourlyResult.isFailure || dailyResult.isFailure) {
-                    _userMessage.emit(R.string.forecast_unavailable)
+        var latestWeather: Weather? = null
+        var latestHourly: List<HourlyWeather> = emptyList()
+        var latestDaily: List<DailyForecast> = emptyList()
+        var networkFailed = false
+
+        fun buildSuccessState() {
+            val weather = latestWeather ?: return
+            _uiState.value = HomeUiState.Success(
+                currentWeather = weather,
+                hourlyForecast = latestHourly,
+                dailyForecast = latestDaily,
+                isStaleLocation = isStale,
+                locationSource = source,
+                currentDateFormatted = dateFormatted,
+                currentTimeFormatted = timeFormatted,
+                temperatureUnit = prefs.temperatureUnit,
+                windSpeedUnit = prefs.windSpeedUnit,
+                isFromCache = networkFailed,
+            )
+        }
+
+        coroutineScope {
+            launch {
+                getWeatherUseCase(lat, lon).collect { result ->
+                    result.fold(
+                        onSuccess = { weather ->
+                            latestWeather = weather
+                            buildSuccessState()
+                        },
+                        onFailure = { error ->
+                            if (latestWeather == null) {
+                                val appError = error as? AppError ?: AppError.UnknownError()
+                                _uiState.value = HomeUiState.Error(appError.toUiMessage())
+                            } else {
+                                networkFailed = true
+                                buildSuccessState()
+                            }
+                        }
+                    )
                 }
-            },
-            onFailure = { error ->
-                val appError = error as? AppError ?: AppError.UnknownError()
-                _uiState.value = HomeUiState.Error(appError.toUiMessage())
             }
-        )
+
+            launch {
+                getHourlyForecastUseCase(lat, lon).collect { result ->
+                    result.onSuccess { list ->
+                        latestHourly = list
+                        buildSuccessState()
+                    }
+                }
+            }
+
+            launch {
+                getDailyForecastUseCase(lat, lon).collect { result ->
+                    result.onSuccess { list ->
+                        latestDaily = list
+                        buildSuccessState()
+                    }
+                }
+            }
+        }
     }
 }
