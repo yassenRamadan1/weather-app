@@ -20,6 +20,7 @@ val databaseModule = module {
     }
 
     single { get<AppDatabase>().weatherDao() }
+    single { get<AppDatabase>().forecastDao() }
 
     single { androidContext().dataStore }
 }

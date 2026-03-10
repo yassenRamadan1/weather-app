@@ -10,6 +10,6 @@ import org.koin.dsl.module
 
 val dataSourceModule = module {
     single<WeatherRemoteDataSource> { WeatherRemoteDataSourceImpl(get()) }
-    single<WeatherLocalDataSource> { WeatherLocalDataSourceImpl(get()) }
+    single<WeatherLocalDataSource> { WeatherLocalDataSourceImpl(get(), get()) }
     single<UserPreferencesDataSource> { UserPreferencesDataSourceImpl(get()) }
 }

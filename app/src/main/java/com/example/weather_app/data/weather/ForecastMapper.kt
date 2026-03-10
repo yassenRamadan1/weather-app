@@ -1,5 +1,7 @@
 package com.example.weather_app.data.weather
 
+import com.example.weather_app.data.weather.local.entity.DailyForecastEntity
+import com.example.weather_app.data.weather.local.entity.HourlyWeatherEntity
 import com.example.weather_app.data.weather.remote.dto.ForecastItemDto
 import com.example.weather_app.data.weather.remote.dto.ForecastResponseDto
 import com.example.weather_app.domain.entity.DailyForecast
@@ -7,6 +9,7 @@ import com.example.weather_app.domain.entity.HourlyWeather
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset.ofTotalSeconds
 
 fun ForecastItemDto.toHourlyWeather(): HourlyWeather = HourlyWeather(
     timestamp = dt,
@@ -26,7 +29,7 @@ fun ForecastResponseDto.toDailyForecasts(): List<DailyForecast> {
     return list
         .groupBy { item ->
             Instant.ofEpochSecond(item.dt)
-                .atZone(ZoneId.ofOffset("UTC", java.time.ZoneOffset.ofTotalSeconds(timezoneOffset.toInt())))
+                .atZone(ZoneId.ofOffset("UTC", ofTotalSeconds(timezoneOffset.toInt())))
                 .toLocalDate()
         }
         .entries
@@ -37,13 +40,13 @@ fun ForecastResponseDto.toDailyForecasts(): List<DailyForecast> {
             val midday = items.minByOrNull {
                 kotlin.math.abs(
                     Instant.ofEpochSecond(it.dt)
-                        .atZone(ZoneId.ofOffset("UTC", java.time.ZoneOffset.ofTotalSeconds(timezoneOffset.toInt())))
+                        .atZone(ZoneId.ofOffset("UTC", ofTotalSeconds(timezoneOffset.toInt())))
                         .hour - 14
                 )
             } ?: items.first()
             DailyForecast(
                 timestamp = date.atStartOfDay(
-                    ZoneId.ofOffset("UTC", java.time.ZoneOffset.ofTotalSeconds(timezoneOffset.toInt()))
+                    ZoneId.ofOffset("UTC", ofTotalSeconds(timezoneOffset.toInt()))
                 ).toEpochSecond(),
                 minTemp = temps.min(),
                 maxTemp = temps.max(),
@@ -57,7 +60,7 @@ fun ForecastResponseDto.toDailyForecasts(): List<DailyForecast> {
 
 fun ForecastResponseDto.filterHourlyForToday(): List<HourlyWeather> {
     val timezoneOffset = city.timezone.toLong()
-    val zone = ZoneId.ofOffset("UTC", java.time.ZoneOffset.ofTotalSeconds(timezoneOffset.toInt()))
+    val zone = ZoneId.ofOffset("UTC", ofTotalSeconds(timezoneOffset.toInt()))
     val today: LocalDate = Instant.now().atZone(zone).toLocalDate()
     return list
         .filter { item ->
@@ -65,3 +68,47 @@ fun ForecastResponseDto.filterHourlyForToday(): List<HourlyWeather> {
         }
         .map { it.toHourlyWeather() }
 }
+
+fun HourlyWeather.toEntity(lat: Double, lon: Double) = HourlyWeatherEntity(
+    lat = lat,
+    lon = lon,
+    timestamp = timestamp,
+    temperature = temperature,
+    iconCode = iconCode,
+    description = description,
+    windSpeed = windSpeed,
+    humidity = humidity,
+    pop = pop
+)
+
+fun HourlyWeatherEntity.toDomain() = HourlyWeather(
+    timestamp = timestamp,
+    temperature = temperature,
+    iconCode = iconCode,
+    description = description,
+    windSpeed = windSpeed,
+    humidity = humidity,
+    pop = pop
+)
+
+fun DailyForecast.toEntity(lat: Double, lon: Double) = DailyForecastEntity(
+    lat = lat,
+    lon = lon,
+    timestamp = timestamp,
+    minTemp = minTemp,
+    maxTemp = maxTemp,
+    iconCode = iconCode,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed
+)
+
+fun DailyForecastEntity.toDomain() = DailyForecast(
+    timestamp = timestamp,
+    minTemp = minTemp,
+    maxTemp = maxTemp,
+    iconCode = iconCode,
+    description = description,
+    humidity = humidity,
+    windSpeed = windSpeed
+)
