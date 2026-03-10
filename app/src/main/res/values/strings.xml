@@ -64,6 +64,7 @@
     <string name="todays_hourly_forecast">Today\'s Hourly Forecast</string>
     <string name="five_day_forecast">5-Day Forecast</string>
     <string name="no_internet_showing_cached">No internet — showing cached data</string>
+    <string name="swipe_down_to_refresh">Swipe down to refresh</string>
     <string name="forecast_unavailable">Forecast data unavailable</string>
     <string name="precipitation">Precip: %s%%</string>
 </resources>
