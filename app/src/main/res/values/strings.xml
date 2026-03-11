@@ -67,4 +67,9 @@
     <string name="swipe_down_to_refresh">Swipe down to refresh</string>
     <string name="forecast_unavailable">Forecast data unavailable</string>
     <string name="precipitation">Precip: %s%%</string>
+    <string name="remove">Remove</string>
+    <string name="no_favorite_locations_yet_add_some_to_see_them_here">No favorite locations yet. Add some to see them here!</string>
+    <string name="remove_location">Remove Location</string>
+    <string name="remove_location_confirmation">Are you sure you want to remove %1$s from your favorites?</string>
+    <string name="cancel">Cancel</string>
 </resources>

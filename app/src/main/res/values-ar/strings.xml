@@ -68,4 +68,8 @@
     <string name="swipe_down_to_refresh">اسحب للأسفل للتحديث</string>
     <string name="forecast_unavailable">بيانات التوقعات غير متوفرة</string>
     <string name="precipitation">هطول: %s%%</string>
+    <string name="remove">Remove</string>
+    <string name="no_favorite_locations_yet_add_some_to_see_them_here">No favorite locations yet. Add some to see them here!</string>
+    <string name="remove_location">Remove Location</string>
+    <string name="cancel">Cancel</string>
 </resources>
