@@ -109,7 +109,7 @@ private fun RowScope.NavItem(
         targetValue = if (isSelected)
             Theme.colors.primary
         else
-            MaterialTheme.colorScheme.onSurfaceVariant,
+            Theme.colors.textColors.bodyColor,
         animationSpec = tween(durationMillis = 200),
         label = "nav_item_color",
     )
@@ -164,5 +164,15 @@ fun BlurBottomNavigationBarPreview() {
         BlurBottomNavigationBar(
             navController = rememberNavController(),
         )}
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun BlurBottomNavigationBarDarkPreview() {
+    WTTheme(isDarkTheme = true) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Red), contentAlignment = Alignment.BottomCenter) {
+            BlurBottomNavigationBar(
+                navController = rememberNavController(),
+            )}
     }
 }
