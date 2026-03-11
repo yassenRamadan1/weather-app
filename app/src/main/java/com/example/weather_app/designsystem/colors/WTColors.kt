@@ -11,7 +11,10 @@ data class WTColors(
     val errorColor: Color,
     val successColor: Color,
     val warningColor: Color,
-    val primaryIconColor: Color
+    val primaryIconColor: Color,
+    val buttonColor: Color,
+    val cardBackgroundColor: Color,
+    val onBodyColor: Color
 )
 
 data class TextColors(

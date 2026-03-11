@@ -14,5 +14,8 @@ val darkThemeColors = WTColors(
     errorColor = errorColor,
     successColor = successColor,
     warningColor = warningColor,
-    primaryIconColor = primaryIconColor
+    primaryIconColor = primaryIconColor,
+    buttonColor = buttonColorDark,
+    cardBackgroundColor = cardBackgroundColorDark,
+    onBodyColor = onBodyColorDark
 )

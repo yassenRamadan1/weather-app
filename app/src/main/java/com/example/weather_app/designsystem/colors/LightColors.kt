@@ -14,5 +14,8 @@ val lightThemeColors = WTColors(
     errorColor = errorColor,
     successColor = successColor,
     warningColor = warningColor,
-    primaryIconColor = primaryIconColor
+    primaryIconColor = primaryIconColor,
+    buttonColor = buttonColorLight,
+    cardBackgroundColor = cardBackgroundColorLight,
+    onBodyColor = onBodyColorLight
 )
