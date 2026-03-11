@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SnackbarHost
@@ -38,8 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -47,7 +51,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.designsystem.theme.WTTheme
 import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.AppTheme
 import com.example.weather_app.domain.entity.LocationMode
@@ -55,6 +58,9 @@ import com.example.weather_app.domain.entity.TemperatureUnit
 import com.example.weather_app.domain.entity.UserPreferences
 import com.example.weather_app.domain.entity.WindSpeedUnit
 import com.example.weather_app.presentation.components.LocationPickerScreen
+import com.example.weather_app.presentation.components.map.ConfirmationCardColors
+import com.example.weather_app.presentation.components.map.MapConfig
+import com.example.weather_app.presentation.components.map.SearchBarColors
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import org.koin.androidx.compose.koinViewModel

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.R
 import com.example.weather_app.data.location.AndroidLocationProvider
-import com.example.weather_app.domain.datasource.UserPreferencesDataSource
+import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.*
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.domain.usecases.UpdateLanguageUseCase

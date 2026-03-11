@@ -1,6 +1,6 @@
 package com.example.weather_app.domain.usecases
 
-import com.example.weather_app.domain.datasource.UserPreferencesDataSource
+import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.LocationResult
 import com.example.weather_app.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.first

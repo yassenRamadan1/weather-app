@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.weather_app.R
+import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.presentation.components.models.PickedLocation
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
@@ -142,8 +144,8 @@ fun LocationPickerScreen(
                         id = "picked-pin-layer",
                         source = markerSource,
                         // Make sure ic_launcher_foreground or your pin icon is in drawable
-                        iconImage = image(painterResource(R.drawable.ic_launcher_foreground), drawAsSdf = true),
-                        iconColor = const(MaterialTheme.colorScheme.primary),
+                        iconImage = image(painterResource(R.drawable.location), drawAsSdf = true),
+                        iconColor = const(Theme.colors.buttonColor),
                         iconSize = const(2.5f) // Slightly larger for better visibility
                     )
                 }
@@ -168,7 +170,7 @@ fun LocationPickerScreen(
                         placeholder = { Text("Search location...") },
                         leadingIcon = {
                             IconButton(onClick = onDismiss) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                             }
                         },
                         trailingIcon = {
@@ -235,7 +237,8 @@ fun LocationPickerScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = { pickedLocation?.let { onLocationSelected(it) } },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = Theme.colors.buttonColor)
                         ) {
                             Text("Confirm Location")
                         }

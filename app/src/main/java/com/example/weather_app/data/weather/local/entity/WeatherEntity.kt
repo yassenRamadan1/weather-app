@@ -1,11 +1,15 @@
 package com.example.weather_app.data.weather.local.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "weather_cache")
+@Entity(
+    tableName = "weather_cache",
+    indices = [Index(value = ["lat", "lon"], unique = true)]
+)
 data class WeatherEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int ,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     val cityName: String,
     val countryCode: String?,
     val temperature: Double,

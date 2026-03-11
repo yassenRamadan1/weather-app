@@ -3,7 +3,7 @@ package com.example.weather_app.data.user.local
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.example.weather_app.domain.datasource.UserPreferencesDataSource
+import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

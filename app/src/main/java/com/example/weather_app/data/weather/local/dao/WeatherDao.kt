@@ -1,7 +1,6 @@
-package com.example.weather_app.data.weather.local
+package com.example.weather_app.data.weather.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query

@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -55,7 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.domain.entity.LocationSource
-import com.example.weather_app.presentation.components.LocationPickerScreen
+import com.example.weather_app.presentation.components.ErrorContent
 import com.example.weather_app.presentation.components.weather.WeatherDisplayContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -206,15 +205,6 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         }
     }
 
-    if (showMapPicker) {
-        LocationPickerScreen(
-            onLocationSelected = { picked ->
-                showMapPicker = false
-                viewModel.onManualLocationSaved(picked.lat, picked.lon)
-            },
-            onDismiss = { showMapPicker = false }
-        )
-    }
 }
 
 @Composable
@@ -433,23 +423,3 @@ private fun NeedManualLocationPrompt(onOpenMap: () -> Unit) {
     }
 }
 
-@Composable
-private fun ErrorContent(message: String, onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            stringResource(R.string.something_went_wrong),
-            style = Theme.typography.bodyLarge
-        )
-        Text(message, textAlign = TextAlign.Center, color = Theme.colors.errorColor)
-        Button(
-            onClick = onRetry,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.retry))
-        }
-    }
-}

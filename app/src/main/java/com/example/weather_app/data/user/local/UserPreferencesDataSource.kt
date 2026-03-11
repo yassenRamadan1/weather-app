@@ -1,4 +1,4 @@
-package com.example.weather_app.domain.datasource
+package com.example.weather_app.data.user.local
 
 import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.AppTheme

@@ -3,7 +3,7 @@ package com.example.weather_app.data.user.repository
 import android.location.Geocoder
 import android.os.Build
 import com.example.weather_app.data.location.AndroidLocationProvider
-import com.example.weather_app.domain.datasource.UserPreferencesDataSource
+import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.AppTheme
 import com.example.weather_app.domain.entity.LocationMode
