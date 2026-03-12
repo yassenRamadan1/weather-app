@@ -32,7 +32,6 @@ import java.util.Locale
 
 class HomeViewModel(
     private val getPreferredLocationUseCase: GetPreferredLocationUseCase,
-    private val updateSavedLocationUseCase: UpdateSavedLocationUseCase,
     private val getWeatherUseCase: GetWeatherUseCase,
     private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
     private val getDailyForecastUseCase: GetDailyForecastUseCase,
@@ -116,14 +115,6 @@ class HomeViewModel(
         }
     }
 
-    fun onManualLocationSaved(lat: Double, lon: Double) {
-        locationResolutionJob?.cancel()
-        locationResolutionJob = viewModelScope.launch {
-            updateSavedLocationUseCase(lat, lon)
-            loadWeatherData(lat, lon, isStale = false)
-        }
-    }
-
     private suspend fun loadWeatherData(
         lat: Double,
         lon: Double,
@@ -157,7 +148,7 @@ class HomeViewModel(
             )
         }
 
-        coroutineScope {
+        viewModelScope.launch {
             launch {
                 getWeatherUseCase(lat, lon).collect { result ->
                     result.fold(
