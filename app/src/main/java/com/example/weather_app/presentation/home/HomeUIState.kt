@@ -8,8 +8,8 @@ import com.example.weather_app.domain.entity.TemperatureUnit
 import com.example.weather_app.domain.entity.Weather
 import com.example.weather_app.domain.entity.WindSpeedUnit
 
-sealed class HomeUiState {
-    data object Loading : HomeUiState()
+sealed interface HomeUiState {
+    data object Loading : HomeUiState
 
     data class Success(
         val currentWeather: Weather,
@@ -22,11 +22,11 @@ sealed class HomeUiState {
         val temperatureUnit: TemperatureUnit,
         val windSpeedUnit: WindSpeedUnit,
         val isFromCache: Boolean = false,
-    ) : HomeUiState()
+    ) : HomeUiState
 
-    data class Error(val message: String) : HomeUiState()
-    data object NeedLocationPermission : HomeUiState()
-    data object GpsDisabled : HomeUiState()
-    data object GpsNoFix : HomeUiState()
-    data object NeedManualLocation : HomeUiState()
+    data class Error(val message: String) : HomeUiState
+    data object NeedLocationPermission : HomeUiState
+    data object GpsDisabled : HomeUiState
+    data object GpsNoFix : HomeUiState
+    data object NeedManualLocation : HomeUiState
 }
