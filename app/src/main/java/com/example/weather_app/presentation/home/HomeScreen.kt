@@ -54,6 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.domain.entity.LocationSource
+import com.example.weather_app.presentation.components.CacheBanner
 import com.example.weather_app.presentation.components.ErrorContent
 import com.example.weather_app.presentation.components.weather.WeatherDisplayContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -69,7 +70,6 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var showMapPicker by remember { mutableStateOf(false) }
     val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -200,47 +200,11 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
             )
 
             is HomeUiState.NeedManualLocation -> NeedManualLocationPrompt(
-                onOpenMap = { showMapPicker = true }
+                onOpenMap = {  }
             )
         }
     }
 
-}
-
-@Composable
-private fun CacheBanner() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f),
-        tonalElevation = 2.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Warning,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.size(18.dp)
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.no_internet_showing_cached),
-                    style = Theme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-                Text(
-                    text = stringResource(R.string.swipe_down_to_refresh),
-                    style = Theme.typography.hint,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f),
-                )
-            }
-        }
-    }
 }
 
 @Composable
