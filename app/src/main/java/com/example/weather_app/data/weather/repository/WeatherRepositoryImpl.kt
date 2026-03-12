@@ -6,9 +6,10 @@ import com.example.weather_app.data.weather.remote.datasource.WeatherRemoteDataS
 import com.example.weather_app.data.weather.toDailyForecasts
 import com.example.weather_app.data.weather.toDomain
 import com.example.weather_app.data.weather.toEntity
-import com.example.weather_app.domain.datasource.UserPreferencesDataSource
+import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.DailyForecast
 import com.example.weather_app.domain.entity.HourlyWeather
+import com.example.weather_app.domain.entity.FavoriteLocation
 import com.example.weather_app.domain.entity.Weather
 import com.example.weather_app.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 
 class WeatherRepositoryImpl(
     private val remote: WeatherRemoteDataSource,
@@ -63,4 +65,18 @@ class WeatherRepositoryImpl(
             emit(Result.failure(error))
         }
     }.flowOn(Dispatchers.IO)
+
+    override fun getFavoriteLocations(): Flow<List<FavoriteLocation>> =
+        local.getAllFavoriteLocations().map { list ->
+            list.map { it.toDomain() }
+        }.flowOn(Dispatchers.IO)
+
+    override suspend fun addFavoriteLocation(location: FavoriteLocation) {
+        local.addFavoriteLocation(location.toEntity())
+    }
+
+    override suspend fun deleteFavoriteLocation(lat: Double, lon: Double) {
+        local.deleteFavoriteLocation(lat, lon)
+    }
+
 }
