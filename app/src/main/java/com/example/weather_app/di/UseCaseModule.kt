@@ -1,6 +1,7 @@
 package com.example.weather_app.di
 
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
+import com.example.weather_app.domain.usecases.GetFavoriteLocationsUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetPreferredLocationUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
@@ -11,12 +12,17 @@ import com.example.weather_app.domain.usecases.UpdateSavedLocationUseCase
 import com.example.weather_app.domain.usecases.UpdateTemperatureUnitUseCase
 import com.example.weather_app.domain.usecases.UpdateThemeUseCase
 import com.example.weather_app.domain.usecases.UpdateWindSpeedUnitUseCase
+import com.example.weather_app.domain.usecases.AddFavoriteLocationUseCase
+import com.example.weather_app.domain.usecases.DeleteFavoriteLocationUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
     factory { GetWeatherUseCase(get()) }
     factory { GetHourlyForecastUseCase(get()) }
     factory { GetDailyForecastUseCase(get()) }
+    factory { GetFavoriteLocationsUseCase(get()) }
+    factory { AddFavoriteLocationUseCase(get()) }
+    factory { DeleteFavoriteLocationUseCase(get()) }
     factory {
         GetPreferredLocationUseCase(
             locationRepository = get(),

@@ -2,18 +2,21 @@ package com.example.weather_app.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.weather_app.data.weather.local.ForecastDao
-import com.example.weather_app.data.weather.local.WeatherDao
+import com.example.weather_app.data.weather.local.dao.FavoriteLocationDao
+import com.example.weather_app.data.weather.local.dao.ForecastDao
+import com.example.weather_app.data.weather.local.dao.WeatherDao
 import com.example.weather_app.data.weather.local.entity.DailyForecastEntity
+import com.example.weather_app.data.weather.local.entity.FavoriteLocationEntity
 import com.example.weather_app.data.weather.local.entity.HourlyWeatherEntity
 import com.example.weather_app.data.weather.local.entity.WeatherEntity
 
 @Database(
-    entities = [WeatherEntity::class, HourlyWeatherEntity::class, DailyForecastEntity::class],
-    version = 3,
+    entities = [WeatherEntity::class, HourlyWeatherEntity::class, DailyForecastEntity::class, FavoriteLocationEntity::class],
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
     abstract fun forecastDao(): ForecastDao
+    abstract fun favoriteLocationDao(): FavoriteLocationDao
 }
