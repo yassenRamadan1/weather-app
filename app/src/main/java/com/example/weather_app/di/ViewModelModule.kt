@@ -1,6 +1,6 @@
 package com.example.weather_app.di
 
-import com.example.weather_app.MainViewModel
+import com.example.weather_app.main.MainViewModel
 import com.example.weather_app.presentation.favorites.favorite.FavoriteScreenViewModel
 import com.example.weather_app.presentation.favorites.favoritedetails.FavoriteDetailsViewModel
 import com.example.weather_app.presentation.home.HomeViewModel

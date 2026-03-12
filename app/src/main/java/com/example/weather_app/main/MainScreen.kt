@@ -1,4 +1,4 @@
-package com.example.weather_app
+package com.example.weather_app.main
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatDelegate
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier

@@ -1,4 +1,4 @@
-package com.example.weather_app
+package com.example.weather_app.main
 
 import com.example.weather_app.domain.entity.AppLanguage
 import com.example.weather_app.domain.entity.AppTheme

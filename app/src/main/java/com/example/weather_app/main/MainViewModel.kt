@@ -1,4 +1,4 @@
-package com.example.weather_app
+package com.example.weather_app.main
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
