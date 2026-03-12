@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.weather_app.presentation.alerts.AlertScreen
-import com.example.weather_app.presentation.favorites.FavoriteDetailsScreen
-import com.example.weather_app.presentation.favorites.FavoritesScreen
+import com.example.weather_app.presentation.favorites.favoritedetails.FavoriteDetailsScreen
+import com.example.weather_app.presentation.favorites.favorite.FavoritesScreen
 import com.example.weather_app.presentation.home.HomeScreen
 import com.example.weather_app.presentation.settings.SettingsScreen
 
@@ -41,28 +41,17 @@ fun WeatherNavGraph(
         composable(
             route = Screen.FavoriteDetails.routeWithArgs,
             arguments = listOf(
-                navArgument(Screen.FavoriteDetails.ARG_LAN) {
-                    type = NavType.FloatType
-                    defaultValue = -1
+                navArgument(Screen.FavoriteDetails.ARG_LAT) {
+                    type = NavType.StringType
                 },
                 navArgument(Screen.FavoriteDetails.ARG_LON) {
-                    type = NavType.FloatType
-                    defaultValue = -1
+                    type = NavType.StringType
                 }
             ),
-        ) { backStackEntry ->
-
-            val lat = backStackEntry.arguments?.getFloat(
-                Screen.FavoriteDetails.ARG_LAN
-            ) ?: -1
-            val lon = backStackEntry.arguments?.getFloat(
-                Screen.FavoriteDetails.ARG_LON
-            ) ?: -1
+        ) {
 
             FavoriteDetailsScreen(
-                lat = lat.toDouble(),
-                lon = lon.toDouble(),
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

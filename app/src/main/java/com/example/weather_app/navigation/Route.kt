@@ -6,12 +6,13 @@ sealed class Screen(val route: String) {
     object Alerts : Screen("alerts")
     object Settings : Screen("settings")
 
-    class FavoriteDetails(val lan: Double, val lon: Double) :
-        Screen("favoriteDetails/$lan/$lon") {
+    data class FavoriteDetails(val lat: Double, val lon: Double) : Screen(
+        "favorite_details/$lat/$lon"
+    ) {
         companion object {
-            const val routeWithArgs = "favoriteDetails/{lan}/{lon}"
-            const val ARG_LAN = "lan"
+            const val ARG_LAT = "lat"
             const val ARG_LON = "lon"
+            const val routeWithArgs = "favorite_details/{$ARG_LAT}/{$ARG_LON}"
         }
     }
 }
