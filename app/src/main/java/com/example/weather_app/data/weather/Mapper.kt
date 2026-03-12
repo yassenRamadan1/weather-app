@@ -10,6 +10,23 @@ import com.example.weather_app.data.weather.remote.dto.WeatherDescDto
 import com.example.weather_app.data.weather.remote.dto.WindDto
 import com.example.weather_app.domain.entity.Weather
 
+import com.example.weather_app.data.weather.local.entity.FavoriteLocationEntity
+import com.example.weather_app.domain.entity.FavoriteLocation
+
+fun FavoriteLocationEntity.toDomain(): FavoriteLocation = FavoriteLocation(
+    cityName = cityName,
+    countryCode = countryCode,
+    lat = lat,
+    lon = lon
+)
+
+fun FavoriteLocation.toEntity(): FavoriteLocationEntity = FavoriteLocationEntity(
+    cityName = cityName,
+    countryCode = countryCode,
+    lat = lat,
+    lon = lon
+)
+
 fun CurrentWeatherDto.toDomain(): Weather = Weather(
     cityName = name,
     countryCode = sys.country,
