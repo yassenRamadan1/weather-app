@@ -8,8 +8,7 @@ import com.example.weather_app.domain.entity.alert.AlertType
 import com.example.weather_app.domain.entity.alert.WeatherAlert
 import com.example.weather_app.domain.entity.user.LocationResult
 import com.example.weather_app.domain.error.AppError
-import com.example.weather_app.domain.repository.UserPreferencesRepository
-import com.example.weather_app.domain.service.AlarmScheduler
+import com.example.weather_app.domain.usecases.GetPreferredLocationUseCase
 import com.example.weather_app.domain.usecases.alert.AddAlertUseCase
 import com.example.weather_app.domain.usecases.alert.DeleteAlertUseCase
 import com.example.weather_app.domain.usecases.alert.GetAllAlertsUseCase
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -32,8 +30,7 @@ class AlertsScreenViewModel(
     private val addAlertUseCase: AddAlertUseCase,
     private val deleteAlertUseCase: DeleteAlertUseCase,
     private val setAlertActiveUseCase: SetAlertActiveUseCase,
-    private val userPreferencesRepository: UserPreferencesRepository,
-    private val alarmScheduler: AlarmScheduler
+    private val getPreferredLocationUseCase: GetPreferredLocationUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AlertsScreenUiState>(AlertsScreenUiState.Loading)
@@ -106,7 +103,6 @@ class AlertsScreenViewModel(
         _formState.update { it.copy(windThreshold = value, conditionError = null) }
 
     fun onCloudinessThresholdChanged(value: String) {
-        // Clamp cloudiness input to 0–100
         val clamped = value.toIntOrNull()?.coerceIn(0, 100)?.toString() ?: value
         _formState.update { it.copy(cloudinessThreshold = clamped, conditionError = null) }
     }
@@ -118,8 +114,7 @@ class AlertsScreenViewModel(
         viewModelScope.launch {
             _formState.update { it.copy(isSaving = true) }
             try {
-                val prefs = userPreferencesRepository.userPreferences.first()
-                val locResult = userPreferencesRepository.getPreferredLocation(prefs)
+                val locResult = getPreferredLocationUseCase()
 
                 if (locResult !is LocationResult.Success) {
                     _effect.emit(
@@ -145,9 +140,7 @@ class AlertsScreenViewModel(
                     cityName = locResult.cityName
                 )
 
-                val alertId = addAlertUseCase(alert)
-                alarmScheduler.scheduleAlert(alertId, alert.startTimeMillis)
-                alarmScheduler.scheduleAlertEnd(alertId, alert.endTimeMillis)
+                addAlertUseCase(alert)
                 resetForm()
 
             } catch (e: AppError.InvalidPeriod) {
@@ -178,20 +171,7 @@ class AlertsScreenViewModel(
     fun toggleAlertActive(alertId: Long, currentlyActive: Boolean) {
         viewModelScope.launch {
             try {
-                val newActive = !currentlyActive
-                setAlertActiveUseCase(alertId, newActive)
-
-                if (newActive) {
-                    val alert = findAlertById(alertId) ?: return@launch
-                    val now = System.currentTimeMillis()
-                    if (alert.endTimeMillis > now) {
-                        val triggerAt = maxOf(alert.startTimeMillis, now + 30_000L)
-                        alarmScheduler.scheduleAlert(alertId, triggerAt)
-                        alarmScheduler.scheduleAlertEnd(alertId, alert.endTimeMillis)
-                    }
-                } else {
-                    alarmScheduler.cancelAlert(alertId)
-                }
+                setAlertActiveUseCase(alertId, !currentlyActive)
             } catch (e: Exception) {
                 val appError = e as? AppError ?: AppError.UnknownError()
                 _effect.emit(AlertsScreenEffect.ShowSnackbar(appError.toUiText()))
@@ -202,7 +182,6 @@ class AlertsScreenViewModel(
     fun deleteAlert(alertId: Long) {
         viewModelScope.launch {
             try {
-                alarmScheduler.cancelAlert(alertId)
                 deleteAlertUseCase(alertId)
             } catch (e: Exception) {
                 val appError = e as? AppError ?: AppError.UnknownError()
@@ -210,8 +189,4 @@ class AlertsScreenViewModel(
             }
         }
     }
-
-
-    private fun findAlertById(id: Long): WeatherAlert? =
-        (_uiState.value as? AlertsScreenUiState.Success)?.alerts?.find { it.id == id }
 }

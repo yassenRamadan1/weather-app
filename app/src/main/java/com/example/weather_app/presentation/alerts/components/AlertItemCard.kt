@@ -47,7 +47,6 @@ import com.example.weather_app.domain.entity.alert.WeatherAlert
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.compareTo
 import kotlin.let
 
 @OptIn(ExperimentalLayoutApi::class)
