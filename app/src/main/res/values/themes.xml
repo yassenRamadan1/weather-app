@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Weatherapp" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Use AppCompat DayNight for compatibility with AppCompatActivity and Compose -->
+    <style name="Theme.Weatherapp" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Optional: Customize the status bar and navigation bar here if needed,
+             though enableEdgeToEdge in Activity is generally preferred. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 </resources>
