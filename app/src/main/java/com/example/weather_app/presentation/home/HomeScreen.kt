@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -288,7 +289,9 @@ private fun PermissionPrompt(
 
         Button(
             onClick = if (isPermanentlyDenied) onOpenAppSettings else onRequestPermission,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = if (isPermanentlyDenied) ButtonDefaults.buttonColors(Theme.colors.errorColor)
+            else ButtonDefaults.buttonColors(Theme.colors.buttonColor)
         ) {
             Text(
                 if (isPermanentlyDenied) stringResource(R.string.open_app_settings)
@@ -324,7 +327,8 @@ private fun GpsDisabledPrompt(onEnableGps: () -> Unit) {
         )
         Button(
             onClick = onEnableGps,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Theme.colors.buttonColor)
         ) {
             Text(stringResource(R.string.enable_location_services))
         }
@@ -357,7 +361,8 @@ private fun GpsNoFixPrompt(onRetry: () -> Unit) {
         )
         Button(
             onClick = onRetry,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(Theme.colors.buttonColor)
         ) {
             Text(stringResource(R.string.retry))
         }
