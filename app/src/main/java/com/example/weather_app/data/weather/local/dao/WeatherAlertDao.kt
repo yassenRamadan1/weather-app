@@ -19,6 +19,9 @@ interface WeatherAlertDao {
     @Query("SELECT * FROM weather_alerts WHERE isActive = 1")
     suspend fun getActiveAlerts(): List<WeatherAlertEntity>
 
+    @Query("SELECT * FROM weather_alerts WHERE id = :id")
+    suspend fun getAlertById(id: Long): WeatherAlertEntity?
+
     @Query("DELETE FROM weather_alerts WHERE id = :id")
     suspend fun deleteById(id: Long)
 
