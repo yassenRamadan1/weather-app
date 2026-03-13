@@ -4,8 +4,8 @@ import com.example.weather_app.data.weather.local.entity.DailyForecastEntity
 import com.example.weather_app.data.weather.local.entity.HourlyWeatherEntity
 import com.example.weather_app.data.weather.remote.dto.ForecastItemDto
 import com.example.weather_app.data.weather.remote.dto.ForecastResponseDto
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

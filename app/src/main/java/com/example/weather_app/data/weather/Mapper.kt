@@ -8,10 +8,16 @@ import com.example.weather_app.data.weather.remote.dto.MainDto
 import com.example.weather_app.data.weather.remote.dto.SysDto
 import com.example.weather_app.data.weather.remote.dto.WeatherDescDto
 import com.example.weather_app.data.weather.remote.dto.WindDto
-import com.example.weather_app.domain.entity.Weather
+import com.example.weather_app.domain.entity.weather.Weather
 
 import com.example.weather_app.data.weather.local.entity.FavoriteLocationEntity
-import com.example.weather_app.domain.entity.FavoriteLocation
+import com.example.weather_app.data.weather.local.entity.WeatherAlertEntity
+import com.example.weather_app.domain.entity.alert.AlertConditionMode
+import com.example.weather_app.domain.entity.alert.AlertType
+import com.example.weather_app.domain.entity.alert.WeatherAlert
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun FavoriteLocationEntity.toDomain(): FavoriteLocation = FavoriteLocation(
     cityName = cityName,
@@ -106,3 +112,36 @@ fun WeatherEntity.toDto(): CurrentWeatherDto = CurrentWeatherDto(
     dt = timestamp,
     sys = SysDto(countryCode?:"")
 )
+private val json = Json { ignoreUnknownKeys = true }
+
+fun WeatherAlert.toEntity() = WeatherAlertEntity(
+    id                   = id,
+    startTimeMillis      = startTimeMillis,
+    endTimeMillis        = endTimeMillis,
+    alertType            = alertType.name,
+    conditionMode        = conditionMode.name,
+    temperatureThreshold = temperatureThreshold,
+    windThreshold        = windThreshold,
+    cloudinessThreshold  = cloudinessThreshold,
+    isActive             = isActive,
+    lat                  = lat,
+    lon                  = lon,
+    cityName             = cityName
+)
+
+
+fun WeatherAlertEntity.toDomain() = WeatherAlert(
+    id                   = id,
+    startTimeMillis      = startTimeMillis,
+    endTimeMillis        = endTimeMillis,
+    alertType            = AlertType.valueOf(alertType),
+    conditionMode        = AlertConditionMode.valueOf(conditionMode),
+    temperatureThreshold = temperatureThreshold,
+    windThreshold        = windThreshold,
+    cloudinessThreshold  = cloudinessThreshold,
+    isActive             = isActive,
+    lat                  = lat,
+    lon                  = lon,
+    cityName             = cityName
+)
+fun List<WeatherAlertEntity>.toDomainList(): List<WeatherAlert> = map { it.toDomain() }
