@@ -2,7 +2,7 @@ package com.example.weather_app.data.user.repository
 
 import android.location.Geocoder
 import android.os.Build
-import com.example.weather_app.data.location.AndroidLocationProvider
+import com.example.weather_app.domain.repository.LocationProvider
 import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.user.AppLanguage
 import com.example.weather_app.domain.entity.user.AppTheme
@@ -20,7 +20,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class UserPreferencesRepositoryImpl(
-    private val locationProvider: AndroidLocationProvider,
+    private val locationProvider: LocationProvider,
     private val userPreferencesDataSource: UserPreferencesDataSource,
     private val geocoder: Geocoder
 ) : UserPreferencesRepository {
