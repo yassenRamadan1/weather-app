@@ -18,6 +18,7 @@ interface WeatherRepository {
 
     fun getAllAlerts(): Flow<List<WeatherAlert>>
     suspend fun addAlert(alert: WeatherAlert): Long
+    suspend fun getAlertById(id: Long): WeatherAlert?
     suspend fun deleteAlert(id: Long)
     suspend fun setAlertActive(id: Long, isActive: Boolean)
     suspend fun getActiveAlerts(): List<WeatherAlert>
