@@ -26,12 +26,9 @@ class MainActivity : AppCompatActivity() {
             ),
         )
         setContent {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = androidx.compose.ui.graphics.Color.Transparent
-                ) {
+
                     MainScreen()
-                }
+
 
         }
     }

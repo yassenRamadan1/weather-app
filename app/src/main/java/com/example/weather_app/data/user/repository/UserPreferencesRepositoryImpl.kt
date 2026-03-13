@@ -1,7 +1,5 @@
 package com.example.weather_app.data.user.repository
 
-import android.location.Geocoder
-import android.os.Build
 import com.example.weather_app.domain.repository.LocationProvider
 import com.example.weather_app.data.user.local.UserPreferencesDataSource
 import com.example.weather_app.domain.entity.user.AppLanguage
@@ -13,16 +11,13 @@ import com.example.weather_app.domain.entity.user.TemperatureUnit
 import com.example.weather_app.domain.entity.user.UserPreferences
 import com.example.weather_app.domain.entity.user.WindSpeedUnit
 import com.example.weather_app.domain.repository.UserPreferencesRepository
-import kotlinx.coroutines.Dispatchers
+import com.example.weather_app.domain.repository.GeocodingProvider
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class UserPreferencesRepositoryImpl(
     private val locationProvider: LocationProvider,
     private val userPreferencesDataSource: UserPreferencesDataSource,
-    private val geocoder: Geocoder
+    private val geocodingProvider: GeocodingProvider
 ) : UserPreferencesRepository {
 
     override val userPreferences: Flow<UserPreferences> = userPreferencesDataSource.userPreferences
@@ -52,7 +47,7 @@ class UserPreferencesRepositoryImpl(
         val lat = prefs.savedLat
         val lon = prefs.savedLon
         return if (lat != null && lon != null) {
-            val city = reverseGeocode(lat, lon)
+            val city = geocodingProvider.reverseGeocode(lat, lon)
             LocationResult.Success(lat, lon, city, LocationSource.SAVED_PREFERENCES, isStale = false)
         } else {
             LocationResult.NoSavedLocation
@@ -68,7 +63,7 @@ class UserPreferencesRepositoryImpl(
         if (gpsEnabled) {
             val deviceLocation = locationProvider.getCurrentLocationOrLastKnown()
             if (deviceLocation != null) {
-                val city = reverseGeocode(deviceLocation.latitude, deviceLocation.longitude)
+                val city = geocodingProvider.reverseGeocode(deviceLocation.latitude, deviceLocation.longitude)
                 userPreferencesDataSource.updateSavedLocation(
                     deviceLocation.latitude, deviceLocation.longitude
                 )
@@ -84,7 +79,7 @@ class UserPreferencesRepositoryImpl(
 
         val lastKnown = locationProvider.tryGetLastLocation()
         if (lastKnown != null) {
-            val city = reverseGeocode(lastKnown.latitude, lastKnown.longitude)
+            val city = geocodingProvider.reverseGeocode(lastKnown.latitude, lastKnown.longitude)
             userPreferencesDataSource.updateSavedLocation(lastKnown.latitude, lastKnown.longitude)
             return LocationResult.Success(
                 lat = lastKnown.latitude,
@@ -97,7 +92,7 @@ class UserPreferencesRepositoryImpl(
         val savedLat = prefs.savedLat
         val savedLon = prefs.savedLon
         if (savedLat != null && savedLon != null) {
-            val city = reverseGeocode(savedLat, savedLon)
+            val city = geocodingProvider.reverseGeocode(savedLat, savedLon)
             return LocationResult.Success(
                 lat = savedLat,
                 lon = savedLon,
@@ -112,22 +107,4 @@ class UserPreferencesRepositoryImpl(
     override suspend fun updateSavedLocation(lat: Double, lon: Double) {
         userPreferencesDataSource.updateSavedLocation(lat, lon)
     }
-
-    private suspend fun reverseGeocode(lat: Double, lon: Double): String? =
-        withContext(Dispatchers.IO) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    suspendCoroutine { cont ->
-                        geocoder.getFromLocation(lat, lon, 1) { addresses ->
-                            cont.resume(addresses.firstOrNull()?.locality)
-                        }
-                    }
-                } else {
-                    @Suppress("DEPRECATION")
-                    geocoder.getFromLocation(lat, lon, 1)?.firstOrNull()?.locality
-                }
-            } catch (e: Exception) {
-                null
-            }
-        }
 }

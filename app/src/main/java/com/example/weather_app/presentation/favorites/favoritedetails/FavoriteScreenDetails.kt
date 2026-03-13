@@ -25,6 +25,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -51,125 +52,121 @@ fun FavoriteDetailsScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.effect.collect { messageResId ->
-            when (messageResId) {
-                null -> {}
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
                 is FavoriteDetailsEffect.ShowError -> {
                     Toast.makeText(
                         context,
-                        context.getString(messageResId.message),
+                        context.getString(effect.message),
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
+                null -> {}
             }
         }
     }
-    val brushBackGround = Brush.verticalGradient(
-        colors = listOf(
-            Theme.colors.gradientBackground.gradientBackgroundStart,
-            Theme.colors.gradientBackground.gradientBackgroundEnd
+
+    val startColor = Theme.colors.gradientBackground.gradientBackgroundStart
+    val endColor = Theme.colors.gradientBackground.gradientBackgroundEnd
+    val brushBackground = remember(startColor, endColor) {
+        Brush.verticalGradient(
+            colors = listOf(startColor, endColor)
         )
-    )
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = brushBackGround)
+            .background(brush = brushBackground)
             .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()),
         contentAlignment = Alignment.Center
     ) {
         when (val state = uiState) {
+            is FavoriteDetailsScreenUiState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(48.dp),
+                    color = Theme.colors.primaryIconColor
+                )
+            }
+
+            is FavoriteDetailsScreenUiState.Success -> {
+                FavoriteDetailsSuccessContent(
+                    state = state,
+                    isRefreshing = isRefreshing,
+                    onRefresh = viewModel::onRefresh,
+                    onNavigateBack = onNavigateBack
+                )
+            }
+
             is FavoriteDetailsScreenUiState.Error -> {
                 ErrorContent(
                     message = state.message,
-                    onRetry = { viewModel.onRefresh() }
+                    onRetry = viewModel::onRefresh
                 )
-            }
-            FavoriteDetailsScreenUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(48.dp),
-                        color = Theme.colors.primary
-                    )
-                }
-            }
-            is FavoriteDetailsScreenUiState.Success -> {
-                PullToRefreshBox(
-                    isRefreshing = isRefreshing,
-                    onRefresh = {viewModel.onRefresh()},
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    FavoriteDetailsScreenContent(
-                        currentWeather = state.currentWeather,
-                        hourlyForecast = state.hourlyForecast,
-                        dailyForecast = state.dailyForecast,
-                        currentDateFormatted = state.currentDateFormatted,
-                        currentTimeFormatted = state.currentTimeFormatted,
-                        temperatureUnit = state.temperatureUnit,
-                        windSpeedUnit = state.windSpeedUnit,
-                        isFromCache = state.isFromCache,
-                        onNavigateBack = onNavigateBack
-                    )
-                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteDetailsScreenContent(
-    currentWeather: Weather,
-    hourlyForecast: List<HourlyWeather>,
-    dailyForecast: List<DailyForecast>,
-    currentDateFormatted: String,
-    currentTimeFormatted: String,
-    temperatureUnit: TemperatureUnit,
-    windSpeedUnit: WindSpeedUnit,
-    isFromCache: Boolean,
+private fun FavoriteDetailsSuccessContent(
+    state: FavoriteDetailsScreenUiState.Success,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Theme.spacing.medium, vertical = Theme.spacing.small)
-                    .clickable { onNavigateBack() },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Theme.colors.onBodyColor
-                )
-                Text(
-                    text = stringResource(R.string.weather_details),
-                    color = Theme.colors.onBodyColor,
-                    style = Theme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = Theme.spacing.small)
-                )
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            FavoriteDetailsTopBar(onNavigateBack = onNavigateBack)
+            
+            AnimatedVisibility(visible = state.isFromCache) {
+                CacheBanner()
             }
-        AnimatedVisibility(visible = isFromCache) {
-            CacheBanner()
+            
+            WeatherDisplayContent(
+                currentWeather = state.currentWeather,
+                hourlyForecast = state.hourlyForecast,
+                dailyForecast = state.dailyForecast,
+                currentDateFormatted = state.currentDateFormatted,
+                currentTimeFormatted = state.currentTimeFormatted,
+                temperatureUnit = state.temperatureUnit,
+                windSpeedUnit = state.windSpeedUnit,
+                isStaleLocation = false,
+                onEnableGps = { },
+            )
         }
-        WeatherDisplayContent(
-            currentWeather = currentWeather,
-            hourlyForecast = hourlyForecast,
-            dailyForecast = dailyForecast,
-            currentDateFormatted = currentDateFormatted,
-            currentTimeFormatted = currentTimeFormatted,
-            temperatureUnit = temperatureUnit,
-            windSpeedUnit = windSpeedUnit,
-            isStaleLocation = false,
-            onEnableGps = {
-            },
+    }
+}
+
+@Composable
+private fun FavoriteDetailsTopBar(onNavigateBack: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Theme.spacing.medium, vertical = Theme.spacing.small)
+            .clickable { onNavigateBack() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            tint = Theme.colors.onBodyColor
+        )
+        Text(
+            text = stringResource(R.string.weather_details),
+            color = Theme.colors.onBodyColor,
+            style = Theme.typography.bodyLarge,
+            modifier = Modifier.padding(start = Theme.spacing.small)
         )
     }
-
 }

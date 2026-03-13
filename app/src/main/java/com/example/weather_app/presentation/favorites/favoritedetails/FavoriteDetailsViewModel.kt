@@ -3,39 +3,39 @@ package com.example.weather_app.presentation.favorites.favoritedetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather_app.domain.entity.weather.DailyForecast
-import com.example.weather_app.domain.entity.weather.HourlyWeather
-import com.example.weather_app.domain.entity.weather.Weather
 import com.example.weather_app.domain.error.AppError
-import com.example.weather_app.presentation.uierror.UiText
-import com.example.weather_app.presentation.uierror.toUiText
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.navigation.Screen
+import com.example.weather_app.presentation.uierror.toUiText
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class FavoriteDetailsViewModel(
     private val getWeatherUseCase: GetWeatherUseCase,
     private val getHourlyForecastUseCase: GetHourlyForecastUseCase,
     private val getDailyForecastUseCase: GetDailyForecastUseCase,
     private val observeUserPreferencesUseCase: ObserveUserPreferencesUseCase,
+    private val uiMapper: FavoriteDetailsUiMapper,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState =
         MutableStateFlow<FavoriteDetailsScreenUiState>(FavoriteDetailsScreenUiState.Loading)
     val uiState: StateFlow<FavoriteDetailsScreenUiState> = _uiState.asStateFlow()
-    private val _effect = MutableStateFlow<FavoriteDetailsEffect?>(null)
-    val effect: StateFlow<FavoriteDetailsEffect?> = _effect.asStateFlow()
+
+    private val _effect = MutableSharedFlow<FavoriteDetailsEffect?>()
+    val effect: SharedFlow<FavoriteDetailsEffect?> = _effect.asSharedFlow()
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
@@ -48,84 +48,49 @@ class FavoriteDetailsViewModel(
         savedStateHandle.get<String>(Screen.FavoriteDetails.ARG_LON)?.toDoubleOrNull()
     ) { "lon argument is missing or invalid" }
 
+    private var weatherLoadingJob: Job? = null
+
     init {
-        viewModelScope.launch {
-            loadWeatherForLocation(lat, lon)
-        }
+        observeWeatherData()
     }
 
     fun onRefresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
-            loadWeatherForLocation(lat, lon)
+            observeWeatherData()
             _isRefreshing.value = false
         }
     }
 
-    private suspend fun loadWeatherForLocation(lat: Double, lon: Double) {
-        val prefs = observeUserPreferencesUseCase().first()
-        val now = Instant.now().atZone(ZoneId.systemDefault())
-        val locale = Locale(prefs.language.code)
-        val dateFormatted = now.format(DateTimeFormatter.ofPattern("EEEE, d MMMM", locale))
-        val timeFormatted = now.format(DateTimeFormatter.ofPattern("HH:mm", locale))
-        var latestWeather: Weather? = null
-        var latestHourly: List<HourlyWeather> = emptyList()
-        var latestDaily: List<DailyForecast> = emptyList()
-        var networkFailed = false
+    private fun observeWeatherData() {
+        weatherLoadingJob?.cancel()
+        weatherLoadingJob = combine(
+            getWeatherUseCase(lat, lon),
+            getHourlyForecastUseCase(lat, lon),
+            getDailyForecastUseCase(lat, lon),
+            observeUserPreferencesUseCase()
+        ) { weatherRes, hourlyRes, dailyRes, prefs ->
+            
+            val weather = weatherRes.getOrNull()
+            val hourly = hourlyRes.getOrNull() ?: emptyList()
+            val daily = dailyRes.getOrNull() ?: emptyList()
 
-        fun buildSuccessState() {
-            val weather = latestWeather ?: return
-            _uiState.value = FavoriteDetailsScreenUiState.Success(
-                currentWeather = weather,
-                hourlyForecast = latestHourly,
-                dailyForecast = latestDaily,
-                currentTimeFormatted = timeFormatted,
-                currentDateFormatted = dateFormatted,
-                temperatureUnit = prefs.temperatureUnit,
-                windSpeedUnit = prefs.windSpeedUnit,
-                isFromCache = networkFailed,
-            )
-        }
-
-        viewModelScope.launch {
-            launch {
-                getWeatherUseCase(lat, lon).collect { result ->
-                    result.fold(
-                        onSuccess = { weather ->
-                            latestWeather = weather
-                            buildSuccessState()
-                        },
-                        onFailure = { error ->
-                            if (latestWeather == null) {
-                                val appError = error as? AppError ?: AppError.UnknownError()
-                                _uiState.value =
-                                    FavoriteDetailsScreenUiState.Error(appError.toUiText())
-                            } else {
-                                networkFailed = true
-                                buildSuccessState()
-                            }
-                        }
-                    )
-                }
+            if (weather != null) {
+                uiMapper.mapToSuccess(
+                    weather = weather,
+                    hourly = hourly,
+                    daily = daily,
+                    prefs = prefs,
+                    isFromCache = weatherRes.isFailure
+                )
+            } else if (weatherRes.isFailure) {
+                val appError = weatherRes.exceptionOrNull() as? AppError ?: AppError.UnknownError()
+                FavoriteDetailsScreenUiState.Error(appError.toUiText())
+            } else {
+                FavoriteDetailsScreenUiState.Loading
             }
-
-            launch {
-                getHourlyForecastUseCase(lat, lon).collect { result ->
-                    result.onSuccess { list ->
-                        latestHourly = list
-                        buildSuccessState()
-                    }
-                }
-            }
-
-            launch {
-                getDailyForecastUseCase(lat, lon).collect { result ->
-                    result.onSuccess { list ->
-                        latestDaily = list
-                        buildSuccessState()
-                    }
-                }
-            }
-        }
+        }.onEach { newState ->
+            _uiState.value = newState
+        }.launchIn(viewModelScope)
     }
 }
