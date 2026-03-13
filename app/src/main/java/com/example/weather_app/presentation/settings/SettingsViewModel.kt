@@ -3,13 +3,13 @@ package com.example.weather_app.presentation.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.R
-import com.example.weather_app.data.location.AndroidLocationProvider
 import com.example.weather_app.domain.entity.user.AppLanguage
 import com.example.weather_app.domain.entity.user.AppTheme
 import com.example.weather_app.domain.entity.user.LocationMode
 import com.example.weather_app.domain.entity.user.TemperatureUnit
 import com.example.weather_app.domain.entity.user.UserPreferences
 import com.example.weather_app.domain.entity.user.WindSpeedUnit
+import com.example.weather_app.domain.usecases.IsLocationServicesEnabledUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.domain.usecases.UpdateLanguageUseCase
 import com.example.weather_app.domain.usecases.UpdateLocationModeUseCase
@@ -34,7 +34,7 @@ class SettingsViewModel(
     private val updateWindSpeedUnitUseCase: UpdateWindSpeedUnitUseCase,
     private val updateLocationModeUseCase: UpdateLocationModeUseCase,
     private val updateSavedLocationUseCase: UpdateSavedLocationUseCase,
-    private val locationProvider: AndroidLocationProvider,
+    private val isLocationServicesEnabledUseCase: IsLocationServicesEnabledUseCase,
 ) : ViewModel() {
     val userPreferences = observeUserPreferences()
         .stateIn(
@@ -43,7 +43,7 @@ class SettingsViewModel(
             initialValue = UserPreferences(),
         )
 
-    private val _isGpsEnabled = MutableStateFlow(locationProvider.isLocationServicesEnabled())
+    private val _isGpsEnabled = MutableStateFlow(isLocationServicesEnabledUseCase())
     val isGpsEnabled = _isGpsEnabled.asStateFlow()
 
 
@@ -51,7 +51,7 @@ class SettingsViewModel(
     val events = _events.receiveAsFlow()
 
     fun refreshGpsState() {
-        _isGpsEnabled.update { locationProvider.isLocationServicesEnabled() }
+        _isGpsEnabled.update { isLocationServicesEnabledUseCase() }
     }
 
     fun setTheme(theme: AppTheme) = viewModelScope.launch {

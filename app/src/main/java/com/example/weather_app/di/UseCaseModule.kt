@@ -7,6 +7,7 @@ import com.example.weather_app.domain.usecases.GetFavoriteLocationsUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetPreferredLocationUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
+import com.example.weather_app.domain.usecases.IsLocationServicesEnabledUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.domain.usecases.UpdateLanguageUseCase
 import com.example.weather_app.domain.usecases.UpdateLocationModeUseCase
@@ -41,6 +42,7 @@ val useCaseModule = module {
     factory { UpdateTemperatureUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateWindSpeedUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateLocationModeUseCase(userPreferencesRepository = get()) }
+    factory { IsLocationServicesEnabledUseCase(locationProvider = get()) }
     factory { AddAlertUseCase(get(), get(), get()) }
     factory { DeleteAlertUseCase(get(), get()) }
     factory { SetAlertActiveUseCase(get(), get()) }
