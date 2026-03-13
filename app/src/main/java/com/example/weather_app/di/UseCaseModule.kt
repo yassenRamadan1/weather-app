@@ -41,9 +41,9 @@ val useCaseModule = module {
     factory { UpdateTemperatureUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateWindSpeedUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateLocationModeUseCase(userPreferencesRepository = get()) }
-    factory { AddAlertUseCase(get(), get()) }
-    factory { DeleteAlertUseCase(get()) }
-    factory { SetAlertActiveUseCase(get()) }
+    factory { AddAlertUseCase(get(), get(), get()) }
+    factory { DeleteAlertUseCase(get(), get()) }
+    factory { SetAlertActiveUseCase(get(), get()) }
     factory { GetAllAlertsUseCase(get()) }
     factory { ValidateAlertUseCase() }
 }
