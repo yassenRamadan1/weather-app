@@ -38,7 +38,8 @@ playServicesLocation = "21.3.0"
 accompanist = "0.36.0"
 spatialk = "0.3.0"
 desugar = "2.1.4"
-
+workManger = "2.11.1"
+lifecycleService = "2.10.0"
 
 [libraries]
 android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
@@ -64,6 +65,9 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 # Koin
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+koin-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
+
+
 # Retrofit + OkHttp
 rallista-maplibre-compose = { module = "io.github.rallista:maplibre-compose", version.ref = "maplibreCompose" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -92,6 +96,9 @@ maplibre-compose-m3 = { module = "org.maplibre.compose:maplibre-compose-material
 # SpatialK for GeoJSON handling (Position, Point, etc.)
 spatialk-geojson = { module = "io.github.dellisd.spatialk:geojson", version.ref = "spatialk" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
+workmanager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManger" }
+
+androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

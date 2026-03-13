@@ -58,6 +58,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.lifecycle.service)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -83,6 +84,7 @@ dependencies {
     // Koin
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.koin.workmanager)
 
     // Retrofit + OkHttp
     implementation(libs.retrofit)
@@ -115,4 +117,6 @@ dependencies {
     implementation(libs.maplibre.compose)
     implementation(libs.maplibre.compose.m3)
     implementation(libs.spatialk.geojson)
+    //workManager
+    implementation(libs.workmanager)
 }
