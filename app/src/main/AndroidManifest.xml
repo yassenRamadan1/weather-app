@@ -5,6 +5,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>         <!-- API 33+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>      <!-- API 33+ -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:name=".WeatherApp"
         android:allowBackup="true"
@@ -34,6 +42,35 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
+        <receiver
+            android:name=".data.weather.reciver.AlertBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.weather_app.ACTION_ALERT_TRIGGER" />
+                <action android:name="com.example.weather_app.ACTION_ALERT_END" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".data.weather.reciver.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Koin WorkManager factory — must be declared so Koin injects into workers -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>
