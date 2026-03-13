@@ -62,6 +62,7 @@ class HomeViewModel(
 
     fun onRefresh() {
         viewModelScope.launch {
+            weatherLoadingJob?.cancel()
             _isRefreshing.value = true
             fetchLocationAndWeather()
             _isRefreshing.value = false
@@ -96,12 +97,13 @@ class HomeViewModel(
             getDailyForecastUseCase(location.lat, location.lon),
             observeUserPreferencesUseCase()
         ) { weatherRes, hourlyRes, dailyRes, prefs ->
-            
             val weather = weatherRes.getOrNull()
-            val hourly = hourlyRes.getOrNull() ?: emptyList()
-            val daily = dailyRes.getOrNull() ?: emptyList()
+            val hourly = hourlyRes.getOrNull()
+            val daily = dailyRes.getOrNull()
 
-            if (weather != null) {
+            val currentState = _uiState.value
+
+            if (weather != null && hourly != null && daily != null) {
                 uiMapper.mapToSuccess(
                     weather = weather,
                     hourly = hourly,
@@ -109,13 +111,19 @@ class HomeViewModel(
                     prefs = prefs,
                     isStale = location.isStale,
                     source = location.source,
-                    isFromCache = weatherRes.isFailure
+                    isFromCache = false
                 )
-            } else if (weatherRes.isFailure) {
-                val appError = weatherRes.exceptionOrNull() as? AppError ?: AppError.UnknownError()
-                HomeUiState.Error(appError.toUiText())
+            } else if (weatherRes.isFailure || hourlyRes.isFailure || dailyRes.isFailure) {
+                if (currentState is HomeUiState.Success) {
+                    currentState.copy(isFromCache = true)
+                } else {
+                    val appError = (weatherRes.exceptionOrNull()
+                        ?: hourlyRes.exceptionOrNull()
+                        ?: dailyRes.exceptionOrNull()) as? AppError ?: AppError.UnknownError()
+                    HomeUiState.Error(appError.toUiText())
+                }
             } else {
-                HomeUiState.Loading
+                currentState as? HomeUiState.Success ?: HomeUiState.Loading
             }
         }.onEach { newState ->
             _uiState.value = newState

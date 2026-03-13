@@ -70,24 +70,31 @@ class FavoriteDetailsViewModel(
             getDailyForecastUseCase(lat, lon),
             observeUserPreferencesUseCase()
         ) { weatherRes, hourlyRes, dailyRes, prefs ->
-            
             val weather = weatherRes.getOrNull()
-            val hourly = hourlyRes.getOrNull() ?: emptyList()
-            val daily = dailyRes.getOrNull() ?: emptyList()
+            val hourly = hourlyRes.getOrNull()
+            val daily = dailyRes.getOrNull()
 
-            if (weather != null) {
+            val currentState = _uiState.value
+
+            if (weather != null && hourly != null && daily != null) {
                 uiMapper.mapToSuccess(
                     weather = weather,
                     hourly = hourly,
                     daily = daily,
                     prefs = prefs,
-                    isFromCache = weatherRes.isFailure
+                    isFromCache = false
                 )
-            } else if (weatherRes.isFailure) {
-                val appError = weatherRes.exceptionOrNull() as? AppError ?: AppError.UnknownError()
-                FavoriteDetailsScreenUiState.Error(appError.toUiText())
+            } else if (weatherRes.isFailure || hourlyRes.isFailure || dailyRes.isFailure) {
+                if (currentState is FavoriteDetailsScreenUiState.Success) {
+                    currentState.copy(isFromCache = true)
+                } else {
+                    val appError = (weatherRes.exceptionOrNull()
+                        ?: hourlyRes.exceptionOrNull()
+                        ?: dailyRes.exceptionOrNull()) as? AppError ?: AppError.UnknownError()
+                    FavoriteDetailsScreenUiState.Error(appError.toUiText())
+                }
             } else {
-                FavoriteDetailsScreenUiState.Loading
+                if (currentState is FavoriteDetailsScreenUiState.Success) currentState else FavoriteDetailsScreenUiState.Loading
             }
         }.onEach { newState ->
             _uiState.value = newState
