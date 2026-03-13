@@ -7,11 +7,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import java.util.Locale
 
+import com.example.weather_app.domain.repository.LocationProvider
+
 val locationModule = module {
 
     single { LocationServices.getFusedLocationProviderClient(androidContext()) }
 
-    single { AndroidLocationProvider(context = androidContext(), fusedClient = get()) }
+    single<LocationProvider> { AndroidLocationProvider(context = androidContext(), fusedClient = get()) }
 
     single { Geocoder(androidContext(), Locale.getDefault()) }
 

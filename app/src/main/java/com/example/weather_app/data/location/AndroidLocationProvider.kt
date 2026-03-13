@@ -16,11 +16,13 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
+import com.example.weather_app.domain.repository.LocationProvider
+
 class AndroidLocationProvider(
     private val context: Context,
     private val fusedClient: FusedLocationProviderClient
-) {
-    fun hasPermission(): Boolean =
+) : LocationProvider {
+    override fun hasPermission(): Boolean =
         ContextCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED ||
@@ -28,12 +30,12 @@ class AndroidLocationProvider(
                     context, Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
 
-    fun isLocationServicesEnabled(): Boolean {
+    override fun isLocationServicesEnabled(): Boolean {
         val locationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return LocationManagerCompat.isLocationEnabled(locationManager)
     }
-    suspend fun getCurrentLocationOrLastKnown(): Location? {
+    override suspend fun getCurrentLocationOrLastKnown(): Location? {
         if (!hasPermission()) return null
 
         val fresh = withTimeoutOrNull(10_000L) { tryGetCurrentLocation() }
@@ -62,7 +64,7 @@ class AndroidLocationProvider(
             null
         }
     }
-    suspend fun tryGetLastLocation(): Location? {
+    override suspend fun tryGetLastLocation(): Location? {
         if (!hasPermission()) return null
         return try {
             suspendCancellableCoroutine { cont ->
