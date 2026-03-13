@@ -34,11 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.TemperatureUnit
-import com.example.weather_app.domain.entity.Weather
-import com.example.weather_app.domain.entity.WindSpeedUnit
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.user.TemperatureUnit
+import com.example.weather_app.domain.entity.weather.Weather
+import com.example.weather_app.domain.entity.user.WindSpeedUnit
 import com.example.weather_app.presentation.components.CacheBanner
 import com.example.weather_app.presentation.components.ErrorContent
 import com.example.weather_app.presentation.components.weather.WeatherDisplayContent

@@ -1,6 +1,8 @@
 package com.example.weather_app.presentation.favorites.favorite
 
-import com.example.weather_app.domain.entity.FavoriteLocation
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
+
+import com.example.weather_app.presentation.uierror.UiText
 
 sealed interface FavoritesScreenUiState {
     data class Success(
@@ -9,6 +11,6 @@ sealed interface FavoritesScreenUiState {
 
     data object Loading : FavoritesScreenUiState
 
-    data class Error(val message: String) : FavoritesScreenUiState
+    data class Error(val message: UiText) : FavoritesScreenUiState
     data object Empty : FavoritesScreenUiState
 }

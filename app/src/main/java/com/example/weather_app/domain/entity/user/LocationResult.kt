@@ -1,4 +1,4 @@
-package com.example.weather_app.domain.entity
+package com.example.weather_app.domain.entity.user
 
 sealed class LocationResult {
 

@@ -25,7 +25,7 @@ import com.example.weather_app.R
 import com.example.weather_app.designsystem.components.WTFloatingButton
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.designsystem.theme.WTTheme
-import com.example.weather_app.domain.entity.FavoriteLocation
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
 import com.example.weather_app.presentation.components.EmptyScreen
 import com.example.weather_app.presentation.components.ErrorContent
 import com.example.weather_app.presentation.components.LocationPickerScreen

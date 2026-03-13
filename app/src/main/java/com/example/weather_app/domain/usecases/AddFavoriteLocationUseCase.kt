@@ -1,6 +1,6 @@
 package com.example.weather_app.domain.usecases
 
-import com.example.weather_app.domain.entity.FavoriteLocation
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
 import com.example.weather_app.domain.repository.WeatherRepository
 
 class AddFavoriteLocationUseCase(

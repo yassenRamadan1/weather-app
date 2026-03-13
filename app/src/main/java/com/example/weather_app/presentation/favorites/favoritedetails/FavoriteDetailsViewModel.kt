@@ -3,18 +3,17 @@ package com.example.weather_app.presentation.favorites.favoritedetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.Weather
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.weather.Weather
 import com.example.weather_app.domain.error.AppError
-import com.example.weather_app.domain.error.toUiMessage
+import com.example.weather_app.presentation.uierror.UiText
+import com.example.weather_app.presentation.uierror.toUiText
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.navigation.Screen
-import com.example.weather_app.presentation.favorites.favorite.FavoritesScreenUiState
-import com.example.weather_app.presentation.home.HomeUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -100,7 +99,7 @@ class FavoriteDetailsViewModel(
                             if (latestWeather == null) {
                                 val appError = error as? AppError ?: AppError.UnknownError()
                                 _uiState.value =
-                                    FavoriteDetailsScreenUiState.Error(appError.toUiMessage())
+                                    FavoriteDetailsScreenUiState.Error(appError.toUiText())
                             } else {
                                 networkFailed = true
                                 buildSuccessState()

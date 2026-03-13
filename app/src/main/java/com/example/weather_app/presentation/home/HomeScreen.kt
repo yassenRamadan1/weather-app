@@ -35,9 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -53,7 +50,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.domain.entity.LocationSource
+import com.example.weather_app.domain.entity.user.LocationSource
 import com.example.weather_app.presentation.components.CacheBanner
 import com.example.weather_app.presentation.components.ErrorContent
 import com.example.weather_app.presentation.components.weather.WeatherDisplayContent

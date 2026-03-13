@@ -36,6 +36,11 @@ fun getWTTypography(isArabic: Boolean): WTTextStyle {
             fontFamily = currentFontFamily,
             fontSize = 18.sp,
             fontWeight = FontWeight.Light
+        ),
+        bodySmall = TextStyle(
+            fontFamily = currentFontFamily,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal
         )
     )
 }

@@ -1,8 +1,12 @@
 package com.example.weather_app.data.weather.local.datasource
 
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.weather_app.data.weather.local.entity.DailyForecastEntity
 import com.example.weather_app.data.weather.local.entity.FavoriteLocationEntity
 import com.example.weather_app.data.weather.local.entity.HourlyWeatherEntity
+import com.example.weather_app.data.weather.local.entity.WeatherAlertEntity
 import com.example.weather_app.data.weather.local.entity.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +24,13 @@ interface WeatherLocalDataSource {
     suspend fun deleteFavoriteLocation(lat: Double, lon: Double)
     suspend fun addFavoriteLocation(favoriteLocationEntity: FavoriteLocationEntity)
     suspend fun deleteWeatherData(lat: Double, lon: Double)
+    fun getAllAlerts(): Flow<List<WeatherAlertEntity>>
+
+    suspend fun insertAlert(entity: WeatherAlertEntity): Long
+
+    suspend fun deleteAlert(id: Long)
+
+    suspend fun updateActive(id: Long, isActive: Boolean)
+
+    suspend fun getActiveAlerts(): List<WeatherAlertEntity>
 }

@@ -14,9 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.components.WTButton
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.presentation.uierror.UiText
 
 @Composable
-fun ErrorContent(message: String, onRetry: () -> Unit) {
+fun ErrorContent(message: UiText, onRetry: () -> Unit) {
     Column(
         modifier = Modifier.padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -26,7 +27,11 @@ fun ErrorContent(message: String, onRetry: () -> Unit) {
             stringResource(R.string.something_went_wrong),
             style = Theme.typography.bodyLarge
         )
-        Text(message, textAlign = TextAlign.Center, color = Theme.colors.errorColor)
+        Text(
+            message.asString(),
+            textAlign = TextAlign.Center,
+            color = Theme.colors.errorColor
+        )
         WTButton(
             onClick = onRetry,
             modifier = Modifier.fillMaxWidth(),

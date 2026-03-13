@@ -30,8 +30,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weather_app.designsystem.components.bottomnav.BlurBottomNavigationBar
 import com.example.weather_app.designsystem.theme.WTTheme
-import com.example.weather_app.domain.entity.AppLanguage
-import com.example.weather_app.domain.entity.AppTheme
+import com.example.weather_app.domain.entity.user.AppLanguage
+import com.example.weather_app.domain.entity.user.AppTheme
 import com.example.weather_app.navigation.Screen
 import com.example.weather_app.navigation.WeatherNavGraph
 import org.koin.androidx.compose.koinViewModel

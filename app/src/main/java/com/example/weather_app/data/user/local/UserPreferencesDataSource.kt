@@ -1,11 +1,11 @@
 package com.example.weather_app.data.user.local
 
-import com.example.weather_app.domain.entity.AppLanguage
-import com.example.weather_app.domain.entity.AppTheme
-import com.example.weather_app.domain.entity.LocationMode
-import com.example.weather_app.domain.entity.TemperatureUnit
-import com.example.weather_app.domain.entity.UserPreferences
-import com.example.weather_app.domain.entity.WindSpeedUnit
+import com.example.weather_app.domain.entity.user.AppLanguage
+import com.example.weather_app.domain.entity.user.AppTheme
+import com.example.weather_app.domain.entity.user.LocationMode
+import com.example.weather_app.domain.entity.user.TemperatureUnit
+import com.example.weather_app.domain.entity.user.UserPreferences
+import com.example.weather_app.domain.entity.user.WindSpeedUnit
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferencesDataSource {

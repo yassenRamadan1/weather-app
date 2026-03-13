@@ -1,4 +1,4 @@
-package com.example.weather_app.domain.entity
+package com.example.weather_app.domain.entity.weather
 
 data class HourlyWeather(
     val timestamp: Long,

@@ -1,11 +1,12 @@
 package com.example.weather_app.presentation.favorites.favoritedetails
 
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.LocationSource
-import com.example.weather_app.domain.entity.TemperatureUnit
-import com.example.weather_app.domain.entity.Weather
-import com.example.weather_app.domain.entity.WindSpeedUnit
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.user.TemperatureUnit
+import com.example.weather_app.domain.entity.weather.Weather
+import com.example.weather_app.domain.entity.user.WindSpeedUnit
+
+import com.example.weather_app.presentation.uierror.UiText
 
 sealed interface FavoriteDetailsScreenUiState{
     data object Loading : FavoriteDetailsScreenUiState
@@ -21,5 +22,5 @@ sealed interface FavoriteDetailsScreenUiState{
         val isFromCache: Boolean = false,
     ) : FavoriteDetailsScreenUiState
 
-    data class Error(val message: String) : FavoriteDetailsScreenUiState
+    data class Error(val message: UiText) : FavoriteDetailsScreenUiState
 }

@@ -3,21 +3,20 @@ package com.example.weather_app.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.R
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.LocationResult
-import com.example.weather_app.domain.entity.LocationSource
-import com.example.weather_app.domain.entity.Weather
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.user.LocationResult
+import com.example.weather_app.domain.entity.user.LocationSource
+import com.example.weather_app.domain.entity.weather.Weather
 import com.example.weather_app.domain.error.AppError
-import com.example.weather_app.domain.error.toUiMessage
+import com.example.weather_app.presentation.uierror.UiText
+import com.example.weather_app.presentation.uierror.toUiText
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
 import com.example.weather_app.domain.usecases.GetPreferredLocationUseCase
 import com.example.weather_app.domain.usecases.GetWeatherUseCase
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
-import com.example.weather_app.domain.usecases.UpdateSavedLocationUseCase
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -92,10 +91,10 @@ class HomeViewModel(
                 _uiState.value = HomeUiState.GpsNoFix
             is LocationResult.NoSavedLocation ->
                 _uiState.value = HomeUiState.NeedManualLocation
-            is LocationResult.Error ->
-                _uiState.value = HomeUiState.Error(
-                    result.cause.message ?: "Location error"
-                )
+            is LocationResult.Error -> {
+                val appError = result.cause as? AppError ?: AppError.UnknownError()
+                _uiState.value = HomeUiState.Error(appError.toUiText())
+            }
         }
     }
 
@@ -159,7 +158,7 @@ class HomeViewModel(
                         onFailure = { error ->
                             if (latestWeather == null) {
                                 val appError = error as? AppError ?: AppError.UnknownError()
-                                _uiState.value = HomeUiState.Error(appError.toUiMessage())
+                                _uiState.value = HomeUiState.Error(appError.toUiText())
                             } else {
                                 networkFailed = true
                                 buildSuccessState()

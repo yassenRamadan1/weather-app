@@ -1,5 +1,7 @@
 package com.example.weather_app.di
 
+import com.example.weather_app.domain.usecases.AddFavoriteLocationUseCase
+import com.example.weather_app.domain.usecases.DeleteFavoriteLocationUseCase
 import com.example.weather_app.domain.usecases.GetDailyForecastUseCase
 import com.example.weather_app.domain.usecases.GetFavoriteLocationsUseCase
 import com.example.weather_app.domain.usecases.GetHourlyForecastUseCase
@@ -12,8 +14,11 @@ import com.example.weather_app.domain.usecases.UpdateSavedLocationUseCase
 import com.example.weather_app.domain.usecases.UpdateTemperatureUnitUseCase
 import com.example.weather_app.domain.usecases.UpdateThemeUseCase
 import com.example.weather_app.domain.usecases.UpdateWindSpeedUnitUseCase
-import com.example.weather_app.domain.usecases.AddFavoriteLocationUseCase
-import com.example.weather_app.domain.usecases.DeleteFavoriteLocationUseCase
+import com.example.weather_app.domain.usecases.alert.AddAlertUseCase
+import com.example.weather_app.domain.usecases.alert.DeleteAlertUseCase
+import com.example.weather_app.domain.usecases.alert.GetAllAlertsUseCase
+import com.example.weather_app.domain.usecases.alert.SetAlertActiveUseCase
+import com.example.weather_app.domain.usecases.alert.ValidateAlertUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -36,4 +41,9 @@ val useCaseModule = module {
     factory { UpdateTemperatureUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateWindSpeedUnitUseCase(userPreferencesRepository = get()) }
     factory { UpdateLocationModeUseCase(userPreferencesRepository = get()) }
+    factory { AddAlertUseCase(get(), get()) }
+    factory { DeleteAlertUseCase(get()) }
+    factory { SetAlertActiveUseCase(get()) }
+    factory { GetAllAlertsUseCase(get()) }
+    factory { ValidateAlertUseCase() }
 }

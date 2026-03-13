@@ -1,6 +1,6 @@
 package com.example.weather_app.domain.usecases
 
-import com.example.weather_app.domain.entity.DailyForecast
+import com.example.weather_app.domain.entity.weather.DailyForecast
 import com.example.weather_app.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 

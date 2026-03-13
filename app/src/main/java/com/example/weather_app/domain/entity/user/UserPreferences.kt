@@ -1,4 +1,4 @@
-package com.example.weather_app.domain.entity
+package com.example.weather_app.domain.entity.user
 
 import java.util.Locale
 

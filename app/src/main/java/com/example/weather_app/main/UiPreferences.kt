@@ -1,8 +1,8 @@
 package com.example.weather_app.main
 
-import com.example.weather_app.domain.entity.AppLanguage
-import com.example.weather_app.domain.entity.AppTheme
-import com.example.weather_app.domain.entity.UserPreferences
+import com.example.weather_app.domain.entity.user.AppLanguage
+import com.example.weather_app.domain.entity.user.AppTheme
+import com.example.weather_app.domain.entity.user.UserPreferences
 
 data class UiPreferences(
     val theme: AppTheme = AppTheme.SYSTEM,

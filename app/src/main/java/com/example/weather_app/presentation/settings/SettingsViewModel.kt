@@ -4,8 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather_app.R
 import com.example.weather_app.data.location.AndroidLocationProvider
-import com.example.weather_app.data.user.local.UserPreferencesDataSource
-import com.example.weather_app.domain.entity.*
+import com.example.weather_app.domain.entity.user.AppLanguage
+import com.example.weather_app.domain.entity.user.AppTheme
+import com.example.weather_app.domain.entity.user.LocationMode
+import com.example.weather_app.domain.entity.user.TemperatureUnit
+import com.example.weather_app.domain.entity.user.UserPreferences
+import com.example.weather_app.domain.entity.user.WindSpeedUnit
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import com.example.weather_app.domain.usecases.UpdateLanguageUseCase
 import com.example.weather_app.domain.usecases.UpdateLocationModeUseCase
@@ -14,10 +18,8 @@ import com.example.weather_app.domain.usecases.UpdateTemperatureUnitUseCase
 import com.example.weather_app.domain.usecases.UpdateThemeUseCase
 import com.example.weather_app.domain.usecases.UpdateWindSpeedUnitUseCase
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn

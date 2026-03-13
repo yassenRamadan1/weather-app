@@ -11,11 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.TemperatureUnit
-import com.example.weather_app.domain.entity.Weather
-import com.example.weather_app.domain.entity.WindSpeedUnit
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.user.TemperatureUnit
+import com.example.weather_app.domain.entity.weather.Weather
+import com.example.weather_app.domain.entity.user.WindSpeedUnit
 import com.example.weather_app.presentation.util.getLocalizedDayName
 import com.example.weather_app.presentation.util.getLocalizedTime
 import kotlin.math.roundToInt

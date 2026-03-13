@@ -1,12 +1,14 @@
 package com.example.weather_app.presentation.favorites.favorite
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather_app.domain.entity.FavoriteLocation
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
 import com.example.weather_app.domain.usecases.AddFavoriteLocationUseCase
 import com.example.weather_app.domain.usecases.DeleteFavoriteLocationUseCase
 import com.example.weather_app.domain.usecases.GetFavoriteLocationsUseCase
+import com.example.weather_app.domain.error.AppError
+import com.example.weather_app.presentation.uierror.UiText
+import com.example.weather_app.presentation.uierror.toUiText
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -40,12 +42,13 @@ class FavoriteScreenViewModel(
                     }
                 }
             } catch (e: Exception) {
+                val appError = e as? AppError ?: AppError.UnknownError()
                 _uiState.value = FavoritesScreenUiState.Error(
-                    message = e.message ?: "Failed to load favorite locations"
+                    message = appError.toUiText()
                 )
                 _effect.emit(
                     FavoritesScreenEffect.ShowMessage(
-                        message = e.message ?: "Failed to load favorite locations"
+                        message = appError.toUiText()
                     )
                 )
             }
@@ -64,8 +67,9 @@ class FavoriteScreenViewModel(
             try {
                 addFavoriteLocationUseCase(location)
             } catch (e: Exception) {
+                val appError = e as? AppError ?: AppError.UnknownError()
                 _uiState.value = FavoritesScreenUiState.Error(
-                    message = e.message ?: "Failed to add favorite location"
+                    message = appError.toUiText()
                 )
 
             }
@@ -76,8 +80,9 @@ class FavoriteScreenViewModel(
             try {
                 deleteFavoriteLocation(lat, lon)
             } catch (e: Exception) {
+                val appError = e as? AppError ?: AppError.UnknownError()
                 _uiState.value = FavoritesScreenUiState.Error(
-                    message = e.message ?: "Failed to remove favorite location"
+                    message = appError.toUiText()
                 )
 
             }

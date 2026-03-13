@@ -3,8 +3,8 @@ package com.example.weather_app.main
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather_app.domain.entity.AppLanguage
-import com.example.weather_app.domain.entity.UserPreferences
+import com.example.weather_app.domain.entity.user.AppLanguage
+import com.example.weather_app.domain.entity.user.UserPreferences
 import com.example.weather_app.domain.usecases.ObserveUserPreferencesUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map

@@ -7,13 +7,16 @@ import com.example.weather_app.data.weather.toDailyForecasts
 import com.example.weather_app.data.weather.toDomain
 import com.example.weather_app.data.weather.toEntity
 import com.example.weather_app.data.user.local.UserPreferencesDataSource
-import com.example.weather_app.domain.entity.DailyForecast
-import com.example.weather_app.domain.entity.HourlyWeather
-import com.example.weather_app.domain.entity.FavoriteLocation
-import com.example.weather_app.domain.entity.Weather
+import com.example.weather_app.data.weather.toDomainList
+import com.example.weather_app.domain.entity.alert.WeatherAlert
+import com.example.weather_app.domain.entity.weather.DailyForecast
+import com.example.weather_app.domain.entity.weather.HourlyWeather
+import com.example.weather_app.domain.entity.weather.FavoriteLocation
+import com.example.weather_app.domain.entity.weather.Weather
 import com.example.weather_app.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -29,7 +32,8 @@ class WeatherRepositoryImpl(
         val cached = local.getWeatherData(lat = lat, lon = lon).first()
         if (cached != null) emit(Result.success(cached.toDomain()))
         val prefs = userPrefs.userPreferences.first()
-        val result = remote.getCurrentWeather(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
+        val result =
+            remote.getCurrentWeather(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
         result.onSuccess { weather ->
             local.saveWeatherData(weather.toEntity().copy(lat = lat, lon = lon))
             emit(Result.success(weather.toDomain()))
@@ -38,33 +42,37 @@ class WeatherRepositoryImpl(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getHourlyForecast(lat: Double, lon: Double): Flow<Result<List<HourlyWeather>>> = flow {
-        val cached = local.getHourlyForecast(lat, lon).first()
-        if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
-        val prefs = userPrefs.userPreferences.first()
-        val result = remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
-        result.onSuccess { response ->
-            val hourlyList = response.filterHourlyForToday()
-            local.replaceHourlyForecast(lat, lon, hourlyList.map { it.toEntity(lat, lon) })
-            emit(Result.success(hourlyList))
-        }.onFailure { error ->
-            emit(Result.failure(error))
-        }
-    }.flowOn(Dispatchers.IO)
+    override fun getHourlyForecast(lat: Double, lon: Double): Flow<Result<List<HourlyWeather>>> =
+        flow {
+            val cached = local.getHourlyForecast(lat, lon).first()
+            if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
+            val prefs = userPrefs.userPreferences.first()
+            val result =
+                remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
+            result.onSuccess { response ->
+                val hourlyList = response.filterHourlyForToday()
+                local.replaceHourlyForecast(lat, lon, hourlyList.map { it.toEntity(lat, lon) })
+                emit(Result.success(hourlyList))
+            }.onFailure { error ->
+                emit(Result.failure(error))
+            }
+        }.flowOn(Dispatchers.IO)
 
-    override fun getDailyForecast(lat: Double, lon: Double): Flow<Result<List<DailyForecast>>> = flow {
-        val cached = local.getDailyForecast(lat, lon).first()
-        if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
-        val prefs = userPrefs.userPreferences.first()
-        val result = remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
-        result.onSuccess { response ->
-            val dailyList = response.toDailyForecasts()
-            local.replaceDailyForecast(lat, lon, dailyList.map { it.toEntity(lat, lon) })
-            emit(Result.success(dailyList))
-        }.onFailure { error ->
-            emit(Result.failure(error))
-        }
-    }.flowOn(Dispatchers.IO)
+    override fun getDailyForecast(lat: Double, lon: Double): Flow<Result<List<DailyForecast>>> =
+        flow {
+            val cached = local.getDailyForecast(lat, lon).first()
+            if (cached.isNotEmpty()) emit(Result.success(cached.map { it.toDomain() }))
+            val prefs = userPrefs.userPreferences.first()
+            val result =
+                remote.getForecast(lat, lon, prefs.temperatureUnit.apiValue, prefs.language.code)
+            result.onSuccess { response ->
+                val dailyList = response.toDailyForecasts()
+                local.replaceDailyForecast(lat, lon, dailyList.map { it.toEntity(lat, lon) })
+                emit(Result.success(dailyList))
+            }.onFailure { error ->
+                emit(Result.failure(error))
+            }
+        }.flowOn(Dispatchers.IO)
 
     override fun getFavoriteLocations(): Flow<List<FavoriteLocation>> =
         local.getAllFavoriteLocations().map { list ->
@@ -78,5 +86,19 @@ class WeatherRepositoryImpl(
     override suspend fun deleteFavoriteLocation(lat: Double, lon: Double) {
         local.deleteFavoriteLocation(lat, lon)
     }
+
+    override fun getAllAlerts(): Flow<List<WeatherAlert>> =
+        local.getAllAlerts().map { list ->
+            list.toDomainList()
+        }.flowOn(Dispatchers.IO)
+
+    override suspend fun addAlert(alert: WeatherAlert): Long = local.insertAlert(alert.toEntity())
+    override suspend fun deleteAlert(id: Long) {
+        local.deleteAlert(id)
+    }
+    override suspend fun setAlertActive(id: Long, isActive: Boolean) {
+        local.updateActive(id, isActive)
+    }
+    override suspend fun getActiveAlerts(): List<WeatherAlert> = local.getActiveAlerts().toDomainList()
 
 }
