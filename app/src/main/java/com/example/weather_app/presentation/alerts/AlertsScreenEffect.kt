@@ -6,4 +6,5 @@ sealed interface AlertsScreenEffect {
     data class ShowSnackbar(val message: UiText) : AlertsScreenEffect
     data object RequestNotificationPermission : AlertsScreenEffect
     data object RequestExactAlarmPermission   : AlertsScreenEffect
+    data object SaveSuccess : AlertsScreenEffect
 }

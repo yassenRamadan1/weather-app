@@ -27,6 +27,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.presentation.components.models.AddressDetails
 import com.example.weather_app.presentation.components.models.PickedLocation
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
@@ -127,8 +128,20 @@ fun LocationPickerScreen(
                 onMapClick = { point, _ ->
                     keyboard?.hide() // UX: Hide keyboard when touching map
                     scope.launch {
-                        val city = reverseGeocodeLatLng(context, point.latitude, point.longitude)
-                        pickedLocation = PickedLocation(point.latitude, point.longitude, city)
+                        // Fetch the custom AddressDetails object
+                        val details = reverseGeocodeLatLng(context, point.latitude, point.longitude)
+
+                        // Safely unwrap the city and country code, providing fallbacks if null
+                        val city = details?.city ?: "Unknown Location"
+                        val countryCode = details?.countryCode ?: ""
+
+                        // Create the PickedLocation
+                        pickedLocation = PickedLocation(
+                            lat = point.latitude,
+                            lon = point.longitude,
+                            cityName = city,
+                            countryCode = countryCode
+                        )
                     }
                     ClickResult.Consume
                 }
@@ -249,7 +262,6 @@ fun LocationPickerScreen(
     }
 }
 
-// Helper functions remain unchanged
 private suspend fun geocodeCity(context: android.content.Context, query: String): PickedLocation? =
     withContext(Dispatchers.IO) {
         try {
@@ -258,20 +270,24 @@ private suspend fun geocodeCity(context: android.content.Context, query: String)
                 suspendCoroutine { cont ->
                     geocoder.getFromLocationName(query, 1) { addresses ->
                         val first = addresses.firstOrNull()
-                        cont.resume(
-                            if (first != null)
-                                PickedLocation(first.latitude, first.longitude, first.locality ?: query)
-                            else null
-                        )
+                        if (first != null) {
+                            val city = first.locality ?: first.subAdminArea ?: query
+                            val countryCode = first.countryCode ?: ""
+                            cont.resume(PickedLocation(first.latitude, first.longitude, city, countryCode))
+                        } else {
+                            cont.resume(null)
+                        }
                     }
                 }
             } else {
                 @Suppress("DEPRECATION")
                 val addresses = geocoder.getFromLocationName(query, 1)
                 val first = addresses?.firstOrNull()
-                if (first != null)
-                    PickedLocation(first.latitude, first.longitude, first.locality ?: query)
-                else null
+                if (first != null) {
+                    val city = first.locality ?: first.subAdminArea ?: query
+                    val countryCode = first.countryCode ?: ""
+                    PickedLocation(first.latitude, first.longitude, city, countryCode)
+                } else null
             }
         } catch (e: Exception) {
             null
@@ -282,18 +298,30 @@ private suspend fun reverseGeocodeLatLng(
     context: android.content.Context,
     lat: Double,
     lon: Double
-): String? = withContext(Dispatchers.IO) {
+): AddressDetails? = withContext(Dispatchers.IO) {
     try {
         val geocoder = Geocoder(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             suspendCoroutine { cont ->
                 geocoder.getFromLocation(lat, lon, 1) { addresses ->
-                    cont.resume(addresses.firstOrNull()?.locality)
+                    val address = addresses.firstOrNull()
+                    if (address != null) {
+                        val city = address.locality ?: address.subAdminArea ?: "Unknown Location"
+                        val countryCode = address.countryCode ?: ""
+                        cont.resume(AddressDetails(city, countryCode))
+                    } else {
+                        cont.resume(null)
+                    }
                 }
             }
         } else {
             @Suppress("DEPRECATION")
-            geocoder.getFromLocation(lat, lon, 1)?.firstOrNull()?.locality
+            val address = geocoder.getFromLocation(lat, lon, 1)?.firstOrNull()
+            if (address != null) {
+                val city = address.locality ?: address.subAdminArea ?: "Unknown Location"
+                val countryCode = address.countryCode ?: ""
+                AddressDetails(city, countryCode)
+            } else null
         }
     } catch (e: Exception) {
         null

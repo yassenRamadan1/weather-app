@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -66,11 +67,12 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsStateWithLifecycle()
+    
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val hasLaunchedRequest by viewModel.hasLaunchedPermissionRequest.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.userMessage) {
         viewModel.userMessage.collect { messageResId ->
             Toast.makeText(context, context.getString(messageResId), Toast.LENGTH_LONG).show()
         }
@@ -84,23 +86,17 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
     )
 
     LaunchedEffect(permissionState.allPermissionsGranted) {
-        val granted = permissionState.allPermissionsGranted
-        if (granted || hasLaunchedRequest) {
-            val isPermanentlyDenied = !granted &&
+        if (permissionState.allPermissionsGranted || hasLaunchedRequest) {
+            val isPermanentlyDenied = !permissionState.allPermissionsGranted &&
                     permissionState.permissions.all { perm ->
                         !perm.status.isGranted && !perm.status.shouldShowRationale
                     }
             viewModel.onPermissionResult(
-                granted = granted,
+                granted = permissionState.allPermissionsGranted,
                 isPermanentlyDenied = isPermanentlyDenied
             )
         }
     }
-
-    val isPermanentlyDenied = hasLaunchedRequest &&
-            permissionState.permissions.all { perm ->
-                !perm.status.isGranted && !perm.status.shouldShowRationale
-            }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -112,97 +108,116 @@ fun HomeScreen(viewModel: HomeViewModel = koinViewModel()) {
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
-    val brushBackGround = Brush.verticalGradient(
-        colors = listOf(
-            Theme.colors.gradientBackground.gradientBackgroundStart,
-            Theme.colors.gradientBackground.gradientBackgroundEnd
+    val startColor = Theme.colors.gradientBackground.gradientBackgroundStart
+    val endColor = Theme.colors.gradientBackground.gradientBackgroundEnd
+    val brushBackground = remember(startColor, endColor) {
+        Brush.verticalGradient(
+            colors = listOf(startColor, endColor)
         )
-    )
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = brushBackGround)
+            .background(brush = brushBackground)
             .padding(top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()),
         contentAlignment = Alignment.Center
     ) {
         when (val state = uiState) {
-            is HomeUiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = Theme.colors.primaryIconColor
+            is HomeUiState.Loading -> HomeLoadingIndicator()
+            
+            is HomeUiState.Success -> HomeSuccessContent(
+                state = state,
+                isRefreshing = isRefreshing,
+                onRefresh = viewModel::onRefresh,
+                onEnableGps = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
             )
-
-            is HomeUiState.Success -> {
-                PullToRefreshBox(
-                    isRefreshing = isRefreshing,
-                    onRefresh = viewModel::onRefresh,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        AnimatedVisibility(visible = state.isFromCache) {
-                            CacheBanner()
-                        }
-                        AnimatedVisibility(visible = state.isStaleLocation && !state.isFromCache) {
-                            StaleLocationBanner(
-                                source = state.locationSource,
-                                onEnableGps = {
-                                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                                }
-                            )
-                        }
-                        WeatherDisplayContent(
-                            currentWeather = state.currentWeather,
-                            hourlyForecast = state.hourlyForecast,
-                            dailyForecast = state.dailyForecast,
-                            currentDateFormatted = state.currentDateFormatted,
-                            currentTimeFormatted = state.currentTimeFormatted,
-                            temperatureUnit = state.temperatureUnit,
-                            windSpeedUnit = state.windSpeedUnit,
-                            isStaleLocation = state.isStaleLocation,
-                            onEnableGps = {
-                                context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                            },
-                        )
-                    }
-                }
-            }
 
             is HomeUiState.Error -> ErrorContent(
                 message = state.message,
-                onRetry = { viewModel.resolveLocationAndLoadWeather() }
+                onRetry = viewModel::resolveLocationAndLoadWeather
             )
 
-            is HomeUiState.NeedLocationPermission -> PermissionPrompt(
-                isPermanentlyDenied = isPermanentlyDenied,
-                onRequestPermission = {
-                    viewModel.onPermissionRequestLaunched()
-                    permissionState.launchMultiplePermissionRequest()
-                },
-                onOpenAppSettings = {
-                    context.startActivity(
-                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.fromParts("package", context.packageName, null)
+            is HomeUiState.NeedLocationPermission -> {
+                val isPermanentlyDenied = hasLaunchedRequest &&
+                        permissionState.permissions.all { perm ->
+                            !perm.status.isGranted && !perm.status.shouldShowRationale
                         }
-                    )
-                }
-            )
+                PermissionPrompt(
+                    isPermanentlyDenied = isPermanentlyDenied,
+                    onRequestPermission = {
+                        viewModel.onPermissionRequestLaunched()
+                        permissionState.launchMultiplePermissionRequest()
+                    },
+                    onOpenAppSettings = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", context.packageName, null)
+                            }
+                        )
+                    }
+                )
+            }
 
             is HomeUiState.GpsDisabled -> GpsDisabledPrompt(
-                onEnableGps = {
-                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                }
+                onEnableGps = { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
             )
 
             is HomeUiState.GpsNoFix -> GpsNoFixPrompt(
-                onRetry = { viewModel.resolveLocationAndLoadWeather() }
+                onRetry = viewModel::resolveLocationAndLoadWeather
             )
 
             is HomeUiState.NeedManualLocation -> NeedManualLocationPrompt(
-                onOpenMap = {  }
+                onOpenMap = { /* Navigate to Map */ }
             )
         }
     }
+}
 
+@Composable
+private fun HomeLoadingIndicator() {
+    CircularProgressIndicator(
+        modifier = Modifier.size(48.dp),
+        color = Theme.colors.primaryIconColor
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeSuccessContent(
+    state: HomeUiState.Success,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onEnableGps: () -> Unit
+) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            AnimatedVisibility(visible = state.isFromCache) {
+                CacheBanner()
+            }
+            AnimatedVisibility(visible = state.isStaleLocation && !state.isFromCache) {
+                StaleLocationBanner(
+                    source = state.locationSource,
+                    onEnableGps = onEnableGps
+                )
+            }
+            WeatherDisplayContent(
+                currentWeather = state.currentWeather,
+                hourlyForecast = state.hourlyForecast,
+                dailyForecast = state.dailyForecast,
+                currentDateFormatted = state.currentDateFormatted,
+                currentTimeFormatted = state.currentTimeFormatted,
+                temperatureUnit = state.temperatureUnit,
+                windSpeedUnit = state.windSpeedUnit,
+                isStaleLocation = state.isStaleLocation,
+                onEnableGps = onEnableGps,
+            )
+        }
+    }
 }
 
 @Composable
@@ -267,7 +282,7 @@ private fun PermissionPrompt(
                 rememberVectorPainter(Icons.Default.LocationOn),
             contentDescription = null,
             modifier = Modifier.size(72.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = Theme.colors.buttonColor
         )
 
         Text(
@@ -290,8 +305,7 @@ private fun PermissionPrompt(
         Button(
             onClick = if (isPermanentlyDenied) onOpenAppSettings else onRequestPermission,
             modifier = Modifier.fillMaxWidth(),
-            colors = if (isPermanentlyDenied) ButtonDefaults.buttonColors(Theme.colors.errorColor)
-            else ButtonDefaults.buttonColors(Theme.colors.buttonColor)
+            colors = ButtonDefaults.buttonColors(containerColor = Theme.colors.buttonColor)
         ) {
             Text(
                 if (isPermanentlyDenied) stringResource(R.string.open_app_settings)
@@ -328,7 +342,7 @@ private fun GpsDisabledPrompt(onEnableGps: () -> Unit) {
         Button(
             onClick = onEnableGps,
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(Theme.colors.buttonColor)
+            colors = ButtonDefaults.buttonColors(containerColor = Theme.colors.buttonColor)
         ) {
             Text(stringResource(R.string.enable_location_services))
         }
@@ -362,7 +376,7 @@ private fun GpsNoFixPrompt(onRetry: () -> Unit) {
         Button(
             onClick = onRetry,
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(Theme.colors.buttonColor)
+            colors = ButtonDefaults.buttonColors(containerColor = Theme.colors.buttonColor)
         ) {
             Text(stringResource(R.string.retry))
         }
@@ -388,4 +402,3 @@ private fun NeedManualLocationPrompt(onOpenMap: () -> Unit) {
         }
     }
 }
-

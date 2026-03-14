@@ -16,6 +16,8 @@ import com.example.weather_app.data.weather.reciver.AlertBroadcastReceiver
 import com.example.weather_app.domain.entity.alert.WeatherAlert
 import com.example.weather_app.domain.entity.weather.Weather
 
+import com.example.weather_app.presentation.util.toUnitRes
+
 object AlertNotificationManager {
 
     const val CHANNEL_NOTIFICATION = "weather_alerts_notification"
@@ -55,11 +57,12 @@ object AlertNotificationManager {
 
     fun showNotification(context: Context, alert: WeatherAlert, weather: Weather) {
         val nm = context.getSystemService(NotificationManager::class.java)
+        val summary = buildWeatherSummary(context, weather)
         val notification = NotificationCompat.Builder(context, CHANNEL_NOTIFICATION)
             .setSmallIcon(R.drawable.cloudy_logo)
             .setContentTitle(buildTitle(context, alert))
-            .setContentText(buildWeatherSummary(weather))
-            .setStyle(NotificationCompat.BigTextStyle().bigText(buildWeatherSummary(weather)))
+            .setContentText(summary)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(summary))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .setContentIntent(buildContentIntent(context, alert.id))
@@ -71,11 +74,12 @@ object AlertNotificationManager {
     fun showAlarm(context: Context, alert: WeatherAlert, weather: Weather) {
         val nm = context.getSystemService(NotificationManager::class.java)
         val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val summary = buildWeatherSummary(context, weather)
         val notification = NotificationCompat.Builder(context, CHANNEL_ALARM)
             .setSmallIcon(R.drawable.cloudy_logo)
             .setContentTitle(buildTitle(context, alert))
-            .setContentText(buildWeatherSummary(weather))
-            .setStyle(NotificationCompat.BigTextStyle().bigText(buildWeatherSummary(weather)))
+            .setContentText(summary)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(summary))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSound(alarmUri)
             .setVibrate(longArrayOf(0, 500, 300, 500, 300, 500))
@@ -101,11 +105,15 @@ object AlertNotificationManager {
         return context.getString(R.string.alert_notification_title, city)
     }
 
-    private fun buildWeatherSummary(w: Weather): String =
-        "${w.description.replaceFirstChar { it.uppercase() }} · " +
-                "${w.temperature.toInt()}° · " +
-                "💨 ${w.windSpeed} m/s · " +
+    private fun buildWeatherSummary(context: Context, w: Weather): String {
+        val tempSymbol = context.getString(R.string.unit_celsius)
+        val windSymbol = context.getString(R.string.unit_meters_per_sec)
+        
+        return "${w.description.replaceFirstChar { it.uppercase() }} · " +
+                "${w.temperature.toInt()}$tempSymbol · " +
+                "💨 ${w.windSpeed} $windSymbol · " +
                 "☁ ${w.cloudiness}%"
+    }
 
     private fun buildDismissIntent(context: Context, alertId: Long): PendingIntent {
         val intent = Intent(context, AlertBroadcastReceiver::class.java).apply {

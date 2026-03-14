@@ -10,19 +10,18 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
-    viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { MainViewModel(get()) }
     viewModel { FavoriteScreenViewModel(get(), get(), get()) }
-    viewModel { FavoriteDetailsViewModel(get(),get(),get(),get(),get()) }
+    viewModel { FavoriteDetailsViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel {
         AlertsScreenViewModel(
-            getAllAlerts             = get(),
-            addAlertUseCase         = get(),
-            deleteAlertUseCase      = get(),
-            setAlertActiveUseCase   = get(),
-            userPreferencesRepository = get(),
-            alarmScheduler          = get()
+            getAllAlerts = get(),
+            addAlertUseCase = get(),
+            deleteAlertUseCase = get(),
+            setAlertActiveUseCase = get(),
+            getPreferredLocationUseCase = get()
         )
     }
 }

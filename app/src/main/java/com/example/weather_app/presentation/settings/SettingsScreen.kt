@@ -58,6 +58,8 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import org.koin.androidx.compose.koinViewModel
 
 
+import com.example.weather_app.presentation.util.toUnitRes
+
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val prefs by viewModel.userPreferences.collectAsStateWithLifecycle()

@@ -7,9 +7,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.maplibre.compose.map.GestureOptions
 
-/**
- * Controls initial map viewport and the tile-style URL.
- */
+
 data class MapConfig(
     val initialLat: Double = 31.0822,
     val initialLon: Double = 29.7408,
@@ -24,10 +22,6 @@ data class MapConfig(
     ),
 )
 
-/**
- * Controls how long (ms) the search query is debounced and the
- * minimum character count before a geocode request is fired.
- */
 data class SearchConfig(
     val debounceMillis: Long = 800L,
     val minQueryLength: Int = 3,
@@ -36,27 +30,22 @@ data class SearchConfig(
 )
 
 /**
- * Visual tokens for the search bar card.
  */
 data class SearchBarColors(
-    val containerColor: Color = Color.Unspecified,  // falls back to MaterialTheme
+    val containerColor: Color = Color.Unspecified,
     val focusedBorderColor: Color = Color.Transparent,
     val unfocusedBorderColor: Color = Color.Transparent,
 )
 
-/**
- * Visual tokens for the confirmation card at the bottom.
- */
+
 data class ConfirmationCardColors(
     val containerColor: Color = Color.Unspecified,
-    val labelColor: Color = Color.Unspecified,       // falls back to primary
+    val labelColor: Color = Color.Unspecified,
     val titleColor: Color = Color.Unspecified,
     val buttonContainerColor: Color = Color.Unspecified,
 )
 
-/**
- * All shape + spacing customisation for the two floating cards.
- */
+
 data class LocationPickerShapes(
     val searchBarShape: Shape = RoundedCornerShape(32.dp),
     val confirmationCardShape: Shape = RoundedCornerShape(16.dp),

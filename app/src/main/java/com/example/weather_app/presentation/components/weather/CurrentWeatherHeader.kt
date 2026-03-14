@@ -11,18 +11,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.ConfigurationCompat
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.designsystem.theme.WTTheme
+import com.example.weather_app.presentation.util.getLocalizedCountryName
+import java.util.Locale
 
 @Composable
 fun CurrentWeatherHeader(
     cityName: String,
+    countryCode: String,
     dateFormatted: String,
     timeFormatted: String,
     iconCode: String,
@@ -31,6 +36,9 @@ fun CurrentWeatherHeader(
     description: String,
     modifier: Modifier = Modifier,
 ) {
+    val currentLocale = ConfigurationCompat.getLocales(LocalConfiguration.current).get(0)
+        ?: Locale.getDefault()
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -48,11 +56,22 @@ fun CurrentWeatherHeader(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.CenterStart,
             ) {
-                Text(
-                    text = cityName,
-                    style = Theme.typography.title,
-                    color = Theme.colors.textColors.titleColor,
-                )
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+
+                ) {
+                    Text(
+                        text = getLocalizedCountryName(countryCode,currentLocale),
+                        style = Theme.typography.title,
+                        color = Theme.colors.textColors.titleColor,
+                    )
+                    Text(
+                        text = cityName ,
+                        style = Theme.typography.hintMedium,
+                        color = Theme.colors.textColors.hintColor,
+                    )
+                }
             }
 
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
@@ -103,6 +122,7 @@ fun CurrentWeatherHeaderPreview() {
     WTTheme {
         CurrentWeatherHeader(
             cityName = "New York",
+            countryCode = "US",
             dateFormatted = "June 10, 2024",
             timeFormatted = "2:00 PM",
             iconCode = "01d",

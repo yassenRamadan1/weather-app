@@ -56,10 +56,10 @@ class FavoriteScreenViewModel(
         }
     }
 
-    fun addFavoriteLocation(lat: Double, lon: Double, name: String) {
+    fun addFavoriteLocation(lat: Double, lon: Double, name: String, countryCode: String) {
         val location = FavoriteLocation(
             cityName = name,
-            countryCode = "",
+            countryCode = countryCode,
             lat = lat,
             lon = lon
         )
@@ -75,7 +75,8 @@ class FavoriteScreenViewModel(
             }
         }
     }
-    fun removeFavoriteLocation(lat: Double,lon: Double){
+
+    fun removeFavoriteLocation(lat: Double, lon: Double) {
         viewModelScope.launch {
             try {
                 deleteFavoriteLocation(lat, lon)

@@ -56,6 +56,8 @@ class WeatherLocalDataSourceImpl(
 
     override fun getAllAlerts(): Flow<List<WeatherAlertEntity>> = weatherAlertDao.getAllAlerts()
 
+    override suspend fun getAlertById(id: Long): WeatherAlertEntity? = weatherAlertDao.getAlertById(id)
+
     override suspend fun insertAlert(entity: WeatherAlertEntity)=
         weatherAlertDao.insert(entity)
 

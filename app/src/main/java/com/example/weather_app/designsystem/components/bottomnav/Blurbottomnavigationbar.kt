@@ -65,7 +65,7 @@ fun BlurBottomNavigationBar(
                     radiusY = 16.dp
                 )
                 .background(
-                    Theme.colors.gradientBackground.gradientBackgroundEnd.copy(alpha = 0.8f),
+                    Theme.colors.gradientBackground.gradientBackgroundEnd.copy(alpha = 0.9f),
                 ),
         )
         Row(
@@ -160,7 +160,7 @@ private fun RowScope.NavItem(
 @Composable
 fun BlurBottomNavigationBarPreview() {
     WTTheme() {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Red), contentAlignment = Alignment.BottomCenter) {
+        Box(modifier = Modifier.fillMaxSize().background(Theme.colors.gradientBackground.gradientBackgroundEnd), contentAlignment = Alignment.BottomCenter) {
         BlurBottomNavigationBar(
             navController = rememberNavController(),
         )}
@@ -170,7 +170,7 @@ fun BlurBottomNavigationBarPreview() {
 @Composable
 fun BlurBottomNavigationBarDarkPreview() {
     WTTheme(isDarkTheme = true) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Red), contentAlignment = Alignment.BottomCenter) {
+        Box(modifier = Modifier.fillMaxSize().background(Theme.colors.gradientBackground.gradientBackgroundEnd), contentAlignment = Alignment.BottomCenter) {
             BlurBottomNavigationBar(
                 navController = rememberNavController(),
             )}

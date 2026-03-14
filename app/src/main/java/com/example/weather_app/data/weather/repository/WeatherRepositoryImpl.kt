@@ -93,6 +93,7 @@ class WeatherRepositoryImpl(
         }.flowOn(Dispatchers.IO)
 
     override suspend fun addAlert(alert: WeatherAlert): Long = local.insertAlert(alert.toEntity())
+    override suspend fun getAlertById(id: Long): WeatherAlert? = local.getAlertById(id)?.toDomain()
     override suspend fun deleteAlert(id: Long) {
         local.deleteAlert(id)
     }

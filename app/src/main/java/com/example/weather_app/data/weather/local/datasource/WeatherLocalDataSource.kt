@@ -26,6 +26,8 @@ interface WeatherLocalDataSource {
     suspend fun deleteWeatherData(lat: Double, lon: Double)
     fun getAllAlerts(): Flow<List<WeatherAlertEntity>>
 
+    suspend fun getAlertById(id: Long): WeatherAlertEntity?
+
     suspend fun insertAlert(entity: WeatherAlertEntity): Long
 
     suspend fun deleteAlert(id: Long)

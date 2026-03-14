@@ -12,7 +12,7 @@ val repositoryModule = module {
         UserPreferencesRepositoryImpl(
             locationProvider = get(),
             userPreferencesDataSource = get(),
-            geocoder = get()
+            geocodingProvider = get()
         )
     }
 }
