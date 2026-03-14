@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.first
 
 class GetPreferredLocationUseCase(
     private val locationRepository: UserPreferencesRepository,
-    private val userPreferencesDataSource: UserPreferencesDataSource
+    private val userPreferencesRepository: UserPreferencesRepository
 ) {
     suspend operator fun invoke(): LocationResult {
-        val prefs = userPreferencesDataSource.userPreferences.first()
+        val prefs = userPreferencesRepository.userPreferences.first()
         return locationRepository.getPreferredLocation(prefs)
     }
 }

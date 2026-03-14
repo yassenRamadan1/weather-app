@@ -43,7 +43,7 @@
                 android:value="true" />
         </service>
         <receiver
-            android:name=".data.weather.reciver.AlertBroadcastReceiver"
+            android:name=".data.receiver.AlertBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.example.weather_app.ACTION_ALERT_TRIGGER" />
@@ -52,7 +52,7 @@
         </receiver>
 
         <receiver
-            android:name=".data.weather.reciver.BootReceiver"
+            android:name=".data.receiver.BootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

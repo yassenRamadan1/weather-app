@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.favorites.favorite
+package com.example.weather_app.presentation.favorites
 
 import com.example.weather_app.domain.entity.weather.FavoriteLocation
 

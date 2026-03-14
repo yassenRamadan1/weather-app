@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.components.map
+package com.example.weather_app.presentation.locationpicker
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.weather_app.presentation.components.models.PickedLocation
+import com.example.weather_app.presentation.locationpicker.model.PickedLocation
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import io.github.dellisd.spatialk.geojson.Point

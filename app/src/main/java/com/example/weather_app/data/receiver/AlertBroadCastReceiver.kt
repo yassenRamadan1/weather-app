@@ -1,4 +1,4 @@
-package com.example.weather_app.data.weather.reciver
+package com.example.weather_app.data.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,8 +6,8 @@ import android.content.Intent
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.weather_app.data.weather.notification.AlertNotificationManager
-import com.example.weather_app.data.weather.services.AlertCheckWorker
+import com.example.weather_app.data.notification.AlertNotificationManager
+import com.example.weather_app.data.services.AlertCheckWorker
 
 
 class AlertBroadcastReceiver : BroadcastReceiver() {

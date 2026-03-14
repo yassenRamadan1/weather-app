@@ -1,9 +1,9 @@
-package com.example.weather_app.data.weather.services
+package com.example.weather_app.data.services
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.weather_app.data.weather.notification.AlertNotificationManager
+import com.example.weather_app.data.notification.AlertNotificationManager
 import com.example.weather_app.domain.entity.alert.AlertConditionMode
 import com.example.weather_app.domain.entity.alert.AlertType
 import com.example.weather_app.domain.entity.alert.WeatherAlert

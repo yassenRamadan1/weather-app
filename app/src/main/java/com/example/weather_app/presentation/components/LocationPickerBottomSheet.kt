@@ -27,8 +27,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
-import com.example.weather_app.presentation.components.models.AddressDetails
-import com.example.weather_app.presentation.components.models.PickedLocation
+import com.example.weather_app.presentation.locationpicker.model.AddressDetails
+import com.example.weather_app.presentation.locationpicker.model.PickedLocation
+
 import io.github.dellisd.spatialk.geojson.Feature
 import io.github.dellisd.spatialk.geojson.FeatureCollection
 import io.github.dellisd.spatialk.geojson.Point

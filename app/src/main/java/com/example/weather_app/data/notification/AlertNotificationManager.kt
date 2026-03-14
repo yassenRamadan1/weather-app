@@ -1,4 +1,4 @@
-package com.example.weather_app.data.weather.notification
+package com.example.weather_app.data.notification
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -12,7 +12,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.weather_app.MainActivity
 import com.example.weather_app.R
-import com.example.weather_app.data.weather.reciver.AlertBroadcastReceiver
+import com.example.weather_app.data.receiver.AlertBroadcastReceiver
 import com.example.weather_app.domain.entity.alert.WeatherAlert
 import com.example.weather_app.domain.entity.weather.Weather
 

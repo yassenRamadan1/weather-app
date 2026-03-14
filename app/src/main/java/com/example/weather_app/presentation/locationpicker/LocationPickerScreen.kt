@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.components.map
+package com.example.weather_app.presentation.locationpicker
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.weather_app.R
-import com.example.weather_app.presentation.components.models.PickedLocation
+import com.example.weather_app.presentation.locationpicker.model.PickedLocation
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest

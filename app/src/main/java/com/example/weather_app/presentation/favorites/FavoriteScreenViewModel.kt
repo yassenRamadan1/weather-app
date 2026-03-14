@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.favorites.favorite
+package com.example.weather_app.presentation.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
