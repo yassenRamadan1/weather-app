@@ -58,8 +58,8 @@ fun AddAlertBottomSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState       = sheetState,
-        containerColor   = Theme.colors.gradientBackground.gradientBackgroundEnd,
+        sheetState = sheetState,
+        containerColor = Theme.colors.gradientBackground.gradientBackgroundEnd,
         dragHandle = {
             BottomSheetDefaults.DragHandle(color = Theme.colors.textColors.hintColor)
         }
@@ -74,30 +74,30 @@ fun AddAlertBottomSheet(
 
             // ── Title ─────────────────────────────────────────────────────────
             Text(
-                text     = stringResource(R.string.add_weather_alert),
-                style    = Theme.typography.title,
-                color    = Theme.colors.textColors.titleColor,
+                text = stringResource(R.string.add_weather_alert),
+                style = Theme.typography.title,
+                color = Theme.colors.textColors.titleColor,
                 modifier = Modifier.padding(bottom = Theme.spacing.medium)
             )
 
             // ── Start time picker ─────────────────────────────────────────────
             AlertTimePicker(
-                label            = stringResource(R.string.start_duration),
-                selectedMillis   = formState.startTimeMillis,
-                error            = formState.startError,
-                onTimeSelected   = onStartTimeSelected,
-                modifier         = Modifier.fillMaxWidth()
+                label = stringResource(R.string.start_duration),
+                selectedMillis = formState.startTimeMillis,
+                error = formState.startError,
+                onTimeSelected = onStartTimeSelected,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(Theme.spacing.medium))
 
             // ── End time picker ───────────────────────────────────────────────
             AlertTimePicker(
-                label            = stringResource(R.string.end_duration),
-                selectedMillis   = formState.endTimeMillis,
-                error            = formState.endError,
-                onTimeSelected   = onEndTimeSelected,
-                modifier         = Modifier.fillMaxWidth()
+                label = stringResource(R.string.end_duration),
+                selectedMillis = formState.endTimeMillis,
+                error = formState.endError,
+                onTimeSelected = onEndTimeSelected,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(Theme.spacing.large))
@@ -111,7 +111,7 @@ fun AddAlertBottomSheet(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text  = if (formState.conditionMode == AlertConditionMode.ANY)
+                        text = if (formState.conditionMode == AlertConditionMode.ANY)
                             stringResource(R.string.any_weather)
                         else
                             stringResource(R.string.conditions),
@@ -119,7 +119,7 @@ fun AddAlertBottomSheet(
                         color = Theme.colors.textColors.bodyColor
                     )
                     Text(
-                        text  = if (formState.conditionMode == AlertConditionMode.ANY)
+                        text = if (formState.conditionMode == AlertConditionMode.ANY)
                             stringResource(R.string.any_weather_desc)
                         else
                             stringResource(R.string.conditions_desc),
@@ -135,59 +135,57 @@ fun AddAlertBottomSheet(
                         )
                     },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor   = Theme.colors.onBodyColor,
-                        checkedTrackColor   = Theme.colors.primary,
+                        checkedThumbColor = Theme.colors.onBodyColor,
+                        checkedTrackColor = Theme.colors.primary,
                         uncheckedThumbColor = Theme.colors.textColors.hintColor,
                         uncheckedTrackColor = Theme.colors.textColors.hintColor.copy(alpha = 0.3f)
                     )
                 )
             }
 
-            // ── Threshold fields (animated) ───────────────────────────────────
             AnimatedVisibility(
                 visible = formState.conditionMode == AlertConditionMode.CONDITIONS,
-                enter   = expandVertically() + fadeIn(),
-                exit    = shrinkVertically() + fadeOut()
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
             ) {
                 Column {
                     Spacer(Modifier.height(Theme.spacing.medium))
 
                     ThresholdInputField(
-                        label         = stringResource(R.string.temperature_threshold),
-                        value         = formState.temperatureThreshold,
-                        suffix        = "°",
+                        label = stringResource(R.string.temperature_threshold),
+                        value = formState.temperatureThreshold,
+                        suffix = "°",
                         onValueChange = onTemperatureChanged,
                         allowNegative = true,
-                        modifier      = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(Modifier.height(Theme.spacing.small))
 
                     ThresholdInputField(
-                        label         = stringResource(R.string.wind_threshold),
-                        value         = formState.windThreshold,
-                        suffix        = "m/s",
+                        label = stringResource(R.string.wind_threshold),
+                        value = formState.windThreshold,
+                        suffix = "m/s",
                         onValueChange = onWindChanged,
                         allowNegative = false,
-                        modifier      = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(Modifier.height(Theme.spacing.small))
 
                     ThresholdInputField(
-                        label         = stringResource(R.string.cloudiness_threshold),
-                        value         = formState.cloudinessThreshold,
-                        suffix        = "%",
+                        label = stringResource(R.string.cloudiness_threshold),
+                        value = formState.cloudinessThreshold,
+                        suffix = "%",
                         onValueChange = onCloudinessChanged,
                         allowNegative = false,
-                        modifier      = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     )
 
-                    // Condition-level error (e.g. "set at least one threshold")
                     formState.conditionError?.let { err ->
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text  = err.asString(),
+                            text = err.asString(),
                             style = Theme.typography.bodySmall,
                             color = Theme.colors.errorColor,
                             modifier = Modifier.padding(start = Theme.spacing.small)
@@ -200,9 +198,8 @@ fun AddAlertBottomSheet(
             HorizontalDivider(color = Theme.colors.textColors.hintColor.copy(alpha = 0.2f))
             Spacer(Modifier.height(Theme.spacing.medium))
 
-            // ── Alert type radio group ─────────────────────────────────────────
             Text(
-                text  = stringResource(R.string.notify_me_by),
+                text = stringResource(R.string.notify_me_by),
                 style = Theme.typography.bodyMedium,
                 color = Theme.colors.textColors.bodyColor
             )
@@ -219,17 +216,17 @@ fun AddAlertBottomSheet(
                     ) {
                         RadioButton(
                             selected = formState.alertType == type,
-                            onClick  = { onAlertTypeChanged(type) },
-                            colors   = RadioButtonDefaults.colors(
-                                selectedColor   = Theme.colors.primary,
+                            onClick = { onAlertTypeChanged(type) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Theme.colors.primary,
                                 unselectedColor = Theme.colors.textColors.hintColor
                             )
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            text  = stringResource(
+                            text = stringResource(
                                 when (type) {
-                                    AlertType.ALARM        -> R.string.alarm
+                                    AlertType.ALARM -> R.string.alarm
                                     AlertType.NOTIFICATION -> R.string.notification
                                 }
                             ),
@@ -245,30 +242,29 @@ fun AddAlertBottomSheet(
 
             Spacer(Modifier.height(Theme.spacing.large))
 
-            // ── Save button ────────────────────────────────────────────────────
             Button(
-                onClick  = onSave,
-                enabled  = formState.canSave,
+                onClick = onSave,
+                enabled = formState.canSave,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor         = Theme.colors.primary,
-                    contentColor           = Theme.colors.onBodyColor,
+                    containerColor = Theme.colors.primary,
+                    contentColor = Theme.colors.onBodyColor,
                     disabledContainerColor = Theme.colors.primary.copy(alpha = 0.38f),
-                    disabledContentColor   = Theme.colors.onBodyColor.copy(alpha = 0.38f)
+                    disabledContentColor = Theme.colors.onBodyColor.copy(alpha = 0.38f)
                 ),
                 shape = Theme.shapes.medium
             ) {
                 if (formState.isSaving) {
                     CircularProgressIndicator(
-                        color       = Theme.colors.onBodyColor,
+                        color = Theme.colors.onBodyColor,
                         strokeWidth = 2.dp,
-                        modifier    = Modifier.size(22.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 } else {
                     Text(
-                        text  = stringResource(R.string.save_alert),
+                        text = stringResource(R.string.save_alert),
                         style = Theme.typography.bodyMedium
                     )
                 }

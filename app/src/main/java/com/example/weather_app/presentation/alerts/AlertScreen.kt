@@ -89,6 +89,10 @@ fun AlertScreen(
                         )
                     }
                 }
+
+                AlertsScreenEffect.SaveSuccess -> {
+                    showBottomSheet = false
+                }
             }
         }
     }
@@ -171,7 +175,6 @@ fun AlertScreen(
             },
             onSave = {
                 viewModel.saveAlert()
-                showBottomSheet = false
             },
             onStartTimeSelected = viewModel::onStartTimeSelected,
             onEndTimeSelected = viewModel::onEndTimeSelected,

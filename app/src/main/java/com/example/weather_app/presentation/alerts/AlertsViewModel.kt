@@ -112,11 +112,14 @@ class AlertsScreenViewModel(
     }
     fun saveAlert() {
         viewModelScope.launch {
+            val currentState = _uiState.value
             _formState.update { it.copy(isSaving = true) }
+            _uiState.value = AlertsScreenUiState.Loading
             try {
                 val locResult = getPreferredLocationUseCase()
 
                 if (locResult !is LocationResult.Success) {
+                    _uiState.value = currentState
                     _effect.emit(
                         AlertsScreenEffect.ShowSnackbar(
                             UiText.StringResource(R.string.error_no_location)
@@ -141,25 +144,31 @@ class AlertsScreenViewModel(
                 )
 
                 addAlertUseCase(alert)
+                _effect.emit(AlertsScreenEffect.SaveSuccess)
                 resetForm()
 
             } catch (e: AppError.InvalidPeriod) {
+                _uiState.value = currentState
                 _formState.update {
                     it.copy(startError = UiText.StringResource(R.string.error_start_time_future))
                 }
             } catch (e: AppError.PeriodOrder) {
+                _uiState.value = currentState
                 _formState.update {
                     it.copy(endError = UiText.StringResource(R.string.error_end_after_start))
                 }
             } catch (e: AppError.NoDaysSelected) {
+                _uiState.value = currentState
                 _formState.update {
                     it.copy(conditionError = UiText.StringResource(R.string.error_no_condition_set))
                 }
             } catch (e: AppError.ThresholdNeg) {
+                _uiState.value = currentState
                 _formState.update {
                     it.copy(conditionError = UiText.StringResource(R.string.error_threshold_negative))
                 }
             } catch (e: Exception) {
+                _uiState.value = currentState
                 val appError = e as? AppError ?: AppError.UnknownError()
                 _effect.emit(AlertsScreenEffect.ShowSnackbar(appError.toUiText()))
             } finally {
