@@ -74,6 +74,13 @@
     <string name="cancel">إلغاء</string>
     <string name="weather_details">تفاصيل الطقس</string>
 
+    <string name="unit_celsius">°م</string>
+    <string name="unit_fahrenheit">°ف</string>
+    <string name="unit_kelvin">ك</string>
+    <string name="unit_meters_per_sec">م/ث</string>
+    <string name="unit_miles_per_hour">ميل/س</string>
+    <string name="unit_pressure">هكتوباسكال</string>
+
     <string name="error_network">لا يوجد اتصال بالإنترنت. يرجى التحقق من إعدادات الشبكة.</string>
     <string name="error_server">حدث خطأ في الخادم (%1$d). يرجى المحاولة لاحقاً.</string>
     <string name="error_unauthorized">وصول غير مصرح به. يرجى التحقق من مفتاح API الخاص بك.</string>

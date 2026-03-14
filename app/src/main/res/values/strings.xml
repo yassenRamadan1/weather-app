@@ -74,6 +74,13 @@
     <string name="cancel">Cancel</string>
     <string name="weather_details">Weather Details</string>
 
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <string name="unit_meters_per_sec">m/s</string>
+    <string name="unit_miles_per_hour">mph</string>
+    <string name="unit_pressure">hPa</string>
+
     <string name="error_network">No internet connection. Please check your network settings.</string>
     <string name="error_server">Server error occurred (%1$d). Please try again later.</string>
     <string name="error_unauthorized">Unauthorized access. Please check your API key.</string>

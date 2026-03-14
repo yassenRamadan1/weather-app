@@ -68,7 +68,6 @@ fun LocationPickerScreen(
     markerPainter: Painter? = null,               // null → uses default drawable
     markerIconSize: Float = 2.5f,
     markerColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Unspecified,
-    // ── Slots ─────────────────────────────────────────────────────
     leadingSearchIcon: @Composable (() -> Unit)? = null,
     confirmationContent: (@Composable (PickedLocation, onConfirm: () -> Unit) -> Unit)? = null,
 ) {
@@ -117,7 +116,6 @@ fun LocationPickerScreen(
     ) {
         Box(modifier = modifier.fillMaxSize()) {
 
-            // ── 1. Map ────────────────────────────────────────────
             LocationMap(
                 modifier = Modifier.fillMaxSize(),
                 mapConfig = mapConfig,
@@ -135,7 +133,6 @@ fun LocationPickerScreen(
                 },
             )
 
-            // ── 2. Search bar ─────────────────────────────────────
             LocationSearchBar(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,7 +162,6 @@ fun LocationPickerScreen(
                 leadingIcon = leadingSearchIcon,
             )
 
-            // ── 3. Confirmation card ──────────────────────────────
             AnimatedVisibility(
                 visible = state.pickedLocation != null,
                 modifier = Modifier

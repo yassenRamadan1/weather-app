@@ -8,10 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.weather_app.presentation.components.models.PickedLocation
 
-/**
- * Stable state holder returned by [rememberLocationPickerState].
- * Callers may read or imperatively mutate state from outside the component.
- */
 @Stable
 class LocationPickerState(
     initialPickedLocation: PickedLocation? = null,
@@ -28,12 +24,10 @@ class LocationPickerState(
     var searchError by mutableStateOf<String?>(null)
         internal set
 
-    /** Programmatically pre-select a location (e.g. restore a saved pin). */
     fun selectLocation(location: PickedLocation) {
         pickedLocation = location
     }
 
-    /** Clear current selection and search text. */
     fun reset() {
         pickedLocation = null
         searchQuery = ""
