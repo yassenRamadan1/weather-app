@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.components.models
+package com.example.weather_app.presentation.locationpicker.model
 
 data class PickedLocation(
     val lat: Double,

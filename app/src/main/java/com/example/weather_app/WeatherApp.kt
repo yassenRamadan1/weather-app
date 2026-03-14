@@ -2,7 +2,7 @@ package com.example.weather_app
 
 import android.app.Application
 import androidx.work.Configuration
-import com.example.weather_app.data.weather.notification.AlertNotificationManager
+import com.example.weather_app.data.notification.AlertNotificationManager
 import com.example.weather_app.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

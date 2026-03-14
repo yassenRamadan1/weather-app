@@ -1,9 +1,9 @@
-package com.example.weather_app.data.weather.reciver
+package com.example.weather_app.data.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.weather_app.data.weather.services.AlarmSchedulerImpl
+import com.example.weather_app.data.services.AlarmSchedulerImpl
 import com.example.weather_app.domain.repository.WeatherRepository
 import com.example.weather_app.domain.service.AlarmScheduler
 import kotlinx.coroutines.CoroutineScope

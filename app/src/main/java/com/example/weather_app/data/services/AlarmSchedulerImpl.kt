@@ -1,11 +1,11 @@
-package com.example.weather_app.data.weather.services
+package com.example.weather_app.data.services
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.example.weather_app.data.weather.reciver.AlertBroadcastReceiver
+import com.example.weather_app.data.receiver.AlertBroadcastReceiver
 import com.example.weather_app.domain.service.AlarmScheduler
 
 class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {

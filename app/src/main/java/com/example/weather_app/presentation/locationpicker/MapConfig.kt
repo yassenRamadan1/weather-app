@@ -1,4 +1,4 @@
-package com.example.weather_app.presentation.components.map
+package com.example.weather_app.presentation.locationpicker
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color

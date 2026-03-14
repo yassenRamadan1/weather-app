@@ -1,9 +1,9 @@
-package com.example.weather_app.presentation.components.map
+package com.example.weather_app.presentation.locationpicker
 
 import android.content.Context
 import android.location.Geocoder
 import android.os.Build
-import com.example.weather_app.presentation.components.models.PickedLocation
+import com.example.weather_app.presentation.locationpicker.model.PickedLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
