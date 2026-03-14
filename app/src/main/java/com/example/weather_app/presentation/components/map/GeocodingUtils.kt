@@ -19,7 +19,7 @@ suspend fun geocodeCity(context: Context, query: String): PickedLocation? =
                         val first = addresses.firstOrNull()
                         cont.resume(
                             if (first != null)
-                                PickedLocation(first.latitude, first.longitude, first.locality ?: query)
+                                PickedLocation(first.latitude, first.longitude, first.locality ?: query, cityName = first.countryCode)
                             else null
                         )
                     }
@@ -28,7 +28,7 @@ suspend fun geocodeCity(context: Context, query: String): PickedLocation? =
                 @Suppress("DEPRECATION")
                 val first = geocoder.getFromLocationName(query, 1)?.firstOrNull()
                 if (first != null)
-                    PickedLocation(first.latitude, first.longitude, first.locality ?: query)
+                    PickedLocation(first.latitude, first.longitude, first.countryCode ?: query, cityName = first.locality)
                 else null
             }
         } catch (e: Exception) {

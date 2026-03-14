@@ -130,7 +130,7 @@ fun LocationPickerScreen(
                     keyboard?.hide()
                     scope.launch {
                         val city = reverseGeocodeLatLng(context, lat, lon)
-                        state.pickedLocation = PickedLocation(lat, lon, city)
+                        state.pickedLocation = PickedLocation(lat, lon, "", null)
                     }
                 },
             )
