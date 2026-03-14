@@ -55,7 +55,7 @@
     <string name="msg_location_permanently_denied">Location is permanently blocked. Please enable it in App Settings.</string>
     <string name="msg_using_gps_location">Using GPS location.</string>
     <string name="gps_no_fix_title">Waiting for GPS Signal</string>
-    <string name="gps_no_fix_body">GPS is enabled but your location could not be determined. Move to an open area with clear sky and tap Retry.</string>
+    <string name="gps_no_fix_body">GPS is enabled but your location could not be determined. Move to an open area with a clear sky and tap Retry.</string>
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
     <string name="pressure">Pressure</string>
@@ -81,21 +81,18 @@
     <string name="error_unknown">An unexpected error occurred. Please try again.</string>
     <string name="error_cache">Failed to access local data.</string>
     <string name="error_no_days_selected">Please select at least one day.</string>
-    <string name="error_period_order">Start date must be before end date.</string>
+    <string name="error_period_order">Start time must be before end time.</string>
     <string name="error_threshold_neg">Threshold (%1$.2f) cannot be negative.</string>
     <string name="error_validation">Validation error: %1$s</string>
-    <!-- Channels -->
     <string name="channel_notification_name">Weather Alerts</string>
     <string name="channel_notification_desc">Notifies when weather conditions match your alert</string>
     <string name="channel_alarm_name">Weather Alarm</string>
     <string name="channel_alarm_desc">Plays alarm sound when weather conditions match</string>
 
-    <!-- Notification content -->
     <string name="notification_title">Weather Alert — %1$s</string>
     <string name="alarm_title">Weather Alarm — %1$s</string>
     <string name="alarm_loading">Loading weather data…</string>
 
-    <!-- Weather lines in notification -->
     <string name="weather_line_temp">%1$d°C • Feels like %2$d°C</string>
     <string name="weather_line_rain">Rain: %1$.1f mm • %2$d°C</string>
     <string name="weather_line_wind">Wind: %1$d m/s • %2$d°C</string>
@@ -105,7 +102,6 @@
     <string name="weather_line_storm">Thunderstorm • %1$d°C</string>
     <string name="weather_full_detail">%1$s\nTemperature: %2$d°C (Feels %3$d°C)\nHumidity: %4$d%%\nWind: %5$d m/s • Visibility: %6$.1f km\n%7$s</string>
 
-    <!-- Actions -->
     <string name="action_dismiss">Dismiss</string>
     <string name="action_stop_alarm">Stop Alarm</string>
     <string name="action_save">Save</string>
@@ -113,7 +109,6 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_grant">Grant</string>
 
-    <!-- Conditions -->
     <string name="condition_rain">Rain</string>
     <string name="condition_temperature">Temperature</string>
     <string name="condition_wind">Wind</string>
@@ -122,20 +117,18 @@
     <string name="condition_cloudiness">Cloudiness</string>
     <string name="condition_thunderstorm">Thunderstorm</string>
 
-    <!-- Validation errors — shown inline in bottom sheet -->
     <string name="error_no_condition">Please select a weather condition type</string>
     <string name="error_no_days">Select at least one day</string>
     <string name="error_invalid_period">Please set both From and To hours</string>
     <string name="error_invalid_threshold">Threshold must be 0 or greater</string>
     <string name="error_generic">Something went wrong. Please try again</string>
 
-    <!-- UI labels -->
     <string name="add_alert_title">New Weather Alert</string>
-    <string name="section_condition_type">Type of event</string>
+    <string name="section_condition_type">Type of Event</string>
     <string name="section_threshold">Threshold</string>
-    <string name="section_days">Days of the week</string>
-    <string name="section_time">Active time</string>
-    <string name="section_alert_type">Notify me by</string>
+    <string name="section_days">Days of the Week</string>
+    <string name="section_time">Active Time</string>
+    <string name="section_alert_type">Notify Me By</string>
     <string name="section_description">Description</string>
     <string name="hint_description">e.g. Heavy rain</string>
     <string name="alert_time_period">From %1$s to %2$s</string>
@@ -144,11 +137,11 @@
     <string name="threshold_value">%1$s %2$s %3$s</string>
     <string name="alert_type_alarm">Alarm</string>
     <string name="alert_type_notification">Notification</string>
-    <string name="add_alert">Add alert</string>
-    <string name="delete_alert_title">Delete alert?</string>
-    <string name="delete_alert_body">This alert will be permanently removed</string>
-    <string name="permission_rationale_title">Notification permission needed</string>
-    <string name="permission_rationale_body">This app needs notification permission to alert you when weather conditions match your saved alerts</string>
+    <string name="add_alert">Add Alert</string>
+    <string name="delete_alert_title">Delete Alert?</string>
+    <string name="delete_alert_body">This alert will be permanently removed.</string>
+    <string name="permission_rationale_title">Notification Permission Needed</string>
+    <string name="permission_rationale_body">This app needs permission to alert you when weather conditions match your saved alerts.</string>
     <string name="period_from">From</string>
     <string name="period_to">To</string>
     <string name="day_mon">Mon</string>
@@ -158,39 +151,39 @@
     <string name="day_fri">Fri</string>
     <string name="day_sat">Sat</string>
     <string name="day_sun">Sun</string>
-    <string name="no_alerts_title">no alerts</string>
-    <string name="no_alerts_subtitle">"add some alerts "</string>
+    <string name="no_alerts_title">No Alerts</string>
+    <string name="no_alerts_subtitle">Add some alerts to get started.</string>
     <string name="alerts_screen_title">Alerts</string>
-    <string name="time_anytime">any time</string>
-    <string name="time_period">time period</string>
-    <string name="your_location">your location</string>
-    <string name="alert_notification_title">weather notification</string>
-    <string name="error_start_time_future">You must choose time in the future</string>
-    <string name="error_end_after_start">end date must be after start date</string>
-    <string name="error_end_time_future">end time must be in the future</string>
-    <string name="error_no_location">we dont store any location</string>
-    <string name="error_no_condition_set">"no conditions "</string>
-    <string name="error_threshold_negative">you can choose negtive threshold</string>
-    <string name="add_weather_alert">add weather alert</string>
-    <string name="start_duration">start duration</string>
-    <string name="end_duration">end duration</string>
-    <string name="any_weather">any weather</string>
-    <string name="conditions">conditions</string>
-    <string name="any_weather_desc">any weather description</string>
-    <string name="conditions_desc">condition description</string>
-    <string name="notify_me_by">notify me by</string>
-    <string name="alarm">alarm</string>
-    <string name="notification">notification</string>
-    <string name="save_alert">save alert</string>
-    <string name="temperature_threshold">tempruture threshold</string>
-    <string name="wind_threshold">wind threshold</string>
-    <string name="cloudiness_threshold">cloudiness threshold</string>
-    <string name="tap_to_select_time">tap to select time</string>
-    <string name="ok">ok</string>
-    <string name="alert_expired">alert expired</string>
-    <string name="any_weather_condition">any weather condition</string>
-    <string name="delete_alert">delete alert</string>
-    <string name="no_alerts_yet">no alerts yet</string>
+    <string name="time_anytime">Any time</string>
+    <string name="time_period">Time period</string>
+    <string name="your_location">Your location</string>
+    <string name="alert_notification_title">Weather Notification</string>
+    <string name="error_start_time_future">You must choose a time in the future.</string>
+    <string name="error_end_after_start">End time must be after the start time.</string>
+    <string name="error_end_time_future">End time must be in the future.</string>
+    <string name="error_no_location">No location saved.</string>
+    <string name="error_no_condition_set">No conditions set.</string>
+    <string name="error_threshold_negative">Threshold cannot be negative.</string>
+    <string name="add_weather_alert">Add Weather Alert</string>
+    <string name="start_duration">Start Time</string>
+    <string name="end_duration">End Time</string>
+    <string name="any_weather">Any Weather</string>
+    <string name="conditions">Conditions</string>
+    <string name="any_weather_desc">Get notified about the weather without specific conditions.</string>
+    <string name="conditions_desc">Set specific weather conditions to trigger this alert.</string>
+    <string name="notify_me_by">Notify me by</string>
+    <string name="alarm">Alarm</string>
+    <string name="notification">Notification</string>
+    <string name="save_alert">Save Alert</string>
+    <string name="temperature_threshold">Temperature Threshold</string>
+    <string name="wind_threshold">Wind Threshold</string>
+    <string name="cloudiness_threshold">Cloudiness Threshold</string>
+    <string name="tap_to_select_time">Tap to select time</string>
+    <string name="ok">OK</string>
+    <string name="alert_expired">Alert Expired</string>
+    <string name="any_weather_condition">Any weather condition</string>
+    <string name="delete_alert">Delete Alert</string>
+    <string name="no_alerts_yet">No alerts yet</string>
     <string name="delete_alert_confirmation">Are you sure you want to delete this alert?</string>
-    <string name="delete">delete</string>
+    <string name="delete">Delete</string>
 </resources>
