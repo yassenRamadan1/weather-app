@@ -38,9 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.designsystem.theme.WTTheme
 import com.example.weather_app.domain.entity.alert.AlertConditionMode
 import com.example.weather_app.domain.entity.alert.AlertType
 import com.example.weather_app.domain.entity.alert.WeatherAlert
@@ -64,24 +66,23 @@ fun AlertCard(
 
     if (showDeleteDialog) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = null,
-                    tint = Theme.colors.errorColor
-                )
+            onDismissRequest = {
+                showDeleteDialog = false
             },
             title = {
                 Text(
                     text = stringResource(R.string.delete_alert),
-                    style = Theme.typography.bodyLarge
+                    style = Theme.typography.title,
+                    color = Theme.colors.textColors.titleColor
                 )
             },
             text = {
                 Text(
-                    text = stringResource(R.string.delete_alert_confirmation),
-                    style = Theme.typography.bodyMedium
+                    text = stringResource(
+                        R.string.delete_alert_confirmation
+                    ),
+                    style = Theme.typography.bodyMedium,
+                    color = Theme.colors.textColors.bodyColor
                 )
             },
             confirmButton = {
@@ -92,16 +93,27 @@ fun AlertCard(
                     }
                 ) {
                     Text(
-                        text = stringResource(R.string.delete),
+                        text =
+                            stringResource(R.string.remove),
+                        style = Theme.typography.bodyMedium,
                         color = Theme.colors.errorColor
                     )
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(text = stringResource(R.string.cancel))
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                    }
+                ) {
+                    Text(
+                        stringResource(R.string.cancel),
+                        style = Theme.typography.bodyMedium,
+                        color = Theme.colors.textColors.bodyColor
+                    )
                 }
-            }
+            },
+            containerColor = Theme.colors.gradientBackground.gradientBackgroundEnd
         )
     }
 
@@ -110,10 +122,9 @@ fun AlertCard(
             .fillMaxWidth()
             .alpha(if (isExpired || !alert.isActive) 0.65f else 1f),
         colors = CardDefaults.cardColors(
-            containerColor = Theme.colors.cardBackgroundColor
+            containerColor =Theme.colors.textColors.titleColor.copy(alpha = 0.07f)
         ),
         shape = Theme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
@@ -284,6 +295,58 @@ private fun ConditionChip(label: String) {
             style = Theme.typography.bodySmall,
             color = Theme.colors.textColors.bodyColor,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+        )
+    }
+}
+@Preview
+@Composable
+fun AlertCardLightPreview() {
+    WTTheme(
+        isDarkTheme = false
+    ) {
+        AlertCard(
+            alert = WeatherAlert(
+                id = 1L,
+                alertType = AlertType.ALARM,
+                cityName = "New York",
+                startTimeMillis = System.currentTimeMillis() - 3600000,
+                endTimeMillis = System.currentTimeMillis() + 3600000,
+                conditionMode = AlertConditionMode.CONDITIONS,
+                temperatureThreshold = 30.0,
+                windThreshold = null,
+                cloudinessThreshold = 80,
+                isActive = true,
+                lat = 40.7128,
+                lon = -74.0060
+            ),
+            onToggleActive = {},
+            onDelete = {}
+        )
+    }
+}
+@Preview
+@Composable
+fun AlertCardDarkPreview() {
+    WTTheme(
+        isDarkTheme = true
+    ) {
+        AlertCard(
+            alert = WeatherAlert(
+                id = 1L,
+                alertType = AlertType.NOTIFICATION,
+                cityName = "Los Angeles",
+                startTimeMillis = System.currentTimeMillis() - 7200000,
+                endTimeMillis = System.currentTimeMillis() - 3600000,
+                conditionMode = AlertConditionMode.ANY,
+                temperatureThreshold = null,
+                windThreshold = null,
+                cloudinessThreshold = null,
+                isActive = false,
+                lat = 34.0522,
+                lon = -118.2437
+            ),
+            onToggleActive = {},
+            onDelete = {}
         )
     }
 }

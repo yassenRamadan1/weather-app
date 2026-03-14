@@ -1,7 +1,9 @@
 package com.example.weather_app.presentation.favorites.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,29 +14,37 @@ import androidx.compose.material3.ButtonDefaults.outlinedButtonBorder
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.os.ConfigurationCompat
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.designsystem.theme.WTTheme
+import com.example.weather_app.presentation.util.getLocalizedCountryName
+import java.util.Locale
 
 @Composable
 fun FavoriteWeatherCard(
+    countryCode: String,
     modifier: Modifier = Modifier,
     location: String = "Potosí,\nBolivia",
     onClickRemove: () -> Unit = {},
     weatherIconRes: Int = R.drawable.img_cloud,
     color: Color = Theme.colors.textColors.titleColor.copy(alpha = 0.07f)
 ) {
+    val currentLocale = ConfigurationCompat.getLocales(LocalConfiguration.current).get(0)
+        ?: Locale.getDefault()
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -47,22 +57,34 @@ fun FavoriteWeatherCard(
         ConstraintLayout(
             modifier = Modifier
                 .matchParentSize()
-                .padding(start = 20.dp, top = 16.dp, bottom = 16.dp, end = 8.dp)
+                .padding(start = 20.dp, top = 24.dp, bottom = 16.dp, end = 8.dp)
         ) {
             val (locRef, cloudRef, buttonRef) = createRefs()
             Box(
                 modifier = Modifier
-                    .width(120.dp)
+                    .width(250.dp)
                     .constrainAs(locRef) {
                         top.linkTo(parent.top, margin = 16.dp)
                         start.linkTo(parent.start)
                     },
             ) {
-                Text(
-                    text = location,
-                    style = Theme.typography.title.copy(color = Color.White),
-                    maxLines = 2
-                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = getLocalizedCountryName(countryCode, currentLocale),
+                        style = Theme.typography.bodyLarge.copy(color = Color.White),
+                        maxLines = 2
+                    )
+                    Text(
+                        text = location,
+                        style = Theme.typography.bodyMedium.copy(color = Color.White.copy(alpha = 0.7f)),
+                        maxLines = 2
+                    )
+                }
+
             }
 
             OutlinedButton (
@@ -108,6 +130,10 @@ fun FavoriteWeatherCard(
 @Composable
 fun FavoriteWeatherCardPreview() {
     WTTheme() {
-    FavoriteWeatherCard()
+    FavoriteWeatherCard(
+        countryCode = "BO",
+        location = "Potosí,\nBolivia",
+        weatherIconRes = R.drawable.img_cloud
+    )
     }
 }

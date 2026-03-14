@@ -93,7 +93,8 @@ fun FavoritesScreen(
                     viewModel.addFavoriteLocation(
                         picked.lat,
                         picked.lon,
-                        picked.cityName ?: "Unknown"
+                        picked.cityName ?: "Unknown",
+                        picked.countryCode ?: "Unknown"
                     )
                 },
                 onDismiss = { showMapPicker = false },
@@ -125,6 +126,7 @@ fun FavoritesScreenContent(
             val location = favoriteLocations[index]
             FavoriteWeatherCard(
                 location = location.cityName,
+                countryCode = location.countryCode,
                 onClickRemove = {
                     locationToDelete = location
                     showDeleteDialog = true

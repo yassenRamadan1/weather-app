@@ -52,6 +52,7 @@ fun WeatherDisplayContent(
             temperature = "${currentWeather.temperature.roundToInt()}$tempSymbol",
             feelsLike = "${currentWeather.feelsLike.roundToInt()}$tempSymbol",
             description = currentWeather.description,
+            countryCode = currentWeather.countryCode ?: "",
         )
 
         WeatherStatsRow(
