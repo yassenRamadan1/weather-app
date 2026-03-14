@@ -2,6 +2,7 @@ package com.example.weather_app.domain.entity.weather
 
 data class Weather(
     val cityName: String,
+    val weatherStateId: Int,
     val countryCode: String,
     val temperature: Double,
     val feelsLike: Double,

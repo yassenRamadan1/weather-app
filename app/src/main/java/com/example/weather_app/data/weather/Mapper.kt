@@ -47,7 +47,8 @@ fun CurrentWeatherDto.toDomain(): Weather = Weather(
     visibility = visibility,
     timestamp = dt,
     lat = coord.lat,
-    lon = coord.lon
+    lon = coord.lon,
+    weatherStateId = weather.firstOrNull()?.id ?: 800
 )
 fun CurrentWeatherDto.toEntity(): WeatherEntity = WeatherEntity(
     id = 1,
@@ -64,7 +65,8 @@ fun CurrentWeatherDto.toEntity(): WeatherEntity = WeatherEntity(
     visibility = visibility,
     timestamp = dt,
     lat = coord.lat,
-    lon = coord.lon
+    lon = coord.lon,
+    weatherStateId = weather.firstOrNull()?.id ?: 800
 )
 
 fun Weather.toEntity(): WeatherEntity = WeatherEntity(
@@ -82,7 +84,8 @@ fun Weather.toEntity(): WeatherEntity = WeatherEntity(
     visibility = visibility,
     timestamp = timestamp,
     lat = lat,
-    lon = lon
+    lon = lon,
+    weatherStateId = weatherStateId
 )
 
 fun WeatherEntity.toDomain(): Weather = Weather(
@@ -99,13 +102,14 @@ fun WeatherEntity.toDomain(): Weather = Weather(
     visibility = visibility,
     timestamp = timestamp,
     lat = lat,
-    lon = lon
+    lon = lon,
+    weatherStateId = weatherStateId
 )
 fun WeatherEntity.toDto(): CurrentWeatherDto = CurrentWeatherDto(
     name = cityName,
     coord = CoordDto(lat, lon),
     main = MainDto(temperature, feelsLike, humidity, pressure),
-    weather = listOf(WeatherDescDto(description, iconCode)),
+    weather = listOf(WeatherDescDto(description, iconCode, weatherStateId)),
     wind = WindDto(windSpeed),
     clouds = CloudsDto(cloudiness),
     visibility = visibility,
