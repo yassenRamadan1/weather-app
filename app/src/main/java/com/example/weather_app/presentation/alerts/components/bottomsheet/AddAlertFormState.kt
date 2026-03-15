@@ -12,6 +12,7 @@ data class AddAlertFormState(
     val temperatureThreshold: String = "",
     val windThreshold: String = "",
     val cloudinessThreshold: String = "",
+    val isRepeated: Boolean = false,
     val startError: UiText? = null,
     val endError: UiText? = null,
     val conditionError: UiText? = null,

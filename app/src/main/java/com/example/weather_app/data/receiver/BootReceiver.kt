@@ -25,17 +25,25 @@ class BootReceiver : BroadcastReceiver(), KoinComponent {
 
         scope.launch {
             val now = System.currentTimeMillis()
+            val dayMillis = 24 * 60 * 60 * 1000L
             try {
                 weatherRepository.getActiveAlerts().forEach { alert ->
-                    if (alert.endTimeMillis <= now) return@forEach
-                    val triggerAt = if (alert.startTimeMillis > now) {
-                        alert.startTimeMillis
-                    } else {
-                        now + 30_000L
+                    var start = alert.startTimeMillis
+                    var end = alert.endTimeMillis
+
+                    if (alert.isRepeated) {
+                        while (end <= now) {
+                            start += dayMillis
+                            end += dayMillis
+                        }
+                        weatherRepository.addAlert(alert.copy(startTimeMillis = start, endTimeMillis = end))
+                    } else if (end <= now) {
+                        return@forEach
                     }
 
+                    val triggerAt = if (start > now) start else now + 30_000L
                     scheduler.scheduleAlert(alert.id, triggerAt)
-                    scheduler.scheduleAlertEnd(alert.id, alert.endTimeMillis)
+                    scheduler.scheduleAlertEnd(alert.id, end)
                 }
             } catch (e: Exception) {
             }

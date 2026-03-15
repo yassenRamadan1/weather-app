@@ -53,7 +53,7 @@ class AlertsScreenViewModelTest {
     @Test
     fun observeAlerts_hasAlerts_uiStateSuccess() = runTest {
         // Given
-        val alert = WeatherAlert(id = 1, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 0.0, lon = 0.0, cityName = "")
+        val alert = WeatherAlert(id = 1, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, isRepeated = false, lat = 0.0, lon = 0.0, cityName = "")
         fakeWeatherRepo.addAlert(alert)
 
         // When
@@ -75,6 +75,18 @@ class AlertsScreenViewModelTest {
 
         // Then
         assertThat(viewModel.formState.value.alertType, `is`(AlertType.ALARM))
+    }
+
+    @Test
+    fun onRepeatChanged_repeated_formStateUpdated() = runTest {
+        // Given
+        val repeated = true
+
+        // When
+        viewModel.onRepeatChanged(repeated)
+
+        // Then
+        assertThat(viewModel.formState.value.isRepeated, `is`(true))
     }
 
     @Test

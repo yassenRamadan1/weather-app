@@ -52,7 +52,8 @@ class WeatherAlertDaoTest {
             isActive = true,
             lat = 30.0,
             lon = 31.0,
-            cityName = "Cairo"
+            cityName = "Cairo",
+            isRepeated = false
         )
 
         // When
@@ -66,8 +67,36 @@ class WeatherAlertDaoTest {
     @Test
     fun getActiveAlerts_alertList_onlyActiveReturned() = runTest {
         // Given
-        val alert1 = WeatherAlertEntity(id = 1, startTimeMillis = 1000L, endTimeMillis = 2000L, alertType = "ALARM", conditionMode = "WEATHER", temperatureThreshold = 30.0, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 30.0, lon = 31.0, cityName = "Cairo")
-        val alert2 = WeatherAlertEntity(id = 2, startTimeMillis = 3000L, endTimeMillis = 4000L, alertType = "ALARM", conditionMode = "WEATHER", temperatureThreshold = 35.0, windThreshold = null, cloudinessThreshold = null, isActive = false, lat = 30.0, lon = 31.0, cityName = "Alex")
+        val alert1 = WeatherAlertEntity(
+            id = 1,
+            startTimeMillis = 1000L,
+            endTimeMillis = 2000L,
+            alertType = "ALARM",
+            conditionMode = "WEATHER",
+            temperatureThreshold = 30.0,
+            windThreshold = null,
+            cloudinessThreshold = null,
+            isActive = true,
+            lat = 30.0,
+            lon = 31.0,
+            cityName = "Cairo",
+            isRepeated = false
+        )
+        val alert2 = WeatherAlertEntity(
+            id = 2,
+            startTimeMillis = 3000L,
+            endTimeMillis = 4000L,
+            alertType = "ALARM",
+            conditionMode = "WEATHER",
+            temperatureThreshold = 35.0,
+            windThreshold = null,
+            cloudinessThreshold = null,
+            isActive = false,
+            lat = 30.0,
+            lon = 31.0,
+            cityName = "Alex",
+            isRepeated = false
+        )
         weatherAlertDao.insert(alert1)
         weatherAlertDao.insert(alert2)
 
@@ -82,7 +111,21 @@ class WeatherAlertDaoTest {
     @Test
     fun deleteById_id_alertRemoved() = runTest {
         // Given
-        val alert = WeatherAlertEntity(id = 1, startTimeMillis = 1000L, endTimeMillis = 2000L, alertType = "ALARM", conditionMode = "WEATHER", temperatureThreshold = 30.0, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 30.0, lon = 31.0, cityName = "Cairo")
+        val alert = WeatherAlertEntity(
+            id = 1,
+            startTimeMillis = 1000L,
+            endTimeMillis = 2000L,
+            alertType = "ALARM",
+            conditionMode = "WEATHER",
+            temperatureThreshold = 30.0,
+            windThreshold = null,
+            cloudinessThreshold = null,
+            isActive = true,
+            lat = 30.0,
+            lon = 31.0,
+            cityName = "Cairo",
+            isRepeated = false
+        )
         val id = weatherAlertDao.insert(alert)
 
         // When
@@ -96,7 +139,21 @@ class WeatherAlertDaoTest {
     @Test
     fun updateActive_idAndStatus_statusUpdated() = runTest {
         // Given
-        val alert = WeatherAlertEntity(id = 1, startTimeMillis = 1000L, endTimeMillis = 2000L, alertType = "ALARM", conditionMode = "WEATHER", temperatureThreshold = 30.0, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 30.0, lon = 31.0, cityName = "Cairo")
+        val alert = WeatherAlertEntity(
+            id = 1,
+            startTimeMillis = 1000L,
+            endTimeMillis = 2000L,
+            alertType = "ALARM",
+            conditionMode = "WEATHER",
+            temperatureThreshold = 30.0,
+            windThreshold = null,
+            cloudinessThreshold = null,
+            isActive = true,
+            lat = 30.0,
+            lon = 31.0,
+            cityName = "Cairo",
+            isRepeated = false
+        )
         val id = weatherAlertDao.insert(alert)
 
         // When
