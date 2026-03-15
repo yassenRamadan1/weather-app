@@ -196,4 +196,12 @@
     <string name="repeat_daily">Repeat Daily</string>
     <string name="repeat_daily_desc">Trigger this alert every day at the same time.</string>
     <string name="daily">Daily</string>
+    <string name="location_not_found">Location not found.</string>
+    <string name="unknown_location">Unknown Location</string>
+    <string name="search_location_placeholder">Search location...</string>
+    <string name="back">Back</string>
+    <string name="clear_search">Clear search</string>
+    <string name="selected_location">Selected Location</string>
+    <string name="custom_coordinates">Custom Coordinates</string>
+    <string name="confirm_location">Confirm Location</string>
 </resources>
