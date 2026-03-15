@@ -57,7 +57,6 @@ class AlertsScreenViewModelTest {
         fakeWeatherRepo.addAlert(alert)
 
         // When
-        // ViewModel init automatically calls observeAlerts()
 
         // Then
         val state = viewModel.uiState.value

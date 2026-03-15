@@ -17,5 +17,6 @@ val darkThemeColors = WTColors(
     primaryIconColor = primaryIconColor,
     buttonColor = buttonColorDark,
     cardBackgroundColor = cardBackgroundColorDark,
-    onBodyColor = onBodyColorDark
+    onBodyColor = onBodyColorDark,
+    isDark = true
 )
