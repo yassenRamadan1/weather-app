@@ -15,12 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.weather_app.main.MainScreen
+import com.example.weather_app.main.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.uiPreferences.value.isLoading
+        }
 
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             val slideUp = ObjectAnimator.ofFloat(
@@ -45,11 +53,9 @@ class MainActivity : AppCompatActivity() {
                 scrim = Color.TRANSPARENT,
             ),
         )
+
         setContent {
-
-                    MainScreen()
-
-
+            MainScreen(viewModel = viewModel)
         }
     }
 }

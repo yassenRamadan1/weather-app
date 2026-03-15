@@ -7,9 +7,11 @@ import com.example.weather_app.domain.entity.user.UserPreferences
 data class UiPreferences(
     val theme: AppTheme = AppTheme.SYSTEM,
     val language: AppLanguage = AppLanguage.ENGLISH,
+    val isLoading: Boolean = true
 )
 
- fun UserPreferences.toUiPreferences() = UiPreferences(
+fun UserPreferences.toUiPreferences() = UiPreferences(
     theme = theme,
     language = language,
+    isLoading = false
 )
