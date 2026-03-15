@@ -52,7 +52,8 @@ fun WeatherDisplayContent(
             cityName = currentWeather.cityName,
             dateFormatted = currentDateFormatted,
             timeFormatted = currentTimeFormatted,
-            iconCode = currentWeather.iconCode,
+            weatherState = currentWeather.weatherState,
+            isDay = currentWeather.isDay,
             temperature = "${currentWeather.temperature.roundToInt()}$tempSymbol",
             feelsLike = "${currentWeather.feelsLike.roundToInt()}$tempSymbol",
             description = currentWeather.description,
@@ -70,7 +71,8 @@ fun WeatherDisplayContent(
             val hourlyDisplayItems = hourlyForecast.map { hourly ->
                 HourlyForecastDisplayItem(
                     time = getLocalizedTime(hourly.timestamp, locale = locale),
-                    iconCode = hourly.iconCode,
+                    weatherState = hourly.weatherState,
+                    isDay = hourly.isDay,
                     temperature = "${hourly.temperature.roundToInt()}$tempSymbol",
                 )
             }
@@ -81,7 +83,8 @@ fun WeatherDisplayContent(
             val dailyDisplayItems = dailyForecast.map { daily ->
                 DailyForecastDisplayItem(
                     dayName = getLocalizedDayName(daily.timestamp, locale = locale),
-                    iconCode = daily.iconCode,
+                    weatherState = daily.weatherState,
+                    isDay = daily.isDay,
                     minTemp = "${daily.minTemp.roundToInt()}$tempSymbol",
                     maxTemp = "${daily.maxTemp.roundToInt()}$tempSymbol",
                 )

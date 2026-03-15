@@ -51,7 +51,7 @@ class WeatherUseCaseTest {
     fun getDailyForecastUseCase_latLon_returnsDailyList() = runTest {
         // Given
         val dailyList = listOf(
-            DailyForecast(1000L, 20.0, 30.0, "01d", "clear", 50, 5.0)
+            DailyForecast(1000L, 20.0, 30.0, 800, "01d", "clear", 50, 5.0)
         )
         fakeRepository.dailyForecast = Result.success(dailyList)
 
@@ -67,7 +67,7 @@ class WeatherUseCaseTest {
     fun getHourlyForecastUseCase_latLon_returnsHourlyList() = runTest {
         // Given
         val hourlyList = listOf(
-            HourlyWeather(1000L, 25.0, "01d", "clear", 5.0, 50, 0.1)
+            HourlyWeather(1000L, 25.0, 800, "01d", "clear", 5.0, 50, 0.1)
         )
         fakeRepository.hourlyForecast = Result.success(hourlyList)
 
