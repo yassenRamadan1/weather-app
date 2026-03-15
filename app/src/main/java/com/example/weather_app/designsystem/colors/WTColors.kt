@@ -14,7 +14,8 @@ data class WTColors(
     val primaryIconColor: Color,
     val buttonColor: Color,
     val cardBackgroundColor: Color,
-    val onBodyColor: Color
+    val onBodyColor: Color,
+    val isDark: Boolean
 )
 
 data class TextColors(
