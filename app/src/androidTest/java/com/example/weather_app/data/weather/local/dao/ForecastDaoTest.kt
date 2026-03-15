@@ -45,8 +45,30 @@ class ForecastDaoTest {
         val lat = 30.0
         val lon = 31.0
         val hourlyList = listOf(
-            HourlyWeatherEntity(lat = lat, lon = lon, timestamp = 1000L, temperature = 25.0, iconCode = "01d", description = "clear sky", windSpeed = 5.0, humidity = 50, pop = 0.1),
-            HourlyWeatherEntity(lat = lat, lon = lon, timestamp = 2000L, temperature = 24.0, iconCode = "01d", description = "clear sky", windSpeed = 4.0, humidity = 55, pop = 0.2)
+            HourlyWeatherEntity(
+                lat = lat,
+                lon = lon,
+                timestamp = 1000L,
+                temperature = 25.0,
+                iconCode = "01d",
+                description = "clear sky",
+                windSpeed = 5.0,
+                humidity = 50,
+                pop = 0.1,
+                weatherStateId = 800
+            ),
+            HourlyWeatherEntity(
+                lat = lat,
+                lon = lon,
+                timestamp = 2000L,
+                temperature = 24.0,
+                iconCode = "01d",
+                description = "clear sky",
+                windSpeed = 4.0,
+                humidity = 55,
+                pop = 0.2,
+                weatherStateId = 800
+            )
         )
 
         // When
@@ -65,8 +87,30 @@ class ForecastDaoTest {
         val lat = 30.0
         val lon = 31.0
         val dailyList = listOf(
-            DailyForecastEntity(lat = lat, lon = lon, timestamp = 1000L, minTemp = 20.0, maxTemp = 30.0, iconCode = "01d", description = "clear sky", humidity = 50, windSpeed = 5.0),
-            DailyForecastEntity(lat = lat, lon = lon, timestamp = 2000L, minTemp = 21.0, maxTemp = 31.0, iconCode = "01d", description = "clear sky", humidity = 55, windSpeed = 4.0)
+            DailyForecastEntity(
+                lat = lat,
+                lon = lon,
+                timestamp = 1000L,
+                minTemp = 20.0,
+                maxTemp = 30.0,
+                iconCode = "01d",
+                description = "clear sky",
+                humidity = 50,
+                windSpeed = 5.0,
+                weatherStateId = 800
+            ),
+            DailyForecastEntity(
+                lat = lat,
+                lon = lon,
+                timestamp = 2000L,
+                minTemp = 21.0,
+                maxTemp = 31.0,
+                iconCode = "01d",
+                description = "clear sky",
+                humidity = 55,
+                windSpeed = 4.0,
+                weatherStateId = 800
+            )
         )
 
         // When
@@ -85,7 +129,18 @@ class ForecastDaoTest {
         val lat = 30.0
         val lon = 31.0
         val hourlyList = listOf(
-            HourlyWeatherEntity(lat = lat, lon = lon, timestamp = 1000L, temperature = 25.0, iconCode = "01d", description = "clear sky", windSpeed = 5.0, humidity = 50, pop = 0.1)
+            HourlyWeatherEntity(
+                lat = lat,
+                lon = lon,
+                timestamp = 1000L,
+                temperature = 25.0,
+                iconCode = "01d",
+                description = "clear sky",
+                windSpeed = 5.0,
+                humidity = 50,
+                pop = 0.1,
+                weatherStateId = 800
+            )
         )
         forecastDao.insertHourlyWeather(hourlyList)
 

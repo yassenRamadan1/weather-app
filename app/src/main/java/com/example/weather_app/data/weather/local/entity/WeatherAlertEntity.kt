@@ -14,6 +14,7 @@ data class WeatherAlertEntity(
     val windThreshold: Double?,
     val cloudinessThreshold: Int?,
     val isActive: Boolean,
+    val isRepeated: Boolean,
     val lat: Double,
     val lon: Double,
     val cityName: String?

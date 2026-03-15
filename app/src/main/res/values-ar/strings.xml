@@ -193,4 +193,7 @@
     <string name="no_alerts_yet">لا توجد تنبيهات حتى الآن</string>
     <string name="delete_alert_confirmation">هل أنت متأكد أنك تريد حذف هذا التنبيه؟</string>
     <string name="delete">حذف</string>
+    <string name="repeat_daily">تكرار يومي</string>
+    <string name="repeat_daily_desc">تفعيل هذا التنبيه كل يوم في نفس الوقت.</string>
+    <string name="daily">يومياً</string>
 </resources>

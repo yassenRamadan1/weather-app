@@ -48,6 +48,7 @@ class AlertUseCaseTest {
             windThreshold = null,
             cloudinessThreshold = null,
             isActive = true,
+            isRepeated = false,
             lat = 30.0,
             lon = 31.0,
             cityName = "Cairo"
@@ -65,7 +66,7 @@ class AlertUseCaseTest {
     fun deleteAlertUseCase_id_alertRemovedAndCancelled() = runTest {
         // Given
         val id = 1L
-        fakeRepository.addAlert(WeatherAlert(id = id, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 0.0, lon = 0.0, cityName = ""))
+        fakeRepository.addAlert(WeatherAlert(id = id, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, isRepeated = false, lat = 0.0, lon = 0.0, cityName = ""))
 
         // When
         deleteAlertUseCase(id)
@@ -78,7 +79,7 @@ class AlertUseCaseTest {
     @Test
     fun getAllAlertsUseCase_noInput_returnsAlertFlow() = runTest {
         // Given
-        fakeRepository.addAlert(WeatherAlert(id = 1, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, lat = 0.0, lon = 0.0, cityName = ""))
+        fakeRepository.addAlert(WeatherAlert(id = 1, startTimeMillis = 0, endTimeMillis = 0, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = true, isRepeated = false, lat = 0.0, lon = 0.0, cityName = ""))
 
         // When
         val result = getAllAlertsUseCase().first()
@@ -93,7 +94,7 @@ class AlertUseCaseTest {
         // Given
         val id = 1L
         val now = System.currentTimeMillis()
-        fakeRepository.addAlert(WeatherAlert(id = id, startTimeMillis = now + 60_000, endTimeMillis = now + 120_000, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = false, lat = 0.0, lon = 0.0, cityName = ""))
+        fakeRepository.addAlert(WeatherAlert(id = id, startTimeMillis = now + 60_000, endTimeMillis = now + 120_000, alertType = AlertType.NOTIFICATION, conditionMode = AlertConditionMode.ANY, temperatureThreshold = null, windThreshold = null, cloudinessThreshold = null, isActive = false, isRepeated = false, lat = 0.0, lon = 0.0, cityName = ""))
 
         // When
         setAlertActiveUseCase(id, true)
@@ -116,6 +117,7 @@ class AlertUseCaseTest {
             windThreshold = null,
             cloudinessThreshold = null,
             isActive = true,
+            isRepeated = false,
             lat = 30.0,
             lon = 31.0,
             cityName = "Cairo"

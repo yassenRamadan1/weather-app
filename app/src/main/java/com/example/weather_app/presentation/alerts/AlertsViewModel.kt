@@ -107,12 +107,16 @@ class AlertsScreenViewModel(
         _formState.update { it.copy(cloudinessThreshold = clamped, conditionError = null) }
     }
 
+    fun onRepeatChanged(repeated: Boolean) =
+        _formState.update { it.copy(isRepeated = repeated) }
+
     fun resetForm() {
         _formState.value = AddAlertFormState()
     }
     fun saveAlert() {
         viewModelScope.launch {
             val currentState = _uiState.value
+            val form = _formState.value
             _formState.update { it.copy(isSaving = true) }
             _uiState.value = AlertsScreenUiState.Loading
             try {
@@ -128,7 +132,6 @@ class AlertsScreenViewModel(
                     return@launch
                 }
 
-                val form = _formState.value
                 val alert = WeatherAlert(
                     startTimeMillis = form.startTimeMillis!!,
                     endTimeMillis = form.endTimeMillis!!,
@@ -138,6 +141,7 @@ class AlertsScreenViewModel(
                     windThreshold = form.windThreshold.toDoubleOrNull(),
                     cloudinessThreshold = form.cloudinessThreshold.toIntOrNull(),
                     isActive = true,
+                    isRepeated = form.isRepeated,
                     lat = locResult.lat,
                     lon = locResult.lon,
                     cityName = locResult.cityName
