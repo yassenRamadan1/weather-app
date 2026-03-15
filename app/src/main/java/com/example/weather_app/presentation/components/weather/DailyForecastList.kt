@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.domain.entity.weather.Weather
 
 @Composable
 fun DailyForecastList(
@@ -30,7 +31,8 @@ fun DailyForecastList(
         dailyItems.forEach { item ->
             DailyForecastItem(
                 dayName = item.dayName,
-                iconCode = item.iconCode,
+                weatherState = item.weatherState,
+                isDay = item.isDay,
                 minTemp = item.minTemp,
                 maxTemp = item.maxTemp,
             )
@@ -40,7 +42,8 @@ fun DailyForecastList(
 
 data class DailyForecastDisplayItem(
     val dayName: String,
-    val iconCode: String,
+    val weatherState: Weather.WeatherState,
+    val isDay: Boolean,
     val minTemp: String,
     val maxTemp: String,
 )
@@ -48,11 +51,11 @@ data class DailyForecastDisplayItem(
 @Composable
 fun DailyForecastListPreview() {
     val sampleItems = listOf(
-        DailyForecastDisplayItem("Monday", "01d", "15°C", "25°C"),
-        DailyForecastDisplayItem("Tuesday", "02d", "17°C", "27°C"),
-        DailyForecastDisplayItem("Wednesday", "03d", "14°C", "24°C"),
-        DailyForecastDisplayItem("Thursday", "04d", "16°C", "26°C"),
-        DailyForecastDisplayItem("Friday", "01d", "13°C", "23°C"),
+        DailyForecastDisplayItem("Monday", Weather.WeatherState.ClearSky, true, "15°C", "25°C"),
+        DailyForecastDisplayItem("Tuesday", Weather.WeatherState.PartlyCloudy, true, "17°C", "27°C"),
+        DailyForecastDisplayItem("Wednesday", Weather.WeatherState.Overcast, true, "14°C", "24°C"),
+        DailyForecastDisplayItem("Thursday", Weather.WeatherState.DrizzleModerate, true, "16°C", "26°C"),
+        DailyForecastDisplayItem("Friday", Weather.WeatherState.RainSlight, true, "13°C", "23°C"),
     )
     PreviewComponentsBox() {
         DailyForecastList(dailyItems = sampleItems)

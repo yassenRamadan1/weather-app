@@ -15,11 +15,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.designsystem.theme.WTTheme
+import com.example.weather_app.domain.entity.weather.Weather
 
 @Composable
 fun DailyForecastItem(
     dayName: String,
-    iconCode: String,
+    weatherState: Weather.WeatherState,
+    isDay: Boolean,
     minTemp: String,
     maxTemp: String,
     modifier: Modifier = Modifier,
@@ -40,7 +42,8 @@ fun DailyForecastItem(
             modifier = Modifier.weight(1f),
         )
         WeatherIconImage(
-            iconCode = iconCode,
+            state = weatherState,
+            isDay = isDay,
             modifier = Modifier.size(36.dp),
         )
         Row(
@@ -73,7 +76,8 @@ fun DailyForecastItemPreview() {
         PreviewComponentsBox(){
             DailyForecastItem(
                 dayName = "Monday",
-                iconCode = "",
+                weatherState = Weather.WeatherState.ClearSky,
+                isDay = true,
                 minTemp = "15°",
                 maxTemp = "25°",
             )

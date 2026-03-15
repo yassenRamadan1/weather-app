@@ -13,11 +13,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.domain.entity.weather.Weather
 
 @Composable
 fun HourlyWeatherItem(
     time: String,
-    iconCode: String,
+    weatherState: Weather.WeatherState,
+    isDay: Boolean,
     temperature: String,
     modifier: Modifier = Modifier,
 ) {
@@ -35,7 +37,8 @@ fun HourlyWeatherItem(
             color = Theme.colors.textColors.hintColor,
         )
         WeatherIconImage(
-            iconCode = iconCode,
+            state = weatherState,
+            isDay = isDay,
             modifier = Modifier.size(36.dp),
         )
         Text(
@@ -52,11 +55,11 @@ fun HourlyWeatherItemPreview() {
     PreviewComponentsBox() {
         HourlyWeatherItem(
             time = "2 PM",
-            iconCode = "",
+            weatherState = Weather.WeatherState.ClearSky,
+            isDay = true,
             temperature = "25°C",
             modifier = Modifier.padding(8.dp),
         )
     }
 
 }
-

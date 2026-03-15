@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
+import com.example.weather_app.domain.entity.weather.Weather
 
 @Composable
 fun HourlyForecastRow(
@@ -36,7 +37,8 @@ fun HourlyForecastRow(
             items(hourlyItems) { item ->
                 HourlyWeatherItem(
                     time = item.time,
-                    iconCode = item.iconCode,
+                    weatherState = item.weatherState,
+                    isDay = item.isDay,
                     temperature = item.temperature,
                 )
             }
@@ -46,6 +48,7 @@ fun HourlyForecastRow(
 
 data class HourlyForecastDisplayItem(
     val time: String,
-    val iconCode: String,
+    val weatherState: Weather.WeatherState,
+    val isDay: Boolean,
     val temperature: String,
 )
