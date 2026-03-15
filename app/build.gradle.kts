@@ -55,6 +55,14 @@ android {
         compose = true
         buildConfig = true
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+        }
+    }
 }
 
 dependencies {
@@ -119,4 +127,23 @@ dependencies {
     implementation(libs.spatialk.geojson)
     //workManager
     implementation(libs.workmanager)
+
+    // Local Unit Tests
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.hamcrest)
+    testImplementation(libs.hamcrest.library)
+    testImplementation(libs.androidx.test.core.ktx)
+    testImplementation(libs.androidx.test.ext.junit.ktx)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.arch.core.testing)
+
+    // Mocking Libraries (You can use MockK or Mockito)
+    testImplementation(libs.mockk)
+
+    // Instrumented Tests
+    androidTestImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.hamcrest)
+    androidTestImplementation(libs.hamcrest.library)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.androidx.arch.core.testing)
 }

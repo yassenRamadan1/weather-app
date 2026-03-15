@@ -21,6 +21,7 @@ import androidx.core.os.ConfigurationCompat
 import com.example.weather_app.R
 import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.designsystem.theme.WTTheme
+import com.example.weather_app.domain.entity.weather.Weather
 import com.example.weather_app.presentation.util.getLocalizedCountryName
 import java.util.Locale
 
@@ -30,7 +31,8 @@ fun CurrentWeatherHeader(
     countryCode: String,
     dateFormatted: String,
     timeFormatted: String,
-    iconCode: String,
+    weatherState: Weather.WeatherState,
+    isDay: Boolean,
     temperature: String,
     feelsLike: String,
     description: String,
@@ -89,7 +91,8 @@ fun CurrentWeatherHeader(
         }
 
         WeatherIconImage(
-            iconCode = iconCode,
+            state = weatherState,
+            isDay = isDay,
             modifier = Modifier.size(120.dp),
             contentDescription = description,
         )
@@ -125,7 +128,8 @@ fun CurrentWeatherHeaderPreview() {
             countryCode = "US",
             dateFormatted = "June 10, 2024",
             timeFormatted = "2:00 PM",
-            iconCode = "01d",
+            weatherState = Weather.WeatherState.ClearSky,
+            isDay = true,
             temperature = "25°",
             feelsLike = "27°",
             description = "Clear sky",

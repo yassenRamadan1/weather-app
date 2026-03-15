@@ -15,6 +15,7 @@ data class DailyForecastEntity(
     val timestamp: Long,
     val minTemp: Double,
     val maxTemp: Double,
+    val weatherStateId: Int,
     val iconCode: String,
     val description: String,
     val humidity: Int,

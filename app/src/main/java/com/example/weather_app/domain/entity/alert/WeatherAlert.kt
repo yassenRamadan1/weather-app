@@ -10,6 +10,7 @@ data class WeatherAlert(
     val windThreshold: Double? = null,
     val cloudinessThreshold: Int? = null,
     val isActive: Boolean = true,
+    val isRepeated: Boolean = false,
     val lat: Double,
     val lon: Double,
     val cityName: String? = null

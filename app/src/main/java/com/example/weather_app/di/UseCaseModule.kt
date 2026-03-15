@@ -32,7 +32,7 @@ val useCaseModule = module {
     factory {
         GetPreferredLocationUseCase(
             locationRepository = get(),
-            userPreferencesDataSource = get()
+            userPreferencesRepository = get()
         )
     }
     factory { UpdateSavedLocationUseCase(locationRepository = get()) }

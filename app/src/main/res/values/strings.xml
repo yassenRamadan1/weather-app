@@ -193,4 +193,7 @@
     <string name="no_alerts_yet">No alerts yet</string>
     <string name="delete_alert_confirmation">Are you sure you want to delete this alert?</string>
     <string name="delete">Delete</string>
+    <string name="repeat_daily">Repeat Daily</string>
+    <string name="repeat_daily_desc">Trigger this alert every day at the same time.</string>
+    <string name="daily">Daily</string>
 </resources>

@@ -133,7 +133,7 @@ fun AlertScreen(
                 is AlertsScreenUiState.Error -> {
                     ErrorContent(
                         message = state.message,
-                        onRetry = { /* Flow auto-retries on resubscription */ }
+                        onRetry = {  }
                     )
                 }
 
@@ -180,6 +180,7 @@ fun AlertScreen(
             onEndTimeSelected = viewModel::onEndTimeSelected,
             onAlertTypeChanged = viewModel::onAlertTypeChanged,
             onConditionModeChanged = viewModel::onConditionModeChanged,
+            onRepeatChanged = viewModel::onRepeatChanged,
             onTemperatureChanged = viewModel::onTemperatureThresholdChanged,
             onWindChanged = viewModel::onWindThresholdChanged,
             onCloudinessChanged = viewModel::onCloudinessThresholdChanged,

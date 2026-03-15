@@ -14,6 +14,7 @@ data class HourlyWeatherEntity(
     val lon: Double,
     val timestamp: Long,
     val temperature: Double,
+    val weatherStateId: Int,
     val iconCode: String,
     val description: String,
     val windSpeed: Double,

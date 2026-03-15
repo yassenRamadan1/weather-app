@@ -50,6 +50,7 @@ fun AddAlertBottomSheet(
     onEndTimeSelected: (Long) -> Unit,
     onAlertTypeChanged: (AlertType) -> Unit,
     onConditionModeChanged: (AlertConditionMode) -> Unit,
+    onRepeatChanged: (Boolean) -> Unit,
     onTemperatureChanged: (String) -> Unit,
     onWindChanged: (String) -> Unit,
     onCloudinessChanged: (String) -> Unit,
@@ -72,7 +73,6 @@ fun AddAlertBottomSheet(
                 .padding(bottom = 40.dp) // clear nav bar
         ) {
 
-            // ── Title ─────────────────────────────────────────────────────────
             Text(
                 text = stringResource(R.string.add_weather_alert),
                 style = Theme.typography.title,
@@ -80,7 +80,6 @@ fun AddAlertBottomSheet(
                 modifier = Modifier.padding(bottom = Theme.spacing.medium)
             )
 
-            // ── Start time picker ─────────────────────────────────────────────
             AlertTimePicker(
                 label = stringResource(R.string.start_duration),
                 selectedMillis = formState.startTimeMillis,
@@ -91,7 +90,6 @@ fun AddAlertBottomSheet(
 
             Spacer(Modifier.height(Theme.spacing.medium))
 
-            // ── End time picker ───────────────────────────────────────────────
             AlertTimePicker(
                 label = stringResource(R.string.end_duration),
                 selectedMillis = formState.endTimeMillis,
@@ -99,6 +97,36 @@ fun AddAlertBottomSheet(
                 onTimeSelected = onEndTimeSelected,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(Modifier.height(Theme.spacing.medium))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.repeat_daily),
+                        style = Theme.typography.bodyMedium,
+                        color = Theme.colors.textColors.bodyColor
+                    )
+                    Text(
+                        text = stringResource(R.string.repeat_daily_desc),
+                        style = Theme.typography.bodySmall,
+                        color = Theme.colors.textColors.hintColor
+                    )
+                }
+                Switch(
+                    checked = formState.isRepeated,
+                    onCheckedChange = onRepeatChanged,
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Theme.colors.onBodyColor,
+                        checkedTrackColor = Theme.colors.primary,
+                        uncheckedThumbColor = Theme.colors.textColors.hintColor,
+                        uncheckedTrackColor = Theme.colors.textColors.hintColor.copy(alpha = 0.3f)
+                    )
+                )
+            }
 
             Spacer(Modifier.height(Theme.spacing.large))
             HorizontalDivider(color = Theme.colors.textColors.hintColor.copy(alpha = 0.2f))

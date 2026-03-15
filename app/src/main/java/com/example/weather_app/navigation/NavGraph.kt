@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.weather_app.presentation.alerts.AlertScreen
-import com.example.weather_app.presentation.favorites.favorite.FavoritesScreen
+import com.example.weather_app.presentation.favorites.FavoritesScreen
 import com.example.weather_app.presentation.favorites.favoritedetails.FavoriteDetailsScreen
 import com.example.weather_app.presentation.home.HomeScreen
 import com.example.weather_app.presentation.settings.SettingsScreen

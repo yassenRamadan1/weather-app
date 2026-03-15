@@ -136,7 +136,13 @@ fun AlertCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                AlertTypeBadge(alert.alertType)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    AlertTypeBadge(alert.alertType)
+                    if (alert.isRepeated) {
+                        Spacer(Modifier.width(8.dp))
+                        DailyBadge()
+                    }
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (!isExpired) {
                         Switch(
@@ -245,6 +251,22 @@ fun AlertCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DailyBadge() {
+    Surface(
+        color = Theme.colors.warningColor.copy(alpha = 0.15f),
+        shape = Theme.shapes.small
+    ) {
+        Text(
+            text = stringResource(R.string.daily),
+            style = Theme.typography.bodySmall,
+            color = Theme.colors.warningColor,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = Theme.spacing.small, vertical = 4.dp)
+        )
     }
 }
 
