@@ -9,7 +9,7 @@ A professional-grade, high-performance Android Weather Application built with **
 
 ---
 
-*(Place for App Banner/Hero Image)*
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/45924cee-149e-457d-b4ff-f5c3d715c64a" />
 
 ---
 
@@ -18,10 +18,10 @@ A professional-grade, high-performance Android Weather Application built with **
 <div align="center">
   <table style="width:100%">
     <tr>
-      <td style="width:25%"><img src="/api/placeholder/400/800" alt="Home Screen"/></td>
-      <td style="width:25%"><img src="/api/placeholder/400/800" alt="Alerts Screen"/></td>
-      <td style="width:25%"><img src="/api/placeholder/400/800" alt="Settings Screen"/></td>
-      <td style="width:25%"><img src="/api/placeholder/400/800" alt="Map Picker"/></td>
+      <td style="width:25%"><img src="https://github.com/user-attachments/assets/67d12ce8-3861-4795-9b9b-58855a3050cf" alt="Home Screen"/></td>
+      <td style="width:25%"><img src="https://github.com/user-attachments/assets/9205209b-8235-4761-a31b-f3f8c8a433bb" alt="Alerts Screen"/></td>
+      <td style="width:25%"><img src="https://github.com/user-attachments/assets/009c6875-f6ac-430e-be7c-3d3d343b0e47" alt="Settings Screen"/></td>
+      <td style="width:25%"><img src="https://github.com/user-attachments/assets/33b12756-b9b5-44ea-9f09-f36a91bff06a" alt="Map Picker"/></td>
     </tr>
     <tr>
       <td align="center"><b>Dynamic Home</b></td>
