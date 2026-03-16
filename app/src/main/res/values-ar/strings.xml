@@ -198,10 +198,11 @@
     <string name="daily">يومياً</string>
     <string name="location_not_found">الموقع غير موجود.</string>
     <string name="unknown_location">موقع غير معروف</string>
-    <string name="search_location_placeholder">ابحث عن موقع...</string>
+    <string name="search_location_placeholder">ابحث عن موقع…</string>
     <string name="back">رجوع</string>
     <string name="clear_search">مسح البحث</string>
     <string name="selected_location">الموقع المحدد</string>
     <string name="custom_coordinates">إحداثيات مخصصة</string>
     <string name="confirm_location">تأكيد الموقع</string>
+    <string name="temperature_for_5_days">درجات الحرارة للخمس ايام القادمة</string>
 </resources>

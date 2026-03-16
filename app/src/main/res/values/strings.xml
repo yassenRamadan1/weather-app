@@ -204,4 +204,5 @@
     <string name="selected_location">Selected Location</string>
     <string name="custom_coordinates">Custom Coordinates</string>
     <string name="confirm_location">Confirm Location</string>
+    <string name="temperature_for_5_days">Temperatures for the next five days</string>
 </resources>

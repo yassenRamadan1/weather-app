@@ -1,10 +1,13 @@
 package com.example.weather_app.presentation.components.weather
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,14 +29,19 @@ fun WeeklyTemperatureLineChart(
 ) {
     val lineParameters = listOf(
         LineParameters(
-            label = stringResource(R.string.temperature),
+            label = stringResource(R.string.temperature_for_5_days),
             data = dailyMaxTemps,
             lineColor = Theme.colors.primary,
             lineType = LineType.CURVED_LINE,
             lineShadow = true,
         )
     )
-    Box(modifier.fillMaxWidth()) {
+    Box(
+        modifier = modifier
+            .clip(Theme.shapes.medium)
+            .background(Theme.colors.textColors.titleColor.copy(alpha = 0.07f))
+            .padding(horizontal = Theme.spacing.small, vertical = Theme.spacing.small),
+    ) {
         LineChart(
             modifier = modifier
                 .fillMaxWidth()

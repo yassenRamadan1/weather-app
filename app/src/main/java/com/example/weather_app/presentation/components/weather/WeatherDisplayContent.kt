@@ -89,7 +89,7 @@ fun WeatherDisplayContent(
 
             WeeklyTemperatureLineChart(
                 dailyMaxTemps = dailyMaxTemps,
-                daysOfWeek = daysOfWeek,
+                daysOfWeek = daysOfWeek.take(5),
                 modifier = Modifier.padding(horizontal = Theme.spacing.medium)
             )
 
