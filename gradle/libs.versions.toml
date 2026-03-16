@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.2"
+chart = "1.1.0"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
 androidSdk = "13.0.0"
@@ -53,6 +54,7 @@ testCore = "1.6.1"
 [libraries]
 android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+chart = { module = "io.github.thechance101:chart", version.ref = "chart" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

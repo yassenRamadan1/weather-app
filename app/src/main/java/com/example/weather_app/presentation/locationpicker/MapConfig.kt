@@ -14,6 +14,7 @@ data class MapConfig(
     val initialZoom: Double = 12.0,
     val searchResultZoom: Double = 13.0,
     val styleUri: String = "https://tiles.openfreemap.org/styles/liberty",
+    val darkStyleUri: String = "https://tiles.openfreemap.org/styles/dark",
     val gestureOptions: GestureOptions = GestureOptions(
         isScrollEnabled = true,
         isZoomEnabled = true,
@@ -21,6 +22,13 @@ data class MapConfig(
         isRotateEnabled = true,
     ),
 )
+
+/**
+ * Helper function to get the appropriate style URI based on theme
+ */
+fun MapConfig.getStyleUri(isDarkTheme: Boolean): String {
+    return if (isDarkTheme) darkStyleUri else styleUri
+}
 
 data class SearchConfig(
     val debounceMillis: Long = 800L,

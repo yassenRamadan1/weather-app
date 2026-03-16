@@ -146,4 +146,6 @@ dependencies {
     androidTestImplementation(libs.hamcrest.library)
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.arch.core.testing)
+    //aay charts
+    implementation(libs.chart)
 }

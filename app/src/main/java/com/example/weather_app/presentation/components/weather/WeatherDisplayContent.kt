@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -80,6 +81,18 @@ fun WeatherDisplayContent(
         }
 
         if (dailyForecast.isNotEmpty()) {
+
+            val dailyMaxTemps = dailyForecast.map { it.maxTemp.toDouble() }
+            val daysOfWeek = dailyForecast.map { daily ->
+                getLocalizedDayName(daily.timestamp, locale = locale)
+            }
+
+            WeeklyTemperatureLineChart(
+                dailyMaxTemps = dailyMaxTemps,
+                daysOfWeek = daysOfWeek,
+                modifier = Modifier.padding(horizontal = Theme.spacing.medium)
+            )
+
             val dailyDisplayItems = dailyForecast.map { daily ->
                 DailyForecastDisplayItem(
                     dayName = getLocalizedDayName(daily.timestamp, locale = locale),
@@ -89,9 +102,11 @@ fun WeatherDisplayContent(
                     maxTemp = "${daily.maxTemp.roundToInt()}$tempSymbol",
                 )
             }
+
             DailyForecastList(dailyItems = dailyDisplayItems)
         }
 
         Spacer(modifier = Modifier.height(Theme.spacing.extraLarge))
     }
+
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
@@ -45,7 +46,6 @@ import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 
-/** Renders the MapLibre map with an optional pin marker. */
 @Composable
 internal fun LocationMap(
     modifier: Modifier,
@@ -55,11 +55,12 @@ internal fun LocationMap(
     markerPainter: Painter,
     markerIconSize: Float,
     markerColor: Color = Color.Unspecified,
+    isDarkTheme: Boolean = false,
     onMapClick: (lat: Double, lon: Double) -> Unit,
 ) {
     MaplibreMap(
         modifier = modifier,
-        baseStyle = BaseStyle.Uri(mapConfig.styleUri),
+        baseStyle = BaseStyle.Uri(mapConfig.getStyleUri(isDarkTheme)),
         cameraState = cameraState,
         options = MapOptions(gestureOptions = mapConfig.gestureOptions),
         onMapClick = { point, _ ->
@@ -86,7 +87,6 @@ internal fun LocationMap(
     }
 }
 
-/** Floating search bar with progress indicator and inline error. */
 @Composable
 internal fun LocationSearchBar(
     modifier: Modifier,
@@ -119,9 +119,8 @@ internal fun LocationSearchBar(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text(placeholder) },
                 leadingIcon = leadingIcon ?: {
-                    // Default: back arrow that dismisses the dialog
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 trailingIcon = {
@@ -133,8 +132,8 @@ internal fun LocationSearchBar(
                 },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colors.focusedBorderColor,
-                    unfocusedBorderColor = colors.unfocusedBorderColor,
+                    focusedBorderColor = MaterialTheme.colorScheme.error,
+                    unfocusedBorderColor =MaterialTheme.colorScheme.error,
                 ),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
@@ -160,7 +159,6 @@ internal fun LocationSearchBar(
     }
 }
 
-/** Default bottom confirmation card. Replace entirely via the [confirmationContent] slot. */
 @Composable
 internal fun DefaultConfirmationCard(
     pickedLocation: PickedLocation,

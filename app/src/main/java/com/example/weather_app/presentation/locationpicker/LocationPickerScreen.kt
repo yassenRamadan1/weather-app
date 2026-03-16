@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.weather_app.R
+import com.example.weather_app.designsystem.theme.Theme
 import com.example.weather_app.presentation.locationpicker.model.PickedLocation
 import io.github.dellisd.spatialk.geojson.Position
 import kotlinx.coroutines.FlowPreview
@@ -59,13 +60,14 @@ fun LocationPickerScreen(
     onLocationSelected: (PickedLocation) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = false,
     state: LocationPickerState = rememberLocationPickerState(),
     mapConfig: MapConfig = MapConfig(),
     searchConfig: SearchConfig = SearchConfig(),
     shapes: LocationPickerShapes = LocationPickerShapes(),
     searchBarColors: SearchBarColors = SearchBarColors(),
     confirmationColors: ConfirmationCardColors = ConfirmationCardColors(),
-    markerPainter: Painter? = null,               // null → uses default drawable
+    markerPainter: Painter? = null,
     markerIconSize: Float = 2.5f,
     markerColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Unspecified,
     leadingSearchIcon: @Composable (() -> Unit)? = null,
@@ -82,7 +84,6 @@ fun LocationPickerScreen(
         )
     )
 
-    // ── Search debounce ───────────────────────────────────────────
     LaunchedEffect(state.searchQuery) {
         snapshotFlow { state.searchQuery }
             .debounce(searchConfig.debounceMillis)
@@ -116,21 +117,21 @@ fun LocationPickerScreen(
     ) {
         Box(modifier = modifier.fillMaxSize()) {
 
-            LocationMap(
+            LocationPickerScreen(
                 modifier = Modifier.fillMaxSize(),
                 mapConfig = mapConfig,
-                cameraState = cameraState,
-                pickedLocation = state.pickedLocation,
                 markerPainter = markerPainter
                     ?: painterResource(R.drawable.ic_launcher_foreground),
                 markerIconSize = markerIconSize,
-                onMapClick = { lat, lon ->
+                isDarkTheme = isDarkTheme,
+                onLocationSelected = { PickedLocation ->
                     keyboard?.hide()
                     scope.launch {
-                        val city = reverseGeocodeLatLng(context, lat, lon)
-                        state.pickedLocation = PickedLocation(lat, lon, "", null)
+                        val city = reverseGeocodeLatLng(context, PickedLocation.lat, PickedLocation.lon)
+                        state.pickedLocation = PickedLocation(PickedLocation.lat, PickedLocation.lon, PickedLocation.countryCode, city)
                     }
                 },
+                onDismiss = {}
             )
 
             LocationSearchBar(
@@ -158,7 +159,11 @@ fun LocationPickerScreen(
                 placeholder = searchConfig.searchPlaceholder,
                 shape = shapes.searchBarShape,
                 elevation = shapes.searchBarElevation,
-                colors = searchBarColors,
+                colors = SearchBarColors(
+                    containerColor = Theme.colors.primary.copy(alpha = 0.07f),
+                    unfocusedBorderColor = Theme.colors.primary.copy(alpha = 0.05f),
+                    focusedBorderColor = Theme.colors.primary.copy(alpha = 0.7f)
+                ),
                 leadingIcon = leadingSearchIcon,
             )
 

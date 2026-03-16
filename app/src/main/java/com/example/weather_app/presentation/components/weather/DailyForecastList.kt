@@ -19,7 +19,9 @@ fun DailyForecastList(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = Theme.spacing.medium),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Theme.spacing.medium),
         verticalArrangement = Arrangement.spacedBy(Theme.spacing.small),
     ) {
         Text(
@@ -47,14 +49,27 @@ data class DailyForecastDisplayItem(
     val minTemp: String,
     val maxTemp: String,
 )
+
 @Preview
 @Composable
 fun DailyForecastListPreview() {
     val sampleItems = listOf(
         DailyForecastDisplayItem("Monday", Weather.WeatherState.ClearSky, true, "15°C", "25°C"),
-        DailyForecastDisplayItem("Tuesday", Weather.WeatherState.PartlyCloudy, true, "17°C", "27°C"),
+        DailyForecastDisplayItem(
+            "Tuesday",
+            Weather.WeatherState.PartlyCloudy,
+            true,
+            "17°C",
+            "27°C"
+        ),
         DailyForecastDisplayItem("Wednesday", Weather.WeatherState.Overcast, true, "14°C", "24°C"),
-        DailyForecastDisplayItem("Thursday", Weather.WeatherState.DrizzleModerate, true, "16°C", "26°C"),
+        DailyForecastDisplayItem(
+            "Thursday",
+            Weather.WeatherState.DrizzleModerate,
+            true,
+            "16°C",
+            "26°C"
+        ),
         DailyForecastDisplayItem("Friday", Weather.WeatherState.RainSlight, true, "13°C", "23°C"),
     )
     PreviewComponentsBox() {
