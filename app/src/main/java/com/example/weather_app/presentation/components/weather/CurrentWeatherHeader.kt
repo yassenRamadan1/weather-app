@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,12 +65,12 @@ fun CurrentWeatherHeader(
 
                 ) {
                     Text(
-                        text = getLocalizedCountryName(countryCode,currentLocale),
+                        text = getLocalizedCountryName(countryCode, currentLocale),
                         style = Theme.typography.title,
                         color = Theme.colors.textColors.titleColor,
                     )
                     Text(
-                        text = cityName ,
+                        text = cityName,
                         style = Theme.typography.hintMedium,
                         color = Theme.colors.textColors.hintColor,
                     )
@@ -123,16 +124,19 @@ fun CurrentWeatherHeader(
 @Composable
 fun CurrentWeatherHeaderPreview() {
     WTTheme {
-        CurrentWeatherHeader(
-            cityName = "New York",
-            countryCode = "US",
-            dateFormatted = "June 10, 2024",
-            timeFormatted = "2:00 PM",
-            weatherState = Weather.WeatherState.ClearSky,
-            isDay = true,
-            temperature = "25°",
-            feelsLike = "27°",
-            description = "Clear sky",
-        )
+        PreviewComponentsBox() {
+
+            CurrentWeatherHeader(
+                cityName = "New York",
+                countryCode = "US",
+                dateFormatted = "June 10, 2024",
+                timeFormatted = "2:00 PM",
+                weatherState = Weather.WeatherState.ClearSky,
+                isDay = true,
+                temperature = "25°",
+                feelsLike = "27°",
+                description = "Clear sky",
+            )
+        }
     }
 }
